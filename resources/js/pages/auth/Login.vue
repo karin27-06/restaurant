@@ -79,7 +79,7 @@ const submit = () => {
                                 </div>
                                 <a 
                                     v-if="canResetPassword" 
-                                    :href="route('password.request')" 
+                                    href="#" 
                                     class="font-medium no-underline ml-2 text-right cursor-pointer text-primary"
                                 >
                                     ¿Olvidó su contraseña?

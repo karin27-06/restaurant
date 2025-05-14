@@ -15,21 +15,34 @@ const model = computed(() => [
         ]
     },
     {
-        label: 'Gestión Administrativa',
+        label: 'Gestión de Productos',
         items: [
-            hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
-            hasPermission('ver prestamos') && { label: 'Préstamos', icon: 'pi pi-fw pi-briefcase', to: '/prestamos' },
-            hasPermission('ver pagos') && { label: 'Pagos', icon: 'pi pi-fw pi-credit-card', to: '/pagos' },
-            hasPermission('ver reportes') && { label: 'Reportes', icon: 'pi pi-fw pi-chart-line', to: '/reportes' }
+            hasPermission('ver productos') && { label: 'Productos', icon: 'pi pi-fw pi-box', to: '/productos' },
+            hasPermission('ver categorias') && { label: 'Categorías', icon: 'pi pi-fw pi-tags', to: '/categorias' },
+            hasPermission('ver almacenes') && { label: 'Almacenes', icon: 'pi pi-fw pi-building', to: '/almacenes' },
+            hasPermission('ver proveedores') && { label: 'Proveedores', icon: 'pi pi-fw pi-truck', to: '/proveedores' },
         ].filter(Boolean),
     },
     {
-        label: 'Usuarios',
+        label: 'Gestión de Clientes',
+        items: [
+            hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
+            hasPermission('ver tipos_clientes') && { label: 'Tipo de Clientes', icon: 'pi pi-fw pi-id-card', to: '/tipo_clientes' },
+        ].filter(Boolean),
+    },
+    {
+        label: 'Gestión de Infraestructura',
+        items: [
+            hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-map', to: '/pisos' },
+        ].filter(Boolean),
+    },
+    {
+        label: 'Usuarios y Seguridad',
         items: [
             hasPermission('ver usuarios') && { label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-user-edit', to: '/usuario' },
-            hasPermission('ver roles') && { label: 'Roles', icon: 'pi pi-fw pi-check-square', to: '/roles' },
+            hasPermission('ver roles') && { label: 'Roles', icon: 'pi pi-fw pi-shield', to: '/roles' },
         ].filter(Boolean),
-    }
+    },
 ].filter(section => section.items.length > 0));
 </script>
 
@@ -42,5 +55,5 @@ const model = computed(() => [
 </template>
 
 <style scoped lang="scss">
-/* Puedes agregar tus estilos aquí si lo deseas */
+/* Estilos personalizados opcionales */
 </style>

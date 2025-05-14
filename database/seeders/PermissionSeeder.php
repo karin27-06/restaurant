@@ -16,26 +16,6 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar usuarios']);
         Permission::create(['name' => 'eliminar usuarios']);
         Permission::create(['name' => 'ver usuarios']);
-        #Cliente
-        Permission::create(['name' =>'crear clientes']);
-        Permission::create(['name' =>'editar clientes']);
-        Permission::create(['name' =>'eliminar clientes']);
-        Permission::create(['name' =>'ver clientes']);
-        #Cuotas
-        Permission::create(['name' =>'crear cuotas']);
-        Permission::create(['name' =>'editar cuotas']);
-        Permission::create(['name' =>'eliminar cuotas']);
-        Permission::create(['name' =>'ver cuotas']);
-        #Pagos
-        Permission::create(['name' =>'crear pagos']);
-        Permission::create(['name' =>'editar pagos']);
-        Permission::create(['name' =>'eliminar pagos']);
-        Permission::create(['name' =>'ver pagos']);
-        #Prestamo
-        Permission::create(['name' =>'crear prestamos']);
-        Permission::create(['name' =>'editar prestamos']);
-        Permission::create(['name' =>'eliminar prestamos']);
-        Permission::create(['name' =>'ver prestamos']);
         # Roles
         Permission::create(['name' =>'crear roles']);
         Permission::create(['name' =>'editar roles']);
@@ -46,7 +26,40 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' =>'editar permisos']);
         Permission::create(['name' =>'eliminar permisos']);
         Permission::create(['name' =>'ver permisos']);
-        #Reportes
-        Permission::create(['name' => 'ver reportes']);
+        #Pisos
+        Permission::create(['name' => 'crear pisos']);
+        Permission::create(['name' => 'editar pisos']);
+        Permission::create(['name' => 'eliminar pisos']);
+        Permission::create(['name' => 'ver pisos']);
+        #Productos
+        Permission::create(['name' => 'crear productos']);
+        Permission::create(['name' => 'editar productos']);
+        Permission::create(['name' => 'eliminar productos']);
+        Permission::create(['name' => 'ver productos']);
+        #Almacenes
+        Permission::create(['name' => 'crear almacenes']);
+        Permission::create(['name' => 'editar almacenes']);
+        Permission::create(['name' => 'eliminar almacenes']);
+        Permission::create(['name' => 'ver almacenes']);
+        #Categorias
+        Permission::create(['name' => 'crear categorias']);
+        Permission::create(['name' => 'editar categorias']);
+        Permission::create(['name' => 'eliminar categorias']);
+        Permission::create(['name' => 'ver categorias']);
+        #Proveedores
+        Permission::create(['name' => 'crear proveedores']);
+        Permission::create(['name' => 'editar proveedores']);
+        Permission::create(['name' => 'eliminar proveedores']);
+        Permission::create(['name' => 'ver proveedores']);
+        #cliente
+        Permission::create(['name' => 'crear clientes']);
+        Permission::create(['name' => 'editar clientes']);
+        Permission::create(['name' => 'eliminar clientes']);
+        Permission::create(['name' => 'ver clientes']);
+        #Tipo Clientes
+        Permission::create(['name' => 'crear tipos_clientes']);
+        Permission::create(['name' => 'editar tipos_clientes']);
+        Permission::create(['name' => 'eliminar tipos_clientes']);
+        Permission::create(['name' => 'ver tipos_clientes']);
     }
 }
