@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class CustomerWebController extends Controller{
     public function index(): Response{
         Gate::authorize('viewAny', Customer::class);
-        return Inertia::render('panel');
+        return Inertia::render('panel/Customer/indexCustomer');
     }
 }

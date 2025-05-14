@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class CategoryWebController extends Controller{
     public function index(): Response{
         Gate::authorize('viewAny', Category::class);
-        return Inertia::render('panel');
+        return Inertia::render('panel/Category/indexCategory');
     }
 }

@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class AlmacenWebController extends Controller{
     public function index(): Response{
         Gate::authorize('viewAny',Almacen::class);
-        return Inertia::render('panel');
+        return Inertia::render('panel/Almacen/indexAlmacen');
     }
 }

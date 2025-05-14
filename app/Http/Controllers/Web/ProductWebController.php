@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class ProductWebController extends Controller{
     public function index(): Response{
         Gate::authorize('viewAny',Product::class);
-        return Inertia::render('panel');
+        return Inertia::render('panel/Product/indexProduct');
     }
 }

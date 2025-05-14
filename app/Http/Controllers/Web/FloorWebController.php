@@ -9,6 +9,6 @@ use Illuminate\Support\Facades\Gate;
 class FloorWebController extends Controller{
     public function index(): Response{
         Gate::authorize('viewAny', Floor::class);
-        return Inertia::render('panel');
+        return Inertia::render('panel/Floor/indexFloor');
     }
 }

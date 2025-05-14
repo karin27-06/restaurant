@@ -82,7 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     
     #PISOS -> BACKEND
-    Route::prefix('pisos')->group(function(){
+    Route::prefix('piso')->group(function(){
         Route::get('/', [FloorController::class, 'index'])->name('Pisos.index');
         Route::post('/',[FloorController::class, 'store'])->name('Pisos.store');
         Route::get('/{id}',[FloorController::class, 'show'])->name('Pisos.show');
@@ -91,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     #PRODUCTOS -> BACKEND
-    Route::prefix('productos')->group(function(){
+    Route::prefix('producto')->group(function(){
         Route::get('/', [ProductController::class, 'index'])->name('Productos.index');
         Route::post('/',[ProductController::class, 'store'])->name('Productos.store');
         Route::get('/{id}',[ProductController::class, 'show'])->name('Productos.show');
