@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
-use App\Models\Cliente;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 
 class ConsultasDni extends Controller{
-    public function consultar($dni = null,Cliente $cliente){
+    public function consultar($dni = null,User $cliente){
         Gate::authorize('view', $cliente);
         if (empty($dni)) {
             return response()->json(['error' => 'Debe proporcionar un DNI válido'], 400);
