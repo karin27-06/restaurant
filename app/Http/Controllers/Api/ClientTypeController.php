@@ -7,38 +7,26 @@ use App\Models\ClientType;
 use App\Http\Requests\Tipo_Cliente\StoreClientTypeRequest;
 use App\Http\Requests\Tipo_Cliente\UpdateClientTypeRequest;
 use App\Http\Resources\ClientTypeResource;
+use App\Pipelines\FilterByName;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
-
+use App\Pipelines\FilterByState;
+use Illuminate\Pipeline\Pipeline;
 class ClientTypeController extends Controller{
     public function index(Request $request){
         Gate::authorize('viewAny', ClientType::class);
         $perPage = $request->input('per_page', 15);
-        $search = $request->input('search', '');
-        $estado = $request->input('state');
+        $search = $request->input('search');
+        $state = $request->input('state');
+        $query = app(Pipeline::class)
+            ->send(ClientType::query())
+            ->through([
+                new FilterByName($search),
+                new FilterByState($state),
+            ])
+            ->thenReturn();
 
-        $query = ClientType::query();
-
-        if (!empty($search)) {
-            $normalizedSearch = strtolower(trim(preg_replace('/\s+/', ' ', $search)));
-            $searchTerms = explode(' ', $normalizedSearch);
-
-            $query->where(function ($q) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $q->orWhere(function ($subQuery) use ($term) {
-                        $subQuery->where('name', 'ILIKE', '%' . $term . '%')
-                            ->orWhereRaw("CASE WHEN state THEN 'activo' ELSE 'inactivo' END ILIKE ?", ["%{$term}%"]);
-                    });
-                }
-            });
-        }
-        if (isset($estado)) {
-            $query->where('state', (bool)$estado);
-        }
-
-        $almacen = $query->paginate($perPage);
-        return ClientTypeResource::collection($almacen);
+        return ClientTypeResource::collection($query->paginate($perPage));
     }
     public function store(StoreClientTypeRequest $request){
         Gate::authorize('create', ClientType::class);

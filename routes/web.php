@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
-use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FloorController;
 use App\Http\Controllers\Panel\ProductController;
@@ -67,9 +67,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('categoria')->group(function(){
         Route::get('/', [CategoryController::class, 'index'])->name('Categoria.index');
         Route::post('/',[CategoryController::class, 'store'])->name('Categoria.store');
-        Route::get('/{id}',[CategoryController::class, 'show'])->name('Categoria.show');
-        Route::put('/{id}',[CategoryController::class, 'update'])->name('Categoria.update');
-        Route::delete('/{id}',[CategoryController::class, 'destroy'])->name('Categoria.destroy');
+        Route::get('/{category}',[CategoryController::class, 'show'])->name('Categoria.show');
+        Route::put('/{category}',[CategoryController::class, 'update'])->name('Categoria.update');
+        Route::delete('/{category}',[CategoryController::class, 'destroy'])->name('Categoria.destroy');
     });
 
     #TIPOS DE CLIENTES -> BACKEND

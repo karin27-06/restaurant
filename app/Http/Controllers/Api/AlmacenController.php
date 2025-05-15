@@ -9,35 +9,24 @@ use App\Models\Almacen;
 use App\Http\Resources\AlmacenResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-
+use App\Pipelines\FilterByName;
+use App\Pipelines\FilterByState;
+use Illuminate\Pipeline\Pipeline;
 class AlmacenController extends Controller{
     public function index(Request $request){
         Gate::authorize('viewAny', Almacen::class);
         $perPage = $request->input('per_page', 15);
-        $search = $request->input('search', '');
-        $estado = $request->input('state');
+        $search = $request->input('search');
+        $state = $request->input('state');
+        $query = app(Pipeline::class)
+            ->send(Almacen::query())
+            ->through([
+                new FilterByName($search),
+                new FilterByState($state),
+            ])
+            ->thenReturn();
 
-        $query = Almacen::query();
-
-        if (!empty($search)) {
-            $normalizedSearch = strtolower(trim(preg_replace('/\s+/', ' ', $search)));
-            $searchTerms = explode(' ', $normalizedSearch);
-
-            $query->where(function ($q) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $q->orWhere(function ($subQuery) use ($term) {
-                        $subQuery->where('name', 'ILIKE', '%' . $term . '%')
-                            ->orWhereRaw("CASE WHEN state THEN 'activo' ELSE 'inactivo' END ILIKE ?", ["%{$term}%"]);
-                    });
-                }
-            });
-        }
-        if (isset($estado)) {
-            $query->where('state', (bool)$estado);
-        }
-
-        $almacen = $query->paginate($perPage);
-        return AlmacenResource::collection($almacen);
+        return AlmacenResource::collection($query->paginate($perPage));
     }
     public function store(StoreAlmacenRequest $request){
         Gate::authorize('create', Almacen::class);
