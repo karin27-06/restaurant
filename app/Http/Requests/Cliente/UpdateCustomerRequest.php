@@ -11,7 +11,7 @@ class UpdateCustomerRequest extends FormRequest{
             'name' => 'required|string|max:150',
             'codigo' => 'required|string|max:11|unique:customers,codigo,' . $this->route('customer')->id,
             'client_type_id' => 'required|exists:client_types,id',
-            'state' => 'required|string|in:activo,inactivo',
+            'state' => 'required|boolean',
         ];
     }
     public function messages(): array{
@@ -29,8 +29,7 @@ class UpdateCustomerRequest extends FormRequest{
             'client_type_id.exists' => 'El tipo de cliente seleccionado no es válido.',
 
             'state.required' => 'El estado es obligatorio.',
-            'state.string' => 'El estado debe ser una cadena de texto.',
-            'state.in' => 'El estado debe ser "activo" o "inactivo".',
+            'state.boolean' => 'El estado debe ser verdadero o falso',
         ];
     }
 }

@@ -49,9 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('cliente')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('cliente.index');
         Route::post('/', [CustomerController::class, 'store'])->name('clientes.store');
-        Route::get('{cliente}', [CustomerController::class, 'show'])->name('clientes.show');
-        Route::put('{cliente}', [CustomerController::class, 'update'])->name('clientes.update');
-        Route::delete('{id}', [CustomerController::class, 'destroy'])->name('clientes.destroy');
+        Route::get('{customer}', [CustomerController::class, 'show'])->name('clientes.show');
+        Route::put('{customer}', [CustomerController::class, 'update'])->name('clientes.update');
+        Route::delete('{customer}', [CustomerController::class, 'destroy'])->name('clientes.destroy');
     });
 
     #ALMACENES -> BACKEND

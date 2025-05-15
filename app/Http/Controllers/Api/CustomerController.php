@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cliente\StoreCustomerRequest;
 use App\Http\Requests\Cliente\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
-use App\Models\ClientType;
 use App\Models\Customer;
 use App\Pipelines\FilterByName;
 use Illuminate\Http\Request;
