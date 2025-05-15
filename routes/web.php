@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
-use App\Http\Controllers\ClientTypeController;
+use App\Http\Controllers\Api\ClientTypeController;
 use App\Http\Controllers\Panel\CategoryController;
 use App\Http\Controllers\Panel\CustomerController;
 use App\Http\Controllers\Panel\FloorController;
@@ -73,12 +73,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     #TIPOS DE CLIENTES -> BACKEND
-    Route::prefix('tipos_cliente')->group(function(){
+    Route::prefix('tipo_cliente')->group(function(){
         Route::get('/', [ClientTypeController::class, 'index'])->name('Tipos_Clientes.index');
         Route::post('/',[ClientTypeController::class, 'store'])->name('Tipos_Clientes.store');
-        Route::get('/{id}',[ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
-        Route::put('/{id}',[ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
-        Route::delete('/{id}',[ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
+        Route::get('/{clientType}',[ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
+        Route::put('/{clientType}',[ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
+        Route::delete('/{clientType}',[ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
     });
     
     #PISOS -> BACKEND

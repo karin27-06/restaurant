@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Almacen;
+use App\Models\ClientType;
 use Illuminate\Database\Seeder;
 
-class AlmacenSeeder extends Seeder{
+class ClientTypeSeeder extends Seeder{
     public function run(): void{
-        Almacen::factory(100)->create();
+        ClientType::factory(100)->create();
     }
 }

@@ -1,52 +1,58 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\ClientType;
-use App\Http\Requests\StoreClientTypeRequest;
-use App\Http\Requests\UpdateClientTypeRequest;
+use App\Http\Requests\Tipo_Cliente\StoreClientTypeRequest;
+use App\Http\Requests\Tipo_Cliente\UpdateClientTypeRequest;
 use App\Http\Resources\ClientTypeResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class ClientTypeController extends Controller{
-    public function listarClientTypes(Request $request){
+    public function index(Request $request){
         Gate::authorize('viewAny', ClientType::class);
-        try {
-            $name = $request->get('name');
-            $clientTypes = ClientType::when($name, function ($query, $name) {
-                return $query->where('name', 'like', "%$name%");
-            })->orderBy('id','asc')->paginate(12);
+        $perPage = $request->input('per_page', 15);
+        $search = $request->input('search', '');
+        $estado = $request->input('state');
 
-            return response()->json([
-                'clientTypes' => ClientTypeResource::collection($clientTypes),
-                'pagination' => [
-                    'total' => $clientTypes->total(),
-                    'current_page' => $clientTypes->currentPage(),
-                    'per_page' => $clientTypes->perPage(),
-                    'last_page' => $clientTypes->lastPage(),
-                    'from' => $clientTypes->firstItem(),
-                    'to' => $clientTypes->lastItem()
-                ]
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Error al listar los tipos de cliente',
-                'error' => $th->getMessage()
-            ], 500);
+        $query = ClientType::query();
+
+        if (!empty($search)) {
+            $normalizedSearch = strtolower(trim(preg_replace('/\s+/', ' ', $search)));
+            $searchTerms = explode(' ', $normalizedSearch);
+
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $q->orWhere(function ($subQuery) use ($term) {
+                        $subQuery->where('name', 'ILIKE', '%' . $term . '%')
+                            ->orWhereRaw("CASE WHEN state THEN 'activo' ELSE 'inactivo' END ILIKE ?", ["%{$term}%"]);
+                    });
+                }
+            });
         }
-    }
-    public function create(){
-        return Inertia::render('panel/clientType/components/formClientType');
+        if (isset($estado)) {
+            $query->where('state', (bool)$estado);
+        }
+
+        $almacen = $query->paginate($perPage);
+        return ClientTypeResource::collection($almacen);
     }
     public function store(StoreClientTypeRequest $request){
         Gate::authorize('create', ClientType::class);
         $validated = $request->validated();
-        $validated = $request->safe()->except(['state']);
-        $clientType = ClientType::create(Arr::except($validated, ['state']));
-        return redirect()->route('panel.clientTypes.index')->with('message', 'Tipo de cliente creado correctamente'); 
+        if (ClientType::whereRaw('LOWER(name) = ?', [strtolower($validated['name'])])->exists()) {
+            return response()->json([
+                'errors' => ['name' => ['Este nombre ya está registrado.']]
+            ], 422);
+        }
+        $tipoCliente = ClientType::create($validated);
+        return response()->json([
+            'message' => 'Tipo de cliente creado con éxito',
+            'clientType' => $tipoCliente,
+        ]);
     }
     public function show(ClientType $clientType){
         Gate::authorize('view', $clientType);
@@ -59,7 +65,14 @@ class ClientTypeController extends Controller{
     public function update(UpdateClientTypeRequest $request, ClientType $clientType){
         Gate::authorize('update', $clientType);
         $validated = $request->validated();
-        $validated['state'] = ($validated['state'] ?? 'inactivo') === 'activo';
+        $nameExists = ClientType::whereRaw('LOWER(name) = ?', [strtolower($validated['name'])])
+            ->where('id', '!=', $clientType->id)
+            ->exists();
+        if ($nameExists) {
+            return response()->json([
+                'errors' => ['name' => ['Este nombre ya está registrado.']]
+            ], 422);
+        }
         $clientType->update($validated);
         return response()->json([
             'state' => true,

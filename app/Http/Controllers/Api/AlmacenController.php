@@ -42,8 +42,18 @@ class AlmacenController extends Controller{
     public function store(StoreAlmacenRequest $request){
         Gate::authorize('create', Almacen::class);
         $validated = $request->validated();
-        $user = Almacen::create($validated);
-        return response()->json($user);
+        $exists = Almacen::whereRaw('LOWER(name) = ?', [$validated['name']])->exists();
+        if ($exists) {
+            return response()->json([
+                'errors' => ['name' => ['Este nombre ya está registrado.']]
+            ], 422);
+        }
+        $almacen = Almacen::create($validated);
+        return response()->json([
+            'state' => true,
+            'message' => 'Almacén registrado correctamente.',
+            'almacen' => $almacen
+        ]);
     }
     public function show(Almacen $almacen){
         Gate::authorize('view', $almacen);
@@ -56,11 +66,19 @@ class AlmacenController extends Controller{
     public function update(UpdateAlmacenRequest $request, Almacen $almacen){
         Gate::authorize('update', $almacen);
         $validated = $request->validated();
+        $exists = Almacen::whereRaw('LOWER(name) = ?', [$validated['name']])
+            ->where('id', '!=', $almacen->id)
+            ->exists();
+        if ($exists) {
+            return response()->json([
+                'errors' => ['name' => ['Este nombre ya está registrado.']]
+            ], 422);
+        }
         $almacen->update($validated);
         return response()->json([
             'state' => true,
-            'message' => 'Almacen actualizado de manera correcta',
-            'almacen' => new AlmacenResource($almacen->refresh()),
+            'message' => 'Almacén actualizado correctamente.',
+            'almacen' => $almacen->refresh()
         ]);
     }
     public function destroy(Almacen $almacen){
