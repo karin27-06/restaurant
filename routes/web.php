@@ -6,9 +6,9 @@ use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
-use App\Http\Controllers\Panel\CustomerController;
-use App\Http\Controllers\Panel\FloorController;
-use App\Http\Controllers\Panel\ProductController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\FloorController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\ClientTypeWebController;
@@ -85,18 +85,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('piso')->group(function(){
         Route::get('/', [FloorController::class, 'index'])->name('Pisos.index');
         Route::post('/',[FloorController::class, 'store'])->name('Pisos.store');
-        Route::get('/{id}',[FloorController::class, 'show'])->name('Pisos.show');
-        Route::put('/{id}',[FloorController::class, 'update'])->name('Pisos.update');
-        Route::delete('/{id}',[FloorController::class, 'destroy'])->name('Pisos.destroy');
+        Route::get('/{floor}',[FloorController::class, 'show'])->name('Pisos.show');
+        Route::put('/{floor}',[FloorController::class, 'update'])->name('Pisos.update');
+        Route::delete('/{floor}',[FloorController::class, 'destroy'])->name('Pisos.destroy');
     });
 
     #PRODUCTOS -> BACKEND
     Route::prefix('producto')->group(function(){
         Route::get('/', [ProductController::class, 'index'])->name('Productos.index');
         Route::post('/',[ProductController::class, 'store'])->name('Productos.store');
-        Route::get('/{id}',[ProductController::class, 'show'])->name('Productos.show');
-        Route::put('/{id}',[ProductController::class, 'update'])->name('Productos.update');
-        Route::delete('/{id}',[ProductController::class, 'destroy'])->name('Productos.destroy');
+        Route::get('/{product}',[ProductController::class, 'show'])->name('Productos.show');
+        Route::put('/{product}',[ProductController::class, 'update'])->name('Productos.update');
+        Route::delete('/{product}',[ProductController::class, 'destroy'])->name('Productos.destroy');
     });
 
     #USUARIOS -> BACKEND

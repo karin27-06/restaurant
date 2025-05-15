@@ -12,9 +12,7 @@ use App\Pipelines\FilterByName;
 use App\Pipelines\FilterByState;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class CategoryController extends Controller{
     public function index(Request $request){
@@ -29,9 +27,6 @@ class CategoryController extends Controller{
             ->thenReturn()
             ->paginate($perPage);
         return CategoryResource::collection($categories);
-    }
-    public function create(){
-        return Inertia::render('panel/category/components/formCategory');
     }
     public function store(StoreCategoryRequest $request){
         Gate::authorize('create', Category::class);
@@ -82,19 +77,5 @@ class CategoryController extends Controller{
             'state' => true,
             'message' => 'Categoría eliminada correctamente',
         ]);
-    }
-    public function getCategoriesOption(){
-        try {
-            $categories = Category::select('id', 'name')->get();
-
-            return response()->json([
-                'categories' => $categories
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Error al obtener las categorias',
-                'error' => $th->getMessage()
-            ], 500);
-        }
     }
 }

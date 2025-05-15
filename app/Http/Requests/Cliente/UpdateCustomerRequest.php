@@ -1,31 +1,36 @@
 <?php
 
-namespace App\Http\Requests;
-
+namespace App\Http\Requests\Cliente;
 use Illuminate\Foundation\Http\FormRequest;
-
-class UpdateCustomerRequest extends FormRequest
-{
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
+class UpdateCustomerRequest extends FormRequest{
+    public function authorize(): bool{
         return true;
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
+    public function rules(): array{
         return [
             'name' => 'required|string|max:150',
             'codigo' => 'required|string|max:11|unique:customers,codigo,' . $this->route('customer')->id,
             'client_type_id' => 'required|exists:client_types,id',
             'state' => 'required|string|in:activo,inactivo',
+        ];
+    }
+    public function messages(): array{
+        return [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.string' => 'El nombre debe ser una cadena de texto.',
+            'name.max' => 'El nombre no debe exceder los 150 caracteres.',
+
+            'codigo.required' => 'El código es obligatorio.',
+            'codigo.string' => 'El código debe ser una cadena de texto.',
+            'codigo.max' => 'El código no debe exceder los 11 caracteres.',
+            'codigo.unique' => 'El código ya está en uso.',
+
+            'client_type_id.required' => 'El tipo de cliente es obligatorio.',
+            'client_type_id.exists' => 'El tipo de cliente seleccionado no es válido.',
+
+            'state.required' => 'El estado es obligatorio.',
+            'state.string' => 'El estado debe ser una cadena de texto.',
+            'state.in' => 'El estado debe ser "activo" o "inactivo".',
         ];
     }
 }
