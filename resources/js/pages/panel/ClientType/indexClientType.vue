@@ -8,7 +8,8 @@
 
             <template v-else>
                 <div class="card">
-                    <h1>Tipo CLiente</h1>
+                    <AddTipoCliente @tipo-cliente-agregado="refrescarListado"/>
+                    <ListTipoCliente :refresh="refreshKey"/>
                 </div>
             </template>
         </div>
@@ -20,8 +21,15 @@ import { ref, onMounted } from 'vue';
 import AppLayout from '@/layout/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Espera from '@/components/Espera.vue';
+import ListTipoCliente from './Desarrollo/ListTipoCliente.vue';
+import AddTipoCliente from './Desarrollo/AddTipoCliente.vue';
 
 const isLoading = ref(true);
+const refreshKey = ref(0);
+
+function refrescarListado() {
+    refreshKey.value++;
+}
 
 onMounted(() => {
     setTimeout(() => {

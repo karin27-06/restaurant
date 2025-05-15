@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
-use App\Http\Controllers\ClientTypeController;
-use App\Http\Controllers\Panel\CategoryController;
-use App\Http\Controllers\Panel\CustomerController;
-use App\Http\Controllers\Panel\FloorController;
-use App\Http\Controllers\Panel\ProductController;
+use App\Http\Controllers\Api\ClientTypeController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\FloorController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\ClientTypeWebController;
@@ -49,54 +49,54 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('cliente')->group(function () {
         Route::get('/', [CustomerController::class, 'index'])->name('cliente.index');
         Route::post('/', [CustomerController::class, 'store'])->name('clientes.store');
-        Route::get('{cliente}', [CustomerController::class, 'show'])->name('clientes.show');
-        Route::put('{cliente}', [CustomerController::class, 'update'])->name('clientes.update');
-        Route::delete('{id}', [CustomerController::class, 'destroy'])->name('clientes.destroy');
+        Route::get('{customer}', [CustomerController::class, 'show'])->name('clientes.show');
+        Route::put('{customer}', [CustomerController::class, 'update'])->name('clientes.update');
+        Route::delete('{customer}', [CustomerController::class, 'destroy'])->name('clientes.destroy');
     });
 
     #ALMACENES -> BACKEND
-    Route::prefix('alamcen')->group(function(){
+    Route::prefix('almacen')->group(function(){
         Route::get('/', [AlmacenController::class, 'index'])->name('alamcen.index');
         Route::post('/',[AlmacenController::class, 'store'])->name('alamcen.store');
-        Route::get('/{id}',[AlmacenController::class, 'show'])->name('alamcen.show');
-        Route::put('/{id}',[AlmacenController::class, 'update'])->name('alamcen.update');
-        Route::delete('/{id}',[AlmacenController::class, 'destroy'])->name('alamcen.destroy');
+        Route::get('/{almacen}',[AlmacenController::class, 'show'])->name('alamcen.show');
+        Route::put('/{almacen}',[AlmacenController::class, 'update'])->name('alamcen.update');
+        Route::delete('/{almacen}',[AlmacenController::class, 'destroy'])->name('alamcen.destroy');
     });
 
     #CATEGORIA -> BACKEND
     Route::prefix('categoria')->group(function(){
         Route::get('/', [CategoryController::class, 'index'])->name('Categoria.index');
         Route::post('/',[CategoryController::class, 'store'])->name('Categoria.store');
-        Route::get('/{id}',[CategoryController::class, 'show'])->name('Categoria.show');
-        Route::put('/{id}',[CategoryController::class, 'update'])->name('Categoria.update');
-        Route::delete('/{id}',[CategoryController::class, 'destroy'])->name('Categoria.destroy');
+        Route::get('/{category}',[CategoryController::class, 'show'])->name('Categoria.show');
+        Route::put('/{category}',[CategoryController::class, 'update'])->name('Categoria.update');
+        Route::delete('/{category}',[CategoryController::class, 'destroy'])->name('Categoria.destroy');
     });
 
     #TIPOS DE CLIENTES -> BACKEND
-    Route::prefix('tipos_cliente')->group(function(){
+    Route::prefix('tipo_cliente')->group(function(){
         Route::get('/', [ClientTypeController::class, 'index'])->name('Tipos_Clientes.index');
         Route::post('/',[ClientTypeController::class, 'store'])->name('Tipos_Clientes.store');
-        Route::get('/{id}',[ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
-        Route::put('/{id}',[ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
-        Route::delete('/{id}',[ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
+        Route::get('/{clientType}',[ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
+        Route::put('/{clientType}',[ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
+        Route::delete('/{clientType}',[ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
     });
     
     #PISOS -> BACKEND
     Route::prefix('piso')->group(function(){
         Route::get('/', [FloorController::class, 'index'])->name('Pisos.index');
         Route::post('/',[FloorController::class, 'store'])->name('Pisos.store');
-        Route::get('/{id}',[FloorController::class, 'show'])->name('Pisos.show');
-        Route::put('/{id}',[FloorController::class, 'update'])->name('Pisos.update');
-        Route::delete('/{id}',[FloorController::class, 'destroy'])->name('Pisos.destroy');
+        Route::get('/{floor}',[FloorController::class, 'show'])->name('Pisos.show');
+        Route::put('/{floor}',[FloorController::class, 'update'])->name('Pisos.update');
+        Route::delete('/{floor}',[FloorController::class, 'destroy'])->name('Pisos.destroy');
     });
 
     #PRODUCTOS -> BACKEND
     Route::prefix('producto')->group(function(){
         Route::get('/', [ProductController::class, 'index'])->name('Productos.index');
         Route::post('/',[ProductController::class, 'store'])->name('Productos.store');
-        Route::get('/{id}',[ProductController::class, 'show'])->name('Productos.show');
-        Route::put('/{id}',[ProductController::class, 'update'])->name('Productos.update');
-        Route::delete('/{id}',[ProductController::class, 'destroy'])->name('Productos.destroy');
+        Route::get('/{product}',[ProductController::class, 'show'])->name('Productos.show');
+        Route::put('/{product}',[ProductController::class, 'update'])->name('Productos.update');
+        Route::delete('/{product}',[ProductController::class, 'destroy'])->name('Productos.destroy');
     });
 
     #USUARIOS -> BACKEND
