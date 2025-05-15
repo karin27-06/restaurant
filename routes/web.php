@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
@@ -55,12 +55,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     #ALMACENES -> BACKEND
-    Route::prefix('alamcen')->group(function(){
+    Route::prefix('almacen')->group(function(){
         Route::get('/', [AlmacenController::class, 'index'])->name('alamcen.index');
         Route::post('/',[AlmacenController::class, 'store'])->name('alamcen.store');
-        Route::get('/{id}',[AlmacenController::class, 'show'])->name('alamcen.show');
-        Route::put('/{id}',[AlmacenController::class, 'update'])->name('alamcen.update');
-        Route::delete('/{id}',[AlmacenController::class, 'destroy'])->name('alamcen.destroy');
+        Route::get('/{almacen}',[AlmacenController::class, 'show'])->name('alamcen.show');
+        Route::put('/{almacen}',[AlmacenController::class, 'update'])->name('alamcen.update');
+        Route::delete('/{almacen}',[AlmacenController::class, 'destroy'])->name('alamcen.destroy');
     });
 
     #CATEGORIA -> BACKEND

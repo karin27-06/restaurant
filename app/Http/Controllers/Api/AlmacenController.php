@@ -1,52 +1,49 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Almacen\StoreAlmacenRequest;
+use App\Http\Requests\Almacen\UpdateAlmacenRequest;
 use App\Models\Almacen;
-use App\Http\Requests\StoreAlmacenRequest;
-use App\Http\Requests\UpdateAlmacenRequest;
 use App\Http\Resources\AlmacenResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class AlmacenController extends Controller{
-    public function listarAlmacens(Request $request){
+    public function index(Request $request){
         Gate::authorize('viewAny', Almacen::class);
-        try {
-            $name = $request->get('name');
-            $almacens = Almacen::when($name, function ($query, $name) {
-                return $query->where('name', 'like', "%$name%");
-            })->orderBy('id','asc')->paginate(12);
+        $perPage = $request->input('per_page', 15);
+        $search = $request->input('search', '');
+        $estado = $request->input('state');
 
-            return response()->json([
-                'almacens' => AlmacenResource::collection($almacens),
-                'pagination' => [
-                    'total' => $almacens->total(),
-                    'current_page' => $almacens->currentPage(),
-                    'per_page' => $almacens->perPage(),
-                    'last_page' => $almacens->lastPage(),
-                    'from' => $almacens->firstItem(),
-                    'to' => $almacens->lastItem()
-                ]
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Error al listar los almacenes',
-                'error' => $th->getMessage()
-            ], 500);
+        $query = Almacen::query();
+
+        if (!empty($search)) {
+            $normalizedSearch = strtolower(trim(preg_replace('/\s+/', ' ', $search)));
+            $searchTerms = explode(' ', $normalizedSearch);
+
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $q->orWhere(function ($subQuery) use ($term) {
+                        $subQuery->where('name', 'ILIKE', '%' . $term . '%')
+                            ->orWhereRaw("CASE WHEN state THEN 'activo' ELSE 'inactivo' END ILIKE ?", ["%{$term}%"]);
+                    });
+                }
+            });
         }
-    }
-    public function create(){
-        return Inertia::render('panel/almacen/components/formAlmacen');
+        if (isset($estado)) {
+            $query->where('state', (bool)$estado);
+        }
+
+        $almacen = $query->paginate($perPage);
+        return AlmacenResource::collection($almacen);
     }
     public function store(StoreAlmacenRequest $request){
         Gate::authorize('create', Almacen::class);
         $validated = $request->validated();
-        $validated = $request->safe()->except(['state']);
-        $almacen = Almacen::create(Arr::except($validated, ['state']));
-        return redirect()->route('panel.almacens.index')->with('message', 'Almacen creado correctamente'); 
+        $user = Almacen::create($validated);
+        return response()->json($user);
     }
     public function show(Almacen $almacen){
         Gate::authorize('view', $almacen);
@@ -59,7 +56,6 @@ class AlmacenController extends Controller{
     public function update(UpdateAlmacenRequest $request, Almacen $almacen){
         Gate::authorize('update', $almacen);
         $validated = $request->validated();
-        $validated['state'] = ($validated['state'] ?? 'inactivo') === 'activo';
         $almacen->update($validated);
         return response()->json([
             'state' => true,
@@ -74,19 +70,5 @@ class AlmacenController extends Controller{
             'state' => true,
             'message' => 'Almacen eliminado de manera correcta',
         ]);
-    }
-    public function getAlmacensOption(){
-        try {
-            $almacens = Almacen::select('id', 'name')->get();
-
-            return response()->json([
-                'almacens' => $almacens
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Error al obtener los almacenes',
-                'error' => $th->getMessage()
-            ], 500);
-        }
     }
 }
