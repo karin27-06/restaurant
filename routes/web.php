@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ConsultasDni;
+use App\Http\Controllers\Api\DishesController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
@@ -10,9 +12,11 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Web\AlmacenWebController;
+use App\Http\Controllers\Web\AreasWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\ClientTypeWebController;
 use App\Http\Controllers\Web\CustomerWebController;
+use App\Http\Controllers\Web\DishesWebController;
 use App\Http\Controllers\Web\FloorWebController;
 use App\Http\Controllers\Web\ProductWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
@@ -40,10 +44,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pisos', [FloorWebController::class, 'index'])->name('index.view');
     Route::get('/productos', [ProductWebController::class, 'index'])->name('index.view');
     Route::get('/usuario', [UsuarioWebController::class,'index'])->name('index.view');
+    Route::get('/areas', [AreasWebController::class,'index'])->name('index.view');
+    Route::get('/platos', [DishesWebController::class,'index'])->name('index.view');
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
+
+    #AREAS => BACKEND
+    Route::prefix('area')->group(function () {
+        Route::get('/', [AreasController::class, 'index'])->name('area.index');
+        Route::post('/', [AreasController::class, 'store'])->name('area.store');
+        Route::get('{areas}', [AreasController::class, 'show'])->name('area.show');
+        Route::put('{areas}', [AreasController::class, 'update'])->name('area.update');
+        Route::delete('{areas}', [AreasController::class, 'destroy'])->name('area.destroy');
+    });
+
+    #PLATOS => BACKEND
+    Route::prefix('plato')->group(function () {
+        Route::get('/', [DishesController::class, 'index'])->name('plato.index');
+        Route::post('/', [DishesController::class, 'store'])->name('plato.store');
+        Route::get('{dishes}', [DishesController::class, 'show'])->name('plato.show');
+        Route::put('{dishes}', [DishesController::class, 'update'])->name('plato.update');
+        Route::delete('{dishes}', [DishesController::class, 'destroy'])->name('plato.destroy');
+    });
 
     #CLIENTE => BACKEND
     Route::prefix('cliente')->group(function () {

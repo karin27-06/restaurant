@@ -7,6 +7,6 @@ use Illuminate\Database\Seeder;
 
 class AlmacenSeeder extends Seeder{
     public function run(): void{
-        Almacen::factory(100)->create();
+        Almacen::factory(30)->create();
     }
 }

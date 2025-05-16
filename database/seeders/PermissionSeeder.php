@@ -61,5 +61,15 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar tipos_clientes']);
         Permission::create(['name' => 'eliminar tipos_clientes']);
         Permission::create(['name' => 'ver tipos_clientes']);
+        #Areas
+        Permission::create(['name' => 'crear areas']);
+        Permission::create(['name' => 'editar areas']);
+        Permission::create(['name' => 'eliminar areas']);
+        Permission::create(['name' => 'ver areas']);
+        #Dishes
+        Permission::create(['name' => 'crear dishes']);
+        Permission::create(['name' => 'editar dishes']);
+        Permission::create(['name' => 'eliminar dishes']);
+        Permission::create(['name' => 'ver dishes']);
     }
 }

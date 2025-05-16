@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\ClientType;
+use App\Models\Areas;
 use Illuminate\Database\Seeder;
 
-class ClientTypeSeeder extends Seeder{
+class AreasSeeder extends Seeder{
     public function run(): void{
-        ClientType::factory(10)->create();
+        Areas::factory(100)->create();
     }
 }
