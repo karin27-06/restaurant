@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             AlmacenSeeder::class,
             ClientTypeSeeder::class,
             CategorySeeder::class,
+            FloorSeeder::class,
+            AreasSeeder::class,
+            TablesSeeder::class,
         ]);
     }
 }
