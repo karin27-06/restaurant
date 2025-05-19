@@ -8,6 +8,7 @@ use App\Http\Requests\Cliente\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use App\Pipelines\FilterByName;
+use App\Pipelines\FilterByState;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Gate;
@@ -22,6 +23,7 @@ class CustomerController extends Controller{
             ->send(Customer::query())
             ->through([
                 new FilterByName($search),
+                new FilterByState($request->input('state')),
             ])
             ->thenReturn();
 
@@ -59,7 +61,7 @@ class CustomerController extends Controller{
         Gate::authorize('delete', $customer);
         $customer->delete();
         return response()->json([
-            'status' => true,
+            'state' => true,
             'message' => 'Cliente eliminado correctamente'
         ]);
     }

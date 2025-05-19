@@ -17,10 +17,12 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AlmacenSeeder::class,
             ClientTypeSeeder::class,
+            EmployeeTypeSeeder::class,
             CategorySeeder::class,
             FloorSeeder::class,
             AreasSeeder::class,
             TablesSeeder::class,
+            SupplierSeeder::class,
         ]);
     }
 }
