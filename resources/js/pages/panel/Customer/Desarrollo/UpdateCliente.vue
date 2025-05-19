@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -123,10 +123,10 @@ const updateCliente = async () => {
                         v-model="cliente.codigo"
                         required
                         fluid
-                        maxlength="50"
+                        maxlength="11"
                         :class="{ 'p-invalid': serverErrors.codigo }"
                     />
-                    <small v-if="serverErrors.codigo" class="p-error">{{ serverErrors.codigo[0] }}</small>
+                    <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
                 </div>
                 <div class="col-span-2">
                     <label class="block font-bold mb-2">Estado</label>
@@ -140,11 +140,11 @@ const updateCliente = async () => {
                     <InputText
                         v-model="cliente.name"
                         required
-                        maxlength="100"
+                        maxlength="150"
                         fluid
                         :class="{ 'p-invalid': serverErrors.name }"
                     />
-                    <small v-if="serverErrors.name" class="p-error">{{ serverErrors.name[0] }}</small>
+                    <small v-if="serverErrors.name" class="text-red-500">{{ serverErrors.name[0] }}</small>
                 </div>
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Cliente <span class="text-red-500">*</span></label>
@@ -158,7 +158,7 @@ const updateCliente = async () => {
                         fluid
                         :class="{ 'p-invalid': serverErrors.client_type_id }"
                     />
-                    <small v-if="serverErrors.client_type_id" class="p-error">{{ serverErrors.client_type_id[0] }}</small>
+                    <small v-if="serverErrors.client_type_id" class="text-red-500">{{ serverErrors.client_type_id[0] }}</small>
                 </div>
             </div>
         </div>

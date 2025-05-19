@@ -1,7 +1,7 @@
 <template>
     <Toolbar class="mb-6">
         <template #start>
-            <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
+            <Button label="Nueva categoria" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
     </Toolbar>
 

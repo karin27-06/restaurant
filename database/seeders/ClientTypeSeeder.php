@@ -7,6 +7,13 @@ use Illuminate\Database\Seeder;
 
 class ClientTypeSeeder extends Seeder{
     public function run(): void{
-        ClientType::factory(10)->create();
+       ClientType::create([
+            'name' => 'Persona',
+            'state' => true,
+        ]);
+        ClientType::create([
+            'name' => 'Empresa',
+            'state' => true,
+        ]);
     }
 }
