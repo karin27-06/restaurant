@@ -21,7 +21,7 @@
             <Column field="name" header="Nombre" sortable style="min-width: 12rem"></Column>
             <Column field="created_at" header="Creación" sortable style="min-width: 16rem"></Column>
             <Column field="updated_at" header="Modificado" sortable style="min-width: 16rem"></Column>
-            <Column :exportable="false" style="min-width: 8rem">
+            <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
                 <template #body="slotProps">
                     <template v-if="slotProps.data.name !== 'administrador'">
                         <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editrol(slotProps.data)" />

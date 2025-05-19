@@ -9,7 +9,7 @@ class UpdateCustomerRequest extends FormRequest{
     public function rules(): array{
         return [
             'name' => 'required|string|max:150',
-            'codigo' => 'required|string|max:11|unique:customers,codigo,' . $this->route('customer')->id,
+            'codigo' => ['required', 'regex:/^\d{8}$|^\d{11}$/', 'unique:customers,codigo,' . $this->route('customer')->id,],
             'client_type_id' => 'required|exists:client_types,id',
             'state' => 'required|boolean',
         ];
@@ -21,8 +21,7 @@ class UpdateCustomerRequest extends FormRequest{
             'name.max' => 'El nombre no debe exceder los 150 caracteres.',
 
             'codigo.required' => 'El código es obligatorio.',
-            'codigo.string' => 'El código debe ser una cadena de texto.',
-            'codigo.max' => 'El código no debe exceder los 11 caracteres.',
+            'codigo.regex' => 'El código debe contener exactamente 8/11 números (DNI/RUC).',
             'codigo.unique' => 'El código ya está en uso.',
 
             'client_type_id.required' => 'El tipo de cliente es obligatorio.',

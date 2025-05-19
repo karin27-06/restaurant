@@ -112,7 +112,7 @@ const updateTipoCliente = async () => {
                         fluid
                         :class="{ 'p-invalid': serverErrors.name }"
                     />
-                    <small v-if="serverErrors.name" class="p-error">{{ serverErrors.name[0] }}</small>
+                    <small v-if="serverErrors.name" class="text-red-500">{{ serverErrors.name[0] }}</small>
                 </div>
 
                 <div class="col-span-3">
