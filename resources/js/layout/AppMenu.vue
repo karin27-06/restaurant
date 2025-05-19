@@ -24,6 +24,12 @@ const model = computed(() => [
         ].filter(Boolean),
     },
     {
+        label: 'Gestión de Cocina',
+        items: [
+            hasPermission('ver dishes') && { label: 'Platos', icon: 'pi pi-fw pi-utensils', to: '/platos' },
+        ].filter(Boolean),
+    },
+    {
         label: 'Gestión de Clientes',
         items: [
             hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
@@ -34,6 +40,7 @@ const model = computed(() => [
         label: 'Gestión de Infraestructura',
         items: [
             hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-map', to: '/pisos' },
+            hasPermission('ver areas') && { label: 'Areas', icon: 'pi pi-fw pi-map', to: '/areas' },
         ].filter(Boolean),
     },
     {

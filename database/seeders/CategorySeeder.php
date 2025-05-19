@@ -7,6 +7,6 @@ use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder{
     public function run(): void{
-        Category::factory(100)->create();
+        Category::factory(10)->create();
     }
 }
