@@ -138,7 +138,7 @@ onMounted(() => {
                         <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar..." />
                     </IconField>
                     <Select v-model="selectedEstadoAlmacen" :options="estadoAlmacenOptions" optionLabel="name"
-                        placeholder="Estado del Almacen" class="w-full md:w-auto" />
+                        placeholder="Estado" class="w-full md:w-auto" />
                     <Button icon="pi pi-refresh" outlined rounded aria-label="Refresh" @click="loadAlmacen" />
                 </div>
             </div>
@@ -153,7 +153,7 @@ onMounted(() => {
                 <Tag :value="data.state ? 'Activo' : 'Inactivo'" :severity="getSeverity(data.state)" />
             </template>
         </Column>
-        <Column :exportable="false" style="min-width: 8rem">
+        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="slotProps">
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editalmacen(slotProps.data)"/>
                 <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeletealmacen(slotProps.data)" />
