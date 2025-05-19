@@ -1,7 +1,7 @@
 <template>
     <Toolbar class="mb-6">
         <template #start>
-            <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
+            <Button label="Nuevo cliente" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
     </Toolbar>
 
@@ -13,7 +13,7 @@
                     <InputText
                         v-model.trim="cliente.name"
                         required
-                        maxlength="100"
+                        maxlength="150"
                         fluid
                     />
                     <small v-if="submitted && !cliente.name" class="text-red-500">El nombre es obligatorio.</small>
@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="col-span-2">
-                    <label class="block font-bold mb-2">Estado <span class="text-red-500">*</span></label>
+                    <label class="block font-bold mb-2">Estado<span class="text-red-500">*</span></label>
                     <div class="flex items-center gap-3">
                         <Checkbox v-model="cliente.state" :binary="true" />
                         <Tag :value="cliente.state ? 'Activo' : 'Inactivo'" :severity="cliente.state ? 'success' : 'danger'" />
@@ -35,7 +35,7 @@
                         v-model.trim="cliente.codigo"
                         required
                         fluid
-                        maxlength="50"
+                        maxlength="11"
                     />
                     <small v-if="submitted && !cliente.codigo" class="text-red-500">El código es obligatorio.</small>
                     <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 import Dialog from 'primevue/dialog';
 import Toolbar from 'primevue/toolbar';
@@ -82,7 +82,6 @@ const submitted = ref(false);
 const clienteDialog = ref(false);
 const serverErrors = ref({});
 const tiposCliente = ref([]);
-
 const emit = defineEmits(['cliente-agregado']);
 
 const cliente = ref({
@@ -119,7 +118,7 @@ function fetchTiposCliente() {
         .then(res => {
             tiposCliente.value = res.data.data;
         })
-        .catch(err => {
+        .catch(() => {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los tipos de cliente', life: 3000 });
         });
 }
@@ -131,7 +130,7 @@ function guardarCliente() {
     if (!cliente.value.name || !cliente.value.codigo || !cliente.value.client_type_id) return;
 
     axios.post('/cliente', cliente.value)
-        .then(response => {
+        .then(() => {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente registrado', life: 3000 });
             hideDialog();
             emit('cliente-agregado');

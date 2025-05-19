@@ -7,6 +7,13 @@ use Illuminate\Database\Seeder;
 
 class AlmacenSeeder extends Seeder{
     public function run(): void{
-        Almacen::factory(100)->create();
+        Almacen::create([
+            'name' => 'Almacen Principal',
+            'state' => true,
+        ]);
+        Almacen::create([
+            'name' => 'Almacen Secundario',
+            'state' => true,
+        ]);
     }
 }

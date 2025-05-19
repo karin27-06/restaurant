@@ -117,7 +117,7 @@ onMounted(() => {
                         <InputIcon>
                             <i class="pi pi-search" />
                         </InputIcon>
-                        <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar..." />
+                        <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar usuario..." />
                     </IconField>
                     <Button icon="pi pi-refresh" outlined rounded aria-label="Refresh" @click="loadUsers" />
                 </div>
@@ -141,7 +141,7 @@ onMounted(() => {
                 <Tag :value="data.status ? 'Activo' : 'Inactivo'" :severity="getSeverity(data.status)" />
             </template>
         </Column>
-        <Column :exportable="false" style="min-width: 8rem">
+        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="slotProps">
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editusuario(slotProps.data)"/>
                 <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteProduct(slotProps.data)" />

@@ -109,9 +109,9 @@ const updatePiso = async () => {
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-10">
                     <label for="name" class="block font-bold mb-3">Nombre <span class="text-red-500">*</span></label>
-                    <InputText v-model="piso.name" required maxlength="100" fluid
+                    <InputText v-model="piso.name" required maxlength="150" fluid
                         :class="{ 'p-invalid': serverErrors.name }" />
-                    <small v-if="serverErrors.name" class="p-error">{{ serverErrors.name[0] }}</small>
+                    <small v-if="serverErrors.name" class="text-red-500">{{ serverErrors.name[0] }}</small>
                 </div>
 
                 <div class="col-span-2">
