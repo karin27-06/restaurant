@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
-use App\Models\Tables;
+use App\Models\Table;
 use App\Models\Areas;
 use App\Models\Floor;
 
-class TablesSeeder extends Seeder
+class TableSeeder extends Seeder
 {
     public function run(): void
     {
@@ -16,6 +16,6 @@ class TablesSeeder extends Seeder
             return;
         }
 
-        Tables::factory()->count(10)->create(); 
+        Table::factory()->count(10)->create(); 
     }
 }

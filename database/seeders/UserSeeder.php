@@ -36,7 +36,7 @@ class UserSeeder extends Seeder{
             'nacimiento' => '2003-03-11',
             'email' => 'pablolupu2020@gmail.com',
             'username' => 'pablolupu',
-            'password' => Hash::make('Pl221103%º'),
+            'password' => Hash::make('Pl221103%'),
             'status' => true,
             'restablecimiento' => 0,
         ]);

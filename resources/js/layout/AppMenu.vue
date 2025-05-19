@@ -41,6 +41,7 @@ const model = computed(() => [
         items: [
             hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-map', to: '/pisos' },
             hasPermission('ver areas') && { label: 'Areas', icon: 'pi pi-fw pi-map', to: '/areas' },
+            hasPermission('ver mesas') && { label: 'Mesas', icon: 'pi pi-fw pi-map', to: '/mesas' },
         ].filter(Boolean),
     },
     {

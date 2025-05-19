@@ -4,7 +4,7 @@ use App\Models\Areas;
 use App\Models\Floor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TablesFactory extends Factory
+class TableFactory extends Factory
 {
     public function definition(): array
     {

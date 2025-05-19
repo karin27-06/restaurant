@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             FloorSeeder::class,
             AreasSeeder::class,
-            TablesSeeder::class,
+            TableSeeder::class,
             SupplierSeeder::class,
         ]);
     }
