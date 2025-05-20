@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="col-span-12">
-                    <label class="block font-bold mb-2">Dirección</label>
+                    <label class="block font-bold mb-2">Dirección <span class="text-red-500">*</span></label>
                     <InputText
                         v-model.trim="proveedor.address"
                         maxlength="255"
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="col-span-12">
-                    <label class="block font-bold mb-2">Teléfono</label>
+                    <label class="block font-bold mb-2">Teléfono <span class="text-red-500">*</span></label>
                     <InputText
                         v-model.trim="proveedor.phone"
                         maxlength="11"

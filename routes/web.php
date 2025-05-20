@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\PresentationController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\DishesController;
 use App\Http\Controllers\Api\RolesController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\AreasWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\SupplierWebController;
+use App\Http\Controllers\Web\PresentationWebController;
 use App\Http\Controllers\Web\ClientTypeWebController;
 use App\Http\Controllers\Web\EmployeeTypeWebController;
 use App\Http\Controllers\Web\CustomerWebController;
@@ -46,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/almacenes', [AlmacenWebController::class, 'index'])->name('index.view');
     Route::get('/categorias', [CategoryWebController::class, 'index'])->name('index.view');
     Route::get('/proveedores', [SupplierWebController::class, 'index'])->name('index.view');
+    Route::get('/presentaciones', [PresentationWebController::class, 'index'])->name('index.view');
     Route::get('/clientes', [CustomerWebController::class, 'index'])->name('index.view');
     Route::get('/empleados', [EmployeeWebController::class, 'index'])->name('index.view');
     Route::get('/tipo_clientes', [ClientTypeWebController::class, 'index'])->name('index.view');
@@ -94,6 +97,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{supplier}', [SupplierController::class, 'show'])->name('proveedores.show');
         Route::put('/{supplier}', [SupplierController::class, 'update'])->name('proveedores.update');
         Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('proveedores.destroy');
+    });
+
+    // PRESENTACION -> BACKEND
+    Route::prefix('presentacion')->group(function(){
+        Route::get('/', [PresentationController::class, 'index'])->name('presentacion.index');
+        Route::post('/', [PresentationController::class, 'store'])->name('presentaciones.store');
+        Route::get('/{presentation}', [PresentationController::class, 'show'])->name('presentaciones.show');
+        Route::put('/{presentation}', [PresentationController::class, 'update'])->name('presentaciones.update');
+        Route::delete('/{presentation}', [PresentationController::class, 'destroy'])->name('presentaciones.destroy');
     });
 
     #EMPLEADO => BACKEND

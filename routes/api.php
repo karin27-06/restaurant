@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('Almacen', AlmacenController::class);
     Route::apiResource('Categoria', CategoryController::class);
     Route::apiResource('proveedor', SupplierController::class);
+    Route::apiResource('presentacion', SupplierController::class);
     Route::apiResource('tipos_clientes', ClientType::class);
     Route::apiResource('tipos_empleados', EmployeeType::class);
     Route::apiResource('cliente', CustomerController::class);

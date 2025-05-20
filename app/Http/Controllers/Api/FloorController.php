@@ -43,7 +43,7 @@ class FloorController extends Controller{
         Gate::authorize('view', $floor);
         return response()->json([
             'state' => true,
-            'message' => 'Categoría encontrada',
+            'message' => 'Piso encontrado',
             'floor' => new FloorResource($floor),
         ], 200);
     }
@@ -53,7 +53,7 @@ class FloorController extends Controller{
         $floor->update($validated);
         return response()->json([
             'state' => true,
-            'message' => 'Producto actualizado correctamente.',
+            'message' => 'Piso actualizado correctamente.',
             'floor' => $floor->refresh()
         ]);
     }

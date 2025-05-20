@@ -118,7 +118,7 @@ const updateProveedor = async () => {
                     <small v-if="serverErrors.ruc" class="text-red-500">{{ serverErrors.ruc[0] }}</small>
                 </div>
                 <div class="col-span-2">
-                    <label class="block font-bold mb-2">Estado</label>
+                    <label class="block font-bold mb-2">Estado <span class="text-red-500">*</span></label>
                     <div class="flex items-center gap-3">
                         <Checkbox v-model="proveedor.state" :binary="true" />
                         <Tag :value="proveedor.state ? 'Activo' : 'Inactivo'" :severity="proveedor.state ? 'success' : 'danger'" />
@@ -136,7 +136,7 @@ const updateProveedor = async () => {
                     <small v-if="serverErrors.name" class="text-red-500">{{ serverErrors.name[0] }}</small>
                 </div>
                 <div class="col-span-12">
-                    <label class="block font-bold mb-2">Dirección</label>
+                    <label class="block font-bold mb-2">Dirección <span class="text-red-500">*</span></label>
                     <InputText
                         v-model="proveedor.address"
                         maxlength="255"
@@ -146,7 +146,7 @@ const updateProveedor = async () => {
                     <small v-if="serverErrors.address" class="text-red-500">{{ serverErrors.address[0] }}</small>
                 </div>
                 <div class="col-span-12">
-                    <label class="block font-bold mb-2">Teléfono</label>
+                    <label class="block font-bold mb-2">Teléfono <span class="text-red-500">*</span></label>
                     <InputText
                         v-model="proveedor.phone"
                         maxlength="11"
