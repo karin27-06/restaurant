@@ -2,11 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\Areas;
 use Illuminate\Database\Seeder;
+use App\Models\Areas;
 
-class AreasSeeder extends Seeder{
-    public function run(): void{
-        Areas::factory(100)->create();
+class AreasSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $areas = [
+            ['name' => 'Zona Interior', 'state' => true],
+            ['name' => 'Terraza', 'state' => true],
+            ['name' => 'Salón VIP', 'state' => true],
+            ['name' => 'Patio', 'state' => true],
+            ['name' => 'Balcón', 'state' => true],
+        ];
+
+        foreach ($areas as $area) {
+            Areas::create($area);
+        }
     }
 }
