@@ -19,7 +19,11 @@ class DatabaseSeeder extends Seeder
             ClientTypeSeeder::class,
             EmployeeTypeSeeder::class,
             CategorySeeder::class,
+            FloorSeeder::class,
+            AreasSeeder::class,
+            TableSeeder::class,
             SupplierSeeder::class,
+            InputSeeder::class,
         ]);
     }
 }

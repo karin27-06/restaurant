@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Api\InputController;
+use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
@@ -24,7 +26,9 @@ use App\Http\Controllers\Web\CustomerWebController;
 use App\Http\Controllers\Web\DishesWebController;
 use App\Http\Controllers\Web\EmployeeWebController;
 use App\Http\Controllers\Web\FloorWebController;
+use App\Http\Controllers\Web\InputWebController;
 use App\Http\Controllers\Web\ProductWebController;
+use App\Http\Controllers\Web\TableWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -55,6 +59,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/usuario', [UsuarioWebController::class,'index'])->name('index.view');
     Route::get('/areas', [AreasWebController::class,'index'])->name('index.view');
     Route::get('/platos', [DishesWebController::class,'index'])->name('index.view');
+    Route::get('/mesas', [TableWebController::class,'index'])->name('index.view');
+    Route::get('/insumos', [InputWebController::class,'index'])->name('index.view');
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
 
     #CONSULTA  => BACKEND
@@ -68,7 +74,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{areas}', [AreasController::class, 'update'])->name('area.update');
         Route::delete('{areas}', [AreasController::class, 'destroy'])->name('area.destroy');
     });
-
+  #MESAS => BACKEND
+    Route::prefix('mesa')->group(function () {
+        Route::get('/', action: [TablesController::class, 'index'])->name('mesas.index');
+        Route::post('/', [TablesController::class, 'store'])->name('mesas.store');
+        Route::get('{table}', [TablesController::class, 'show'])->name('mesas.show');
+        Route::put('{table}', [TablesController::class, 'update'])->name('mesas.update');
+        Route::delete('{table}', [TablesController::class, 'destroy'])->name('mesas.destroy');
+    });
+    #INSUMOS => BACKEND
+    Route::prefix('insumo')->group(function () {
+        Route::get('/', action: [InputController::class, 'index'])->name('inputs.index');
+        Route::post('/', [InputController::class, 'store'])->name('inputs.store');
+        Route::get('{input}', [InputController::class, 'show'])->name('inputs.show');
+        Route::put('{input}', [InputController::class, 'update'])->name('inputs.update');
+        Route::delete('{input}', [InputController::class, 'destroy'])->name('inputs.destroy');
+    });
     #PLATOS => BACKEND
     Route::prefix('plato')->group(function () {
         Route::get('/', [DishesController::class, 'index'])->name('plato.index');
