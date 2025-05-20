@@ -21,6 +21,7 @@ const model = computed(() => [
             hasPermission('ver categorias') && { label: 'Categorías', icon: 'pi pi-fw pi-tags', to: '/categorias' },
             hasPermission('ver almacenes') && { label: 'Almacenes', icon: 'pi pi-fw pi-building', to: '/almacenes' },
             hasPermission('ver proveedores') && { label: 'Proveedores', icon: 'pi pi-fw pi-truck', to: '/proveedores' },
+            hasPermission('ver insumos') && { label: 'Insumos', icon: 'pi pi-fw pi-box', to: '/insumos' },
         ].filter(Boolean),
     },
     {

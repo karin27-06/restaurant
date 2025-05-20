@@ -10,22 +10,22 @@ import InputText from 'primevue/inputtext';
 import Tag from 'primevue/tag';
 import Select from 'primevue/select';
 import { debounce } from 'lodash';
-import DeleteTable from './DeleteTables.vue';
-import UpdateTable from './UpdateTables.vue';
+import DeleteInput from './DeleteInputs.vue';
+import UpdateInput from './UpdateInputs.vue';
 import MultiSelect from 'primevue/multiselect';
 
-const tables = ref([]);
+const inputs = ref([]);
 const loading = ref(false);
 const globalFilterValue = ref('');
-const deleteTableDialog = ref(false);
-const updateTableDialog = ref(false);
-const selectedTableId = ref(null);
-const table = ref({});
+const deleteInputDialog = ref(false);
+const updateInputDialog = ref(false);
+const selectedInputId = ref(null);
+const input = ref({});
 const currentPage = ref(1);
 const selectedColumns = ref([]);
-const selectedAreas = ref(null);
-const selectedFloor = ref(null);
-const selectedEstadoTable = ref(null);
+const selectedAlmacen = ref(null);
+const selectedSupplier = ref(null);
+const selectedEstadoInput = ref(null);
 
 const pagination = ref({
     currentPage: 1,
@@ -33,7 +33,7 @@ const pagination = ref({
     total: 0
 });
 
-const estadoTableOptions = ref([
+const estadoInputOptions = ref([
     { name: 'TODOS', value: '' },
     { name: 'ACTIVOS', value: 1 },
     { name: 'INACTIVOS', value: 0 },
@@ -49,24 +49,29 @@ const optionalColumns = ref([
 
 ]);
 
-
-const loadTables = async () => {
+const formatCurrency = (value) => {
+    if (value != null) {
+        return '$' + parseFloat(value).toFixed(2);
+    }
+    return '';
+};
+const loadInputs = async () => {
     loading.value = true;
     try {
         const params = {
             page: pagination.value.currentPage,
             per_page: pagination.value.perPage,
             search: globalFilterValue.value,
-            areas: selectedAreas?.value,
-            floor: selectedFloor?.value,
-            state: selectedEstadoTable.value?.value ?? '',
+            almacen: selectedAlmacen?.value,
+            supplier: selectedSupplier?.value,
+            state: selectedEstadoInput.value?.value ?? '',
         };
-        const response = await axios.get('/mesa', { params });
-        tables.value = response.data.data;
+        const response = await axios.get('/insumo', { params });
+        inputs.value = response.data.data;
         pagination.value.currentPage = response.data.meta.current_page;
         pagination.value.total = response.data.meta.total;
     } catch (error) {
-        console.error('Error al cargar mesas:', error);
+        console.error('Error al cargar insumos:', error);
     } finally {
         loading.value = false;
     }
@@ -79,62 +84,62 @@ const props = defineProps({
     }
 });
 
-watch(() => props.refresh, loadTables);
-watch(() => selectedEstadoTable.value, () => {
+watch(() => props.refresh, loadInputs);
+watch(() => selectedEstadoInput.value, () => {
     currentPage.value = 1;
-    loadTables();
+    loadInputs();
 });
-watch(deleteTableDialog, (val) => {
+watch(deleteInputDialog, (val) => {
     console.log('Dialogo eliminar visible:', val);
 });
 
 const onPage = (event) => {
     pagination.value.currentPage = event.page + 1;
     pagination.value.perPage = event.rows;
-    loadTables();
+    loadInputs();
 };
 
 const onGlobalSearch = debounce(() => {
     pagination.value.currentPage = 1;
-    loadTables();
+    loadInputs();
 }, 500);
 
 const getSeverity = (value) => {
     return value ? 'success' : 'danger';
 };
 
-const editarTable = (prod) => {
-    selectedTableId.value = prod.id;
-    updateTableDialog.value = true;
+const editarInput = (prod) => {
+    selectedInputId.value = prod.id;
+    updateInputDialog.value = true;
 };
 
-const confirmarDeleteTable = (prod) => {
-    table.value = prod;
-    deleteTableDialog.value = true;
+const confirmarDeleteInput = (prod) => {
+    input.value = prod;
+    deleteInputDialog.value = true;
 };
 
 
 
-function handleTableUpdated() {
-    loadTables();
+function handleInputUpdated() {
+    loadInputs();
 }
 
-function handleTableDeleted() {
-    loadTables();
+function handleInputDeleted() {
+    loadInputs();
 }
 
-onMounted(loadTables);
+onMounted(loadInputs);
 </script>
 
 <template>
-    <DataTable ref="dt" v-model:selection="selectedTables" :value="tables" dataKey="id" :paginator="true"
+    <DataTable ref="dt" v-model:selection="selectedInputs" :value="inputs" dataKey="id" :paginator="true"
         :rows="pagination.perPage" :totalRecords="pagination.total" :loading="loading" :lazy="true" @page="onPage"
         :rowsPerPageOptions="[15, 20, 25]" scrollable scrollHeight="574px"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} Mesas">
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} Insumos">
         <template #header>
             <div class="flex flex-wrap gap-2 items-center justify-between">
-                <h4 class="m-0">Mesas</h4>
+                <h4 class="m-0">Insumos</h4>
                 <div class="flex flex-wrap gap-2">
                     <IconField>
                         <InputIcon>
@@ -143,18 +148,22 @@ onMounted(loadTables);
                         <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar..." />
                     </IconField>
                     
-                    <Select v-model="selectedEstadoTable" :options="estadoTableOptions" optionLabel="name" placeholder="Estado" />
-                    <Button icon="pi pi-refresh" outlined rounded aria-label="Refresh" @click="loadTables" />
+                    <Select v-model="selectedEstadoInput" :options="estadoInputOptions" optionLabel="name" placeholder="Estado" />
+                    <Button icon="pi pi-refresh" outlined rounded aria-label="Refresh" @click="loadInputs" />
                 </div>
             </div>
         </template>
 
         <Column selectionMode="multiple" style="width: 1rem" />
-        <Column field="name" header="Nombre" sortable style="min-width: 20rem" />
-        <Column field="tablenum" header="Numero" sortable style="min-width: 20rem" />
-        <Column field="capacity" header="Capacidad" sortable style="min-width: 20rem" />
-        <Column field="area_name" header="Area" sortable style="min-width: 15rem" />
-        <Column field="floor_name" header="Piso" sortable style="min-width: 15rem"/>
+        <Column field="name" header="Nombre" sortable style="min-width: 10rem" />
+<Column field="price" header="Precio" sortable style="min-width: 10rem">
+  <template #body="{ data }">
+    {{ formatCurrency(data.price) }}
+  </template>
+</Column>
+        <Column field="quantity" header="Cantidad" sortable style="min-width: 10rem" />
+        <Column field="almacen_name" header="Almacen" sortable style="min-width: 10rem" />
+        <Column field="supplier_name" header="Proveedor" sortable style="min-width: 10rem"/>
         <Column field="creacion" header="Creación" sortable style="min-width: 13rem" />
         <Column field="actualizacion" header="Actualización" sortable style="min-width: 13rem"/>
         <Column field="state" header="Estado" sortable>
@@ -164,20 +173,20 @@ onMounted(loadTables);
         </Column>
         <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="{ data }">
-                <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarTable(data)" />
-                <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarDeleteTable(data)" />
+                <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarInput(data)" />
+                <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarDeleteInput(data)" />
             </template>
         </Column>
     </DataTable>
 
-    <DeleteTable
-        v-model:visible="deleteTableDialog"
-        :table="table"
-        @deleted="handleTableDeleted"
+    <DeleteInput
+        v-model:visible="deleteInputDialog"
+        :input="input"
+        @deleted="handleInputDeleted"
     />
-    <UpdateTable
-        v-model:visible="updateTableDialog"
-        :tableId="selectedTableId"
-        @updated="handleTableUpdated"
+    <UpdateInput
+        v-model:visible="updateInputDialog"
+        :inputId="selectedInputId"
+        @updated="handleInputUpdated"
     />
 </template>

@@ -86,5 +86,10 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar mesas']);
         Permission::create(['name' => 'eliminar mesas']);
         Permission::create(['name' => 'ver mesas']);
+        #insumos
+        Permission::create(['name' => 'crear insumos']);
+        Permission::create(['name' => 'editar insumos']);
+        Permission::create(['name' => 'eliminar insumos']);
+        Permission::create(['name' => 'ver insumos']);
     }
 }
