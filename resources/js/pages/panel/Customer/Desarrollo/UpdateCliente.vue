@@ -129,7 +129,7 @@ const updateCliente = async () => {
                     <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
                 </div>
                 <div class="col-span-2">
-                    <label class="block font-bold mb-2">Estado</label>
+                    <label class="block font-bold mb-2">Estado <span class="text-red-500">*</span></label>
                     <div class="flex items-center gap-3">
                         <Checkbox v-model="cliente.state" :binary="true" />
                         <Tag :value="cliente.state ? 'Activo' : 'Inactivo'" :severity="cliente.state ? 'success' : 'danger'" />

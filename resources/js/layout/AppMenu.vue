@@ -27,7 +27,7 @@ const model = computed(() => [
     {
         label: 'Gestión de Cocina',
         items: [
-            hasPermission('ver dishes') && { label: 'Platos', icon: 'pi pi-fw pi-utensils', to: '/platos' },
+            hasPermission('ver dishes') && { label: 'Platos', icon: 'pi pi-fw pi-apple', to: '/platos' },
         ].filter(Boolean),
     },
     {
@@ -40,7 +40,7 @@ const model = computed(() => [
     {
         label: 'Gestión de Infraestructura',
         items: [
-            hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-map', to: '/pisos' },
+            hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-building', to: '/pisos' },
             hasPermission('ver areas') && { label: 'Areas', icon: 'pi pi-fw pi-map', to: '/areas' },
             hasPermission('ver mesas') && { label: 'Mesas', icon: 'pi pi-fw pi-map', to: '/mesas' },
         ].filter(Boolean),
@@ -52,6 +52,7 @@ const model = computed(() => [
             hasPermission('ver roles') && { label: 'Roles', icon: 'pi pi-fw pi-shield', to: '/roles' },
             hasPermission('ver empleados') && { label: 'Empleados', icon: 'pi pi-fw pi-id-card', to: '/empleados' },
             hasPermission('ver tipos_empleados') && { label: 'Tipo de empleados', icon: 'pi pi-fw pi-sitemap', to: '/tipo_empleados' },
+            hasPermission('ver presentaciones') && { label: 'Presentaciones', icon: 'pi pi-fw pi-check-square', to: '/presentaciones' },
         ].filter(Boolean),
     },
 ].filter(section => section.items.length > 0));
