@@ -1,58 +1,58 @@
-# Sistema de Restaurante – Laravel 12 + Vue.js + PrimeVue + PostgreSQL
+# 🍽️ Sistema de Restaurante – Laravel 12 + Vue.js + PrimeVue + PostgreSQL
 
 **Sistema de Restaurante** es una aplicación full-stack desarrollada por  
 [karin27-06](https://github.com/karin27-06), [PabloLupuX](https://github.com/PabloLupuX) y [Jefferson0k](https://github.com/Jefferson0k),  
 utilizando **Laravel 12**, **Vue.js** y la librería de componentes **PrimeVue** para la interfaz de usuario, con base de datos **PostgreSQL**.
 
-Repositorio: [https://github.com/Jefferson0k/restaurant](https://github.com/Jefferson0k/restaurant.git)
+🔗 Repositorio: [https://github.com/Jefferson0k/restaurant](https://github.com/Jefferson0k/restaurant.git)
 
 ---
 
 ## 🧰 Prerequisites
 
-- PHP >= 8.1  
-- Composer  
-- Node.js and npm  
-- PostgreSQL  
+- ⚙️ **PHP** >= 8.1  
+- 📦 **Composer**  
+- 📟 **Node.js** y **npm**  
+- 🐘 **PostgreSQL**  
 
 ---
 
 ## 🚀 Installation
 
-1. Clone the repository:
+1. 🔽 Clonar el repositorio:
 
     ```bash
     git clone https://github.com/Jefferson0k/restaurant.git
     cd restaurant
     ```
 
-2. Copy the environment configuration:
+2. 📄 Copiar archivo de entorno:
 
     ```bash
     cp .env.example .env
     ```
 
-3. Install PHP dependencies:
+3. 📥 Instalar dependencias PHP:
 
     ```bash
     composer install
     ```
 
-4. Install frontend dependencies:
+4. 📥 Instalar dependencias frontend:
 
     ```bash
     npm install
     ```
 
-5. Generate the application key:
+5. 🔐 Generar llave de la aplicación:
 
     ```bash
     php artisan key:generate
     ```
 
-6. Configure the database settings in `.env`:
+6. ⚙️ Configurar la base de datos en `.env`:
 
-    ```
+    ```env
     DB_CONNECTION=pgsql
     DB_HOST=127.0.0.1
     DB_PORT=5432
@@ -61,19 +61,19 @@ Repositorio: [https://github.com/Jefferson0k/restaurant](https://github.com/Jeff
     DB_PASSWORD=your_database_password
     ```
 
-7. Run migrations and seeders (if applicable):
+7. 🗄️ Ejecutar migraciones y seeders (si aplican):
 
     ```bash
     php artisan migrate --seed
     ```
 
-8. Compile frontend assets:
+8. 🎨 Compilar assets frontend:
 
     ```bash
     npm run dev
     ```
 
-9. (Optional) Start the local development server:
+9. 🚀 (Opcional) Levantar servidor local:
 
     ```bash
     php artisan serve
@@ -83,7 +83,7 @@ Repositorio: [https://github.com/Jefferson0k/restaurant](https://github.com/Jeff
 
 ## 🎨 UI Framework
 
-The user interface is built with **Vue.js** and leverages **PrimeVue** for modern, responsive components.
+La interfaz está construida con **Vue.js** y utiliza **PrimeVue** para componentes modernos y responsivos.
 
 ---
 
@@ -97,10 +97,14 @@ The user interface is built with **Vue.js** and leverages **PrimeVue** for moder
 
 ## 📄 License
 
-This project is protected under the  
-**Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
+> This project is protected under the  
+> **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
 
 You are welcome to study, use, and adapt this code strictly for **non-commercial purposes**.  
-Any commercial use, distribution, or reproduction without explicit, prior written consent from the authors is strictly prohibited.
+Any commercial use, distribution, or reproduction without explicit, prior written consent from the authors is **strictly prohibited**.
 
 Please review the full terms and conditions in the [LICENSE](./LICENSE) file to ensure compliance.
+
+---
+
+✨ _Thank you for checking out the project!_
