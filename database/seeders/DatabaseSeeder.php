@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
             AreasSeeder::class,
             TableSeeder::class,
             SupplierSeeder::class,
-            development
+            //development
             PresentationSeeder::class,
             InputSeeder::class,
-            development
+            //development
         ]);
     }
 }
