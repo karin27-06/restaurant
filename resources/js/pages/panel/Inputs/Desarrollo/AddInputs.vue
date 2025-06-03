@@ -157,7 +157,7 @@ function hideDialog() {
 
 async function fetchAlmacens() {
     try {
-        const { data } = await axios.get('/almacen');
+        const { data } = await axios.get('/almacen', { params: { state: 1 } });
         almacens.value = data.data.map((c) => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los almacenes' });
@@ -166,7 +166,7 @@ async function fetchAlmacens() {
 
 async function fetchSuppliers() {
     try {
-        const { data } = await axios.get('/proveedor');
+        const { data } = await axios.get('/proveedor', { params: { state: 1 } });
         suppliers.value = data.data.map((a) => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los proveedores' });

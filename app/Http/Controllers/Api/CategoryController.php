@@ -71,11 +71,23 @@ class CategoryController extends Controller{
         ]);
     }
     public function destroy(Category $category){
-        Gate::authorize('delete', $category);
-        $category->delete();
+    Gate::authorize('delete', $category);
+
+    if (
+        $category->tieneRelaciones()
+    ) {
         return response()->json([
-            'state' => true,
-            'message' => 'Categoría eliminada correctamente',
-        ]);
+            'state' => false,
+            'message' => 'No se puede eliminar esta categoría porque está relacionada con otros registros.'
+        ], 400);
     }
+
+    $category->delete();
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Categoría eliminada correctamente',
+    ]);
+}
+
 }

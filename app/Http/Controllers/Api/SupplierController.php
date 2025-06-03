@@ -59,6 +59,16 @@ class SupplierController extends Controller{
     }
     public function destroy(Supplier $supplier){
         Gate::authorize('delete', $supplier);
+
+    if (
+        $supplier->tieneRelaciones()
+        // Otras relaciones si existen
+    ) {
+        return response()->json([
+            'state' => false,
+            'message' => 'No se puede eliminar este proveedor porque está relacionada con otros registros.'
+        ], 400);
+    }
         $supplier->delete();
         return response()->json([
             'state' => true,

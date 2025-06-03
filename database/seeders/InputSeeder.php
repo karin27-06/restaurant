@@ -15,6 +15,6 @@ class InputSeeder extends Seeder
             return;
         }
 
-        Input::factory()->count(20)->create(); 
+        Input::factory()->count(8)->create(); 
     }
 }

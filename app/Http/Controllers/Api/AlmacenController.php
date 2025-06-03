@@ -70,12 +70,22 @@ class AlmacenController extends Controller{
             'almacen' => $almacen->refresh()
         ]);
     }
-    public function destroy(Almacen $almacen){
-        Gate::authorize('delete', $almacen);
-        $almacen->delete();
+    public function destroy(Almacen $almacen)
+    {
+    Gate::authorize('delete', $almacen);
+
+    if ($almacen->tieneRelaciones()) {
         return response()->json([
-            'state' => true,
-            'message' => 'Almacen eliminado de manera correcta',
-        ]);
+            'state' => false,
+            'message' => 'No se puede eliminar este almacén porque está relacionado con otros registros.'
+        ], 400);
+    }
+
+    $almacen->delete();
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Almacén eliminado correctamente',
+    ]);
     }
 }

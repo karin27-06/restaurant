@@ -19,5 +19,16 @@ class Category extends Model
     protected $casts = [
         'state' => 'boolean',
     ];
-
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'idCategory');
+    }
+    public function dishs()
+    {
+        return $this->hasMany(Dishes::class, 'idCategory');
+    }
+    public function tieneRelaciones(): bool
+    {
+        return $this->dishs()->exists() || $this->products()->exists();
+    }
 }

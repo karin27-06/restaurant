@@ -80,7 +80,7 @@ const fetchPlato = async () => {
 const loadCategories = async () => {
     loadingCategories.value = true;
     try {
-        const response = await axios.get('/categoria');
+        const response = await axios.get('/categoria', { params: { state: 1 } });
         if (response.data && response.data.data) {
             categories.value = response.data.data.map(cat => ({
                 value: cat.id,

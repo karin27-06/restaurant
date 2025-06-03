@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -70,7 +70,7 @@ const fetchProducto = async () => {
 
 const fetchCategorias = async () => {
     try {
-        const { data } = await axios.get('/categoria');
+        const { data } = await axios.get('/categoria', { params: { state: 1 } });
         categorias.value = data.data.map(c => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar categorías' });
@@ -79,7 +79,7 @@ const fetchCategorias = async () => {
 
 const fetchAlmacenes = async () => {
     try {
-        const { data } = await axios.get('/almacen');
+        const { data } = await axios.get('/almacen', { params: { state: 1 } });
         almacenes.value = data.data.map(a => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar almacenes' });

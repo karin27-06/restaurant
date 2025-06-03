@@ -37,7 +37,7 @@ async function deleteAlmacen() {
 
     } catch (error) {
         console.error(error);
-        let errorMessage = 'Error eliminando el cliente';
+        let errorMessage = 'Error eliminando el almacen';
         if (error.response) {
             errorMessage = error.response.data.message || errorMessage;
         }

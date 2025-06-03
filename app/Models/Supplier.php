@@ -20,4 +20,13 @@ class Supplier extends Model
     protected $casts = [
         'state' => 'boolean',
     ];
+    public function inputs()
+    {
+        return $this->hasMany(Input::class, 'idSupplier');
+    }
+    public function tieneRelaciones(): bool
+    {
+        //se agrega todas las relaciones que existan
+        return $this->inputs()->exists();
+    }
 }
