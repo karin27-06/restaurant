@@ -15,8 +15,15 @@ class EmployeeType extends Model
         'name',
         'state',
     ]; 
-
+    protected $casts = [
+        'state' => 'boolean',
+    ];
     public function Employees(): HasMany {
-        return $this->hasMany(Employee::class);
+        return $this->hasMany(Employee::class, 'employee_type_id', 'id');
+    }
+    public function tieneRelaciones(): bool
+    {
+        //se agrega todas las relaciones que existan
+        return $this->Employees()->exists();
     }
 }

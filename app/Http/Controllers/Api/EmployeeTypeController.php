@@ -71,6 +71,13 @@ class EmployeeTypeController extends Controller{
     }
     public function destroy(EmployeeType $employeeType){
         Gate::authorize('delete', $employeeType);
+        if($employeeType->tieneRelaciones())
+        {
+            return response()->json([
+                'state'=>false,
+                'message'=> 'No se puede eliminar este tipo de empleado porque tiene relaciones con otros registros.'
+            ],400);
+        }
         $employeeType->delete();
         return response()->json([
             'state' => true,

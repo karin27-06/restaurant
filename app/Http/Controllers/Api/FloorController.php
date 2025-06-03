@@ -59,10 +59,17 @@ class FloorController extends Controller{
     }
     public function destroy(Floor $floor){
         Gate::authorize('delete', $floor);
+        if($floor->tieneRelaciones())
+        {
+            return response()->json([
+                'state'=> false,
+                'message' => 'No se puede eliminar el piso porque tiene relaciones con otros registros'
+            ],400);
+        }
         $floor->delete();
         return response()->json([
             'state' => true,
-            'message' => 'Piso eliminada correctamente',
+            'message' => 'Piso eliminado correctamente',
         ]);
     }
 }

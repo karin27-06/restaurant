@@ -60,7 +60,7 @@ const fetchEmpleado = async () => {
 
 const fetchTiposEmpleado = async () => {
     try {
-        const res = await axios.get('/tipo_empleado');
+        const res = await axios.get('/tipo_empleado', { params: { state: 1 } });
         tiposEmpleado.value = res.data.data;
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los tipos de empleado', life: 3000 });

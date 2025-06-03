@@ -72,10 +72,18 @@ class AreasController extends Controller{
     }
     public function destroy(Areas $areas){
         Gate::authorize('delete', $areas);
+        if($areas->tieneRelaciones())
+        {
+            return response()->json([
+                'state'=>false,
+                'message' => 'No se puede eliminar esta área porque tiene relaciones con otros elementos'
+            ],400);
+        }
         $areas->delete();
+
         return response()->json([
             'state' => true,
-            'message' => 'Areas eliminado de manera correcta',
+            'message' => 'Área eliminada de manera correcta',
         ]);
     }
 }
