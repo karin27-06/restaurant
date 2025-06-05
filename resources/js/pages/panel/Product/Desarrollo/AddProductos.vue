@@ -117,7 +117,7 @@ function hideDialog() {
 
 async function fetchCategorias() {
     try {
-        const { data } = await axios.get('/categoria');
+        const { data } = await axios.get('/categoria', { params: { state: 1 } });
         categorias.value = data.data.map(c => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar categorías' });
@@ -126,7 +126,7 @@ async function fetchCategorias() {
 
 async function fetchAlmacenes() {
     try {
-        const { data } = await axios.get('/almacen');
+        const { data } = await axios.get('/almacen', { params: { state: 1 } });
         almacenes.value = data.data.map(a => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar almacenes' });

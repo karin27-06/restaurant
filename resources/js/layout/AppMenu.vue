@@ -31,30 +31,42 @@ const model = computed(() => [
         ].filter(Boolean),
     },
     {
-        label: 'Gestión de Clientes',
+      label: 'Gestión de Clientes',
+      items: [
+      (hasPermission('ver clientes') || hasPermission('ver tipos_clientes')) && {
+        label: 'Cliente',
+        icon: 'pi pi-fw pi-users',
         items: [
-            hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
-            hasPermission('ver tipos_clientes') && { label: 'Tipo de Clientes', icon: 'pi pi-fw pi-id-card', to: '/tipo_clientes' },
+          hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
+          hasPermission('ver tipos_clientes') && { label: 'Tipo de Clientes', icon: 'pi pi-fw pi-id-card', to: '/tipo_clientes' },
         ].filter(Boolean),
+      },
+      ].filter(Boolean),
     },
     {
         label: 'Gestión de Infraestructura',
         items: [
-            hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-building', to: '/pisos' },
+            hasPermission('ver pisos') && { label: 'Pisos', icon: 'pi pi-fw pi-list', to: '/pisos' },
             hasPermission('ver areas') && { label: 'Areas', icon: 'pi pi-fw pi-map', to: '/areas' },
-            hasPermission('ver mesas') && { label: 'Mesas', icon: 'pi pi-fw pi-map', to: '/mesas' },
+            hasPermission('ver mesas') && { label: 'Mesas', icon: 'pi pi-fw pi-table', to: '/mesas' },
         ].filter(Boolean),
     },
     {
-        label: 'Usuarios y Seguridad',
-        items: [
-            hasPermission('ver usuarios') && { label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-user-edit', to: '/usuario' },
-            hasPermission('ver roles') && { label: 'Roles', icon: 'pi pi-fw pi-shield', to: '/roles' },
-            hasPermission('ver empleados') && { label: 'Empleados', icon: 'pi pi-fw pi-id-card', to: '/empleados' },
-            hasPermission('ver tipos_empleados') && { label: 'Tipo de empleados', icon: 'pi pi-fw pi-sitemap', to: '/tipo_empleados' },
-            hasPermission('ver presentaciones') && { label: 'Presentaciones', icon: 'pi pi-fw pi-check-square', to: '/presentaciones' },
-        ].filter(Boolean),
+  label: 'Usuarios y Seguridad',
+  items: [
+    hasPermission('ver usuarios') && { label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-user-edit', to: '/usuario' },
+    hasPermission('ver roles') && { label: 'Roles', icon: 'pi pi-fw pi-shield', to: '/roles' },
+    (hasPermission('ver empleados') || hasPermission('ver tipos_empleados')) && {
+      label: 'Empleado',
+      icon: 'pi pi-fw pi-id-card',
+      items: [
+        hasPermission('ver empleados') && { label: 'Empleados', icon: 'pi pi-fw pi-id-card', to: '/empleados' },
+        hasPermission('ver tipos_empleados') && { label: 'Tipo de empleados', icon: 'pi pi-fw pi-sitemap', to: '/tipo_empleados' },
+      ].filter(Boolean),
     },
+    hasPermission('ver presentaciones') && { label: 'Presentaciones', icon: 'pi pi-fw pi-check-square', to: '/presentaciones' },
+  ].filter(Boolean),
+}
 ].filter(section => section.items.length > 0));
 </script>
 

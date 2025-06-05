@@ -115,7 +115,7 @@ function hideDialog() {
 }
 
 function fetchTiposEmpleado() {
-    axios.get('/tipo_empleado')
+    axios.get('/tipo_empleado', { params: { state: 1 } })
         .then(res => {
             tiposEmpleado.value = res.data.data;
         })

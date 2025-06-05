@@ -20,5 +20,13 @@ class Floor extends Model
     protected $casts = [
         'state' => 'boolean',
     ];
-
+    public function tables()
+    {
+        return $this->hasMany(Table::class, 'idFloor');
+    }
+    public function tieneRelaciones(): bool
+    {
+        // Aquí agregas todas las relaciones que quieras chequear
+        return $this->tables()->exists();
+    }
 }

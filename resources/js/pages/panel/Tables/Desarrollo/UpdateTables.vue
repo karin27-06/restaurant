@@ -1,11 +1,11 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select';
-import Textarea from 'primevue/textarea';
+//import Textarea from 'primevue/textarea';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
@@ -73,7 +73,7 @@ const fetchTable = async () => {
 
 const fetchAreas = async () => {
     try {
-        const { data } = await axios.get('/area');
+        const { data } = await axios.get('/area', { params: { state: 1 } });
         areas.value = data.data.map(c => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar las areas' });
@@ -82,7 +82,7 @@ const fetchAreas = async () => {
 
 const fetchFloors = async () => {
     try {
-        const { data } = await axios.get('/piso');
+        const { data } = await axios.get('/piso', { params: { state: 1 } });
         pisos.value = data.data.map(a => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los pisos' });

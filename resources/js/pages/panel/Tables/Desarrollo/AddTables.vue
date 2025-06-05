@@ -134,7 +134,7 @@ function hideDialog() {
 
 async function fetchAreas() {
     try {
-        const { data } = await axios.get('/area');
+        const { data } = await axios.get('/area', { params: { state: 1 } });
         areas.value = data.data.map((c) => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar las Areas' });
@@ -143,7 +143,7 @@ async function fetchAreas() {
 
 async function fetchFloors() {
     try {
-        const { data } = await axios.get('/piso');
+        const { data } = await axios.get('/piso', { params: { state: 1 } });
         pisos.value = data.data.map((a) => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los pisos' });

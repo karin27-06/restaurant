@@ -60,7 +60,7 @@ const fetchCliente = async () => {
 
 const fetchTiposCliente = async () => {
     try {
-        const res = await axios.get('/tipo_cliente');
+        const res = await axios.get('/tipo_cliente', { params: { state: 1 } });
         tiposCliente.value = res.data.data;
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los tipos de cliente', life: 3000 });

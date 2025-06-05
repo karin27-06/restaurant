@@ -114,7 +114,7 @@ function hideDialog() {
 }
 
 function fetchTiposCliente() {
-    axios.get('/tipo_cliente')
+    axios.get('/tipo_cliente', { params: { state: 1 } })
         .then(res => {
             tiposCliente.value = res.data.data;
         })

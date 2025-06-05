@@ -11,4 +11,13 @@ class Areas extends Model{
         'name',
         'state',
     ];
+    public function tables()
+    {
+        return $this->hasMany(Table::class, 'idArea');
+    }
+    public function tieneRelaciones(): bool
+    {
+        // Aquí agregas todas las relaciones que quieras chequear
+        return $this->tables()->exists();
+    }
 }

@@ -70,7 +70,16 @@ class ClientTypeController extends Controller{
     }
     public function destroy(ClientType $clientType){
         Gate::authorize('delete', $clientType);
+        if(
+            $clientType->tieneRelaciones()
+        ) {
+            return response()->json([
+                'state' => false,
+                'message' => 'No se puede eliminar este tipo de cliente porque está relacionado con otros registros.'
+            ],400);
+        }
         $clientType->delete();
+        
         return response()->json([
             'state' => true,
             'message' => 'Tipo de cliente eliminado de manera correcta',

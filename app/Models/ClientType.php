@@ -14,8 +14,15 @@ class ClientType extends Model
         'name',
         'state',
     ]; 
- 
+    protected $casts = [
+        'state' => 'boolean',
+    ];
     public function Customers():HasMany{
-        return $this->hasMany(Customer::class); 
+        return $this->hasMany(Customer::class, 'client_type_id', 'id'); 
+    }
+    public function tieneRelaciones(): bool
+    {
+        //se agrega todas las relaciones que existan
+        return $this->Customers()->exists();
     }
 }

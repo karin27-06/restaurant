@@ -82,7 +82,7 @@ const fetchInput = async () => {
 
 const fetchAlmacens = async () => {
     try {
-        const { data } = await axios.get('/almacen');
+        const { data } = await axios.get('/almacen', { params: { state: 1 } });
         almacens.value = data.data.map((c) => ({ label: c.name, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los almacens' });
@@ -91,7 +91,7 @@ const fetchAlmacens = async () => {
 
 const fetchSuppliers = async () => {
     try {
-        const { data } = await axios.get('/proveedor');
+        const { data } = await axios.get('/proveedor', { params: { state: 1 } });
         suppliers.value = data.data.map((a) => ({ label: a.name, value: a.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los proveedores' });

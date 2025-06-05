@@ -146,7 +146,7 @@ function guardarPlato() {
 
 function cargarCategorias() {
     loadingCategories.value = true;
-    axios.get('/categoria')
+    axios.get('/categoria', { params: { state: 1 } })
         .then(response => {
             if (response.data && response.data.data) {
                 categories.value = response.data.data.map(cat => ({
