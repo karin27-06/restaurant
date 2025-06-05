@@ -4,6 +4,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\CategoriesExport;
+use App\Imports\CategoryImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Categoria\StoreCategoryRequest;
 use App\Http\Requests\Categoria\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
@@ -89,5 +92,23 @@ class CategoryController extends Controller{
         'message' => 'Categoría eliminada correctamente',
     ]);
 }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new CategoriesExport, 'Categorías.xlsx');
+    }
 
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new CategoryImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de las categorias realizada correctamente.'
+        ]);
+    }
 }
