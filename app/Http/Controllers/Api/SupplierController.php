@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\SuppliersExport;
+use App\Imports\SupplierImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Proveedor\StoreSupplierRequest;
 use App\Http\Requests\Proveedor\UpdateSupplierRequest;
 use App\Http\Resources\SupplierResource;
@@ -73,6 +76,26 @@ class SupplierController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Proveedor eliminado correctamente'
+        ]);
+    }
+
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new SuppliersExport, 'Proveedores.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new SupplierImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los proveedores realizada correctamente.'
         ]);
     }
 }

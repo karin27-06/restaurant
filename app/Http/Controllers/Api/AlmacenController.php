@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\AlmacenesExport;
+use App\Imports\AlmacenImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Almacen\StoreAlmacenRequest;
 use App\Http\Requests\Almacen\UpdateAlmacenRequest;
 use App\Models\Almacen;
@@ -87,5 +90,24 @@ class AlmacenController extends Controller{
         'state' => true,
         'message' => 'Almacén eliminado correctamente',
     ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new AlmacenesExport, 'Almacenes.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new AlmacenImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los almacenes realizada correctamente.'
+        ]);
     }
 }

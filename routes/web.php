@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Reportes\AlmacenPDFController;
+use App\Http\Controllers\Reportes\CategoryPDFController;
+use App\Http\Controllers\Reportes\SupplierPDFController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
@@ -209,6 +212,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{id}', [RolesController::class, 'show'])->name('rol.show');
         Route::put('/{id}', [RolesController::class, 'update'])->name('rol.update');
         Route::delete('/{id}', [RolesController::class, 'destroy'])->name('rol.destroy');
+    });
+    Route::prefix('panel/reports')->group(function () {
+        #EXPORTACION Y IMPORTACION CATEGORIAS
+        Route::get('/export-excel-categories', [CategoryController::class, 'exportExcel'])->name('export-excel-categories');
+        Route::get('/export-pdf-categories', [CategoryPDFController::class, 'exportPDF'])->name('export-pdf-categories');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-categories', [CategoryController::class, 'importExcel'])->name('import-excel-categories');
+
+        #EXPORTACION Y IMPORTACION ALMACENES
+        Route::get('/export-excel-almacenes', [AlmacenController::class, 'exportExcel'])->name('export-excel-almacenes');
+        Route::get('/export-pdf-almacenes', [AlmacenPDFController::class, 'exportPDF'])->name('export-pdf-almacenes');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-almacenes', [AlmacenController::class, 'importExcel'])->name('import-excel-almacenes');
+
+        #EXPORTACION Y IMPORTACION PROVEEDORES
+        Route::get('/export-excel-suppliers', [SupplierController::class, 'exportExcel'])->name('export-excel-suppliers');
+        Route::get('/export-pdf-suppliers', [SupplierPDFController::class, 'exportPDF'])->name('export-pdf-suppliers');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-suppliers', [SupplierController::class, 'importExcel'])->name('import-excel-suppliers');
     });
 }); 
 

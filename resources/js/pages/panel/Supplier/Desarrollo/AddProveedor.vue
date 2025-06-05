@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo proveedor" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsSupplier para los botones de exportar e importar -->
+            <ToolsSupplier @import-success="loadProveedor"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="proveedorDialog" :style="{ width: '600px' }" header="Registro de proveedor" :modal="true">
@@ -82,6 +86,7 @@ import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
+import ToolsSupplier from './toolsSupplier.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -96,7 +101,18 @@ const proveedor = ref({
     phone: '',
     state: true
 });
-
+// Método para recargar la lista de proveedores
+const loadProveedor = async () => {
+    try {
+        const response = await axios.get('/proveedor');  // Aquí haces una solicitud GET para obtener los proveedores
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('proveedor-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los proveedores', life: 3000 });
+        console.error(error);
+    }
+}
 function resetProveedor() {
     proveedor.value = {
         name: '',

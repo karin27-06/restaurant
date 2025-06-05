@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nueva categoria" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsCategory para los botones de exportar e importar -->
+            <ToolsCategory @import-success="loadCategoria"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="categoriaDialog" :style="{ width: '600px' }" header="Registro de Categoría" :modal="true">
@@ -47,6 +51,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
+import ToolsCategory from './toolsCategory.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -58,7 +63,18 @@ const categoria = ref({
     name: '',
     state: true
 });
-
+// Método para recargar la lista de categorías
+const loadCategoria = async () => {
+    try {
+        const response = await axios.get('/categoria');  // Aquí haces una solicitud GET para obtener las categorías
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('categoria-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar las categorías', life: 3000 });
+        console.error(error);
+    }
+}
 function resetCategoria() {
     categoria.value = {
         name: '',

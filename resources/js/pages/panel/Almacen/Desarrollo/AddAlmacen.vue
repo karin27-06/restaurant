@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo almacen" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsAlmacen para los botones de exportar e importar -->
+            <ToolsAlmacen @import-success="loadAlmacen"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="almacenDialog" :style="{ width: '600px' }" header="Registro de almacens" :modal="true">
@@ -47,6 +51,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
+import ToolsAlmacen from './toolsAlmacen.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -58,6 +63,18 @@ const almacen = ref({
     name: '',
     state: true
 });
+// Método para recargar la lista de almacenes
+const loadAlmacen = async () => {
+    try {
+        const response = await axios.get('/almacen');  // Aquí haces una solicitud GET para obtener los almacenes
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('almacen-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los almacenes', life: 3000 });
+        console.error(error);
+    }
+}
 
 function resetAlmacen() {
     almacen.value = {
@@ -83,7 +100,7 @@ function guardaralmacen() {
     serverErrors.value = {};
 
     axios.post('/almacen', almacen.value)
-        .then(response => {
+        .then(()=> {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén registrado', life: 3000 });
             hideDialog();
             emit('almacen-agregado');
