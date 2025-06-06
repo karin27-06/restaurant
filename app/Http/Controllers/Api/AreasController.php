@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\AreasExport;
+use App\Imports\AreaImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Areas\UpdateAreaRequests;
 use App\Http\Requests\Areas\StoreAreaRequests;
 use App\Http\Resources\AreasResource;
@@ -84,6 +87,25 @@ class AreasController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Área eliminada de manera correcta',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new AreasExport, 'Areas.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new AreaImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de las areas realizado correctamente.'
         ]);
     }
 }

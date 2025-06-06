@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Reportes\AlmacenPDFController;
+use App\Http\Controllers\Reportes\FloorPDFController;
 use App\Http\Controllers\Reportes\CategoryPDFController;
 use App\Http\Controllers\Reportes\SupplierPDFController;
+use App\Http\Controllers\Reportes\AreaPDFController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
@@ -231,6 +233,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/export-pdf-suppliers', [SupplierPDFController::class, 'exportPDF'])->name('export-pdf-suppliers');
         // Ruta para importar desde Excel
         Route::post('/import-excel-suppliers', [SupplierController::class, 'importExcel'])->name('import-excel-suppliers');
+
+        #EXPORTACION Y IMPORTACION PISOS
+        Route::get('/export-excel-floors', [FloorController::class, 'exportExcel'])->name('export-excel-floors');
+        Route::get('/export-pdf-floors', [FloorPDFController::class, 'exportPDF'])->name('export-pdf-floors');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-floors', [FloorController::class, 'importExcel'])->name('import-excel-floors');
+
+        #EXPORTACION Y IMPORTACION AREAS
+        Route::get('/export-excel-areas', [AreasController::class, 'exportExcel'])->name('export-excel-areas');
+        Route::get('/export-pdf-areas', [AreaPDFController::class, 'exportPDF'])->name('export-pdf-areas');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-areas', [AreasController::class, 'importExcel'])->name('import-excel-areas');
     });
 }); 
 
