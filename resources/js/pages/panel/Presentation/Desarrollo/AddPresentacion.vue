@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nueva presentación" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsPresentation para los botones de exportar e importar -->
+            <ToolsPresentation @import-success="loadPresentacion"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="presentacionDialog" :style="{ width: '600px' }" header="Registro de presentación" :modal="true">
@@ -55,6 +59,7 @@ import Textarea from 'primevue/textarea';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
+import ToolsPresentation from './toolsPresentation.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -67,7 +72,18 @@ const presentacion = ref({
     description: '',
     state: true
 });
-
+// Método para recargar la lista de presentaciones
+const loadPresentacion = async () => {
+    try {
+        const response = await axios.get('/presentacion');  // Aquí haces una solicitud GET para obtener las presentaciones
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('presentacion-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar las presentaciones', life: 3000 });
+        console.error(error);
+    }
+}
 function resetPresentacion() {
     presentacion.value = {
         name: '',

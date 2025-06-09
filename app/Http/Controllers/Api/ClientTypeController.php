@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\ClientTypesExport;
+use App\Imports\ClientTypeImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\ClientType;
 use App\Http\Requests\Tipo_Cliente\StoreClientTypeRequest;
 use App\Http\Requests\Tipo_Cliente\UpdateClientTypeRequest;
@@ -83,6 +86,25 @@ class ClientTypeController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Tipo de cliente eliminado de manera correcta',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new ClientTypesExport, 'Tipo_cientes.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new ClientTypeImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los tipos de cliente realizada correctamente.'
         ]);
     }
 }

@@ -51,7 +51,7 @@ const optionalColumns = ref([
 
 const formatCurrency = (value) => {
     if (value != null) {
-        return '$' + parseFloat(value).toFixed(2);
+        return 'S/. ' + parseFloat(value).toFixed(2);
     }
     return '';
 };

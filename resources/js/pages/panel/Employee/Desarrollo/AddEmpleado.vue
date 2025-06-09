@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo empleado" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsEmployee para los botones de exportar e importar -->
+            <ToolsEmployee @import-success="loadEmpleado"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="empleadoDialog" :style="{ width: '600px' }" header="Registro de empleado" :modal="true">
@@ -76,6 +80,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
+import ToolsEmployee from './toolsEmployee.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -91,7 +96,18 @@ const empleado = ref({
     employee_type_id: null,
     state: true
 });
-
+// Método para recargar la lista de empleados
+const loadEmpleado = async () => {
+    try {
+        const response = await axios.get('/empleado');  // Aquí haces una solicitud GET para obtener los empleados
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('empleado-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los empleados', life: 3000 });
+        console.error(error);
+    }
+}
 function resetEmpleado() {
     empleado.value = {
         name: '',

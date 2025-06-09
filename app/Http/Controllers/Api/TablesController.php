@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\TablesExport;
+use App\Imports\TableImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Table\StoreTableRequest;
 use App\Http\Requests\Table\UpdateTableRequest;
 use App\Http\Resources\TableResource;
@@ -115,6 +118,25 @@ class TablesController extends Controller
         return response()->json([
             'state' => true,
             'message' => 'Mesa eliminada de manera correcta',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new TablesExport, 'Mesas.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new TableImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de las mesas realizado correctamente.'
         ]);
     }
 }

@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo cliente" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsCustomer para los botones de exportar e importar -->
+            <ToolsCustomer @import-success="loadCliente"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="clienteDialog" :style="{ width: '600px' }" header="Registro de cliente" :modal="true">
@@ -76,6 +80,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
+import ToolsCustomer from './toolsCustomer.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -90,7 +95,18 @@ const cliente = ref({
     client_type_id: null,
     state: true
 });
-
+// Método para recargar la lista de clientes
+const loadCliente = async () => {
+    try {
+        const response = await axios.get('/cliente');  // Aquí haces una solicitud GET para obtener los clientes
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('cliente-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los clientes', life: 3000 });
+        console.error(error);
+    }
+}
 function resetCliente() {
     cliente.value = {
         name: '',

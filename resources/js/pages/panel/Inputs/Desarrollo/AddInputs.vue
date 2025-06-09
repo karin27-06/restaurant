@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo Insumo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsInput para los botones de exportar e importar -->
+            <ToolsInput @import-success="loadInsumo"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="inputDialog" :style="{ width: '700px' }" header="Registro de Insumos" :modal="true">
@@ -33,8 +37,8 @@
                         :minFractionDigits="2"
                         :maxFractionDigits="2"
                         mode="currency"
-                        currency="USD"
-                        locale="en-US"
+                        currency="PEN"
+                        locale="es-PE"
                         class="w-full"
                         :class="{ 'p-invalid': serverErrors.price }"
                     />
@@ -108,6 +112,7 @@ import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import InputNumber from 'primevue/inputnumber';
+import ToolsInput from './toolsInput.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -124,7 +129,18 @@ const input = ref({
     idSupplier: null,
     description: null
 });
-
+// Método para recargar la lista de insumos
+const loadInsumo = async () => {
+    try {
+        const response = await axios.get('/insumo');  // Aquí haces una solicitud GET para obtener los insumos
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('insumo-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los insumos', life: 3000 });
+        console.error(error);
+    }
+}
 const almacens = ref([]);
 const suppliers = ref([]);
 

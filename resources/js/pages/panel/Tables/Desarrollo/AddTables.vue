@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nueva Mesa" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsTable para los botones de exportar e importar -->
+            <ToolsTable @import-success="loadMesa"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="tableDialog" :style="{ width: '700px' }" header="Registro de Mesas" :modal="true">
@@ -87,6 +91,7 @@ import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
+import ToolsTable from './toolsTable.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -102,7 +107,18 @@ const table = ref({
     idArea: null,
     idFloor: null
 });
-
+// Método para recargar la lista de mesas
+const loadMesa = async () => {
+    try {
+        const response = await axios.get('/mesa');  // Aquí haces una solicitud GET para obtener las mesas
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('mesa-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar las mesas', life: 3000 });
+        console.error(error);
+    }
+}
 const areas = ref([]);
 const pisos = ref([]);
 

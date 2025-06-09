@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\CustomersExport;
+use App\Imports\CustomerImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Cliente\StoreCustomerRequest;
 use App\Http\Requests\Cliente\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
@@ -63,6 +66,25 @@ class CustomerController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Cliente eliminado correctamente'
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new CustomersExport, 'Clientes.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new CustomerImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los clientes realizado correctamente.'
         ]);
     }
 }

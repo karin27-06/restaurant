@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\PresentationsExport;
+use App\Imports\PresentationImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Presentacion\StorePresentationRequest;
 use App\Http\Requests\Presentacion\UpdatePresentationRequest;
 use App\Http\Resources\PresentationResource;
@@ -63,6 +66,25 @@ class PresentationController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Presentación eliminada correctamente'
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new PresentationsExport, 'Presentaciones.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new PresentationImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de las presentaciones realizada correctamente.'
         ]);
     }
 }

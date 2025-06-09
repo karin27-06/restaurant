@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;;
+use App\Http\Controllers\Controller;
+use App\Exports\DishesExport;
+use App\Imports\DishImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Dishes\StoreDishesRequests;
 use App\Http\Requests\Dishes\UpdateDishesRequests;
 use App\Http\Resources\DishesResource;
@@ -76,6 +79,25 @@ class DishesController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Platos eliminado de manera correcta',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new DishesExport, 'Platos.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new DishImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los platos realizado correctamente.'
         ]);
     }
 }
