@@ -198,8 +198,8 @@ onMounted(() => {
                         :minFractionDigits="2"
                         :maxFractionDigits="2"
                         mode="currency"
-                        currency="USD"
-                        locale="en-US"
+                        currency="PEN"
+                        locale="es-PE"
                         class="w-full"
                         :class="{ 'p-invalid': serverErrors.price }"
                     />

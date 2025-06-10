@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\ProductsExport;
+use App\Imports\ProductImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Productos\StoreProductRequest;
 use App\Http\Requests\Productos\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -73,6 +76,25 @@ class ProductController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Producto eliminado correctamente',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new ProductsExport, 'Productos.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new ProductImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los productos realizado correctamente.'
         ]);
     }   
 }

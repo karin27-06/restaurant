@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo producto" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsProduct para los botones de exportar e importar -->
+            <ToolsProduct @import-success="loadProducto"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="productoDialog" :style="{ width: '700px' }" header="Registro de productos" :modal="true">
@@ -73,6 +77,7 @@ import Tag from 'primevue/tag';
 import Textarea from 'primevue/textarea';
 import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
+import ToolsProduct from './toolsProduct.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -87,7 +92,18 @@ const producto = ref({
     idCategory: null,
     idAlmacen: null
 });
-
+// Método para recargar la lista de productos
+const loadProducto = async () => {
+    try {
+        const response = await axios.get('/producto');  // Aquí haces una solicitud GET para obtener los productos
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('producto-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los productos', life: 3000 });
+        console.error(error);
+    }
+}
 const categorias = ref([]);
 const almacenes = ref([]);
 

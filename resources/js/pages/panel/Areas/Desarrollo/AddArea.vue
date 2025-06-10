@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsArea para los botones de exportar e importar -->
+            <ToolsArea @import-success="loadArea"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="areaDialog" :style="{ width: '600px' }" header="Registro de áreas" :modal="true">
@@ -45,6 +49,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
+import ToolsArea from './toolsArea.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -56,7 +61,18 @@ const area = ref({
     name: '',
     state: true
 });
-
+// Método para recargar la lista de Areas
+const loadArea = async () => {
+    try {
+        const response = await axios.get('/area');  // Aquí haces una solicitud GET para obtener las areas
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('area-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar las areas', life: 3000 });
+        console.error(error);
+    }
+}
 function resetArea() {
     area.value = {
         name: '',
@@ -81,7 +97,7 @@ function guardarArea() {
     serverErrors.value = {};
 
     axios.post('/area', area.value)
-        .then(response => {
+        .then(() => {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Área registrada', life: 3000 });
             hideDialog();
             emit('area-agregada');

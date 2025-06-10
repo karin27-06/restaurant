@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo Piso" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsFloor para los botones de exportar e importar -->
+            <ToolsFloor @import-success="loadPiso"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="pisoDialog" :style="{ width: '600px' }" header="Registro de Piso" :modal="true">
@@ -57,6 +61,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
+import ToolsFloor from './toolsFloor.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -71,7 +76,18 @@ const piso = ref({
     description: '',
     state: true
 });
-
+// Método para recargar la lista de pisos
+const loadPiso = async () => {
+    try {
+        const response = await axios.get('/piso');  // Aquí haces una solicitud GET para obtener los pisos
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('piso-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los pisos', life: 3000 });
+        console.error(error);
+    }
+}
 function resetPiso() {
     piso.value = {
         name: '',

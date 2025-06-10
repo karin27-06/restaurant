@@ -2,8 +2,19 @@
 
 use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Reportes\AlmacenPDFController;
+use App\Http\Controllers\Reportes\EmployeeTypePDFController;
+use App\Http\Controllers\Reportes\FloorPDFController;
 use App\Http\Controllers\Reportes\CategoryPDFController;
+use App\Http\Controllers\Reportes\ProductPDFController;
+use App\Http\Controllers\Reportes\ClientTypePDFController;
+use App\Http\Controllers\Reportes\DishPDFController;
+use App\Http\Controllers\Reportes\InputPDFController;
+use App\Http\Controllers\Reportes\TablePDFController;
+use App\Http\Controllers\Reportes\PresentationPDFController;
+use App\Http\Controllers\Reportes\CustomerPDFController;
+use App\Http\Controllers\Reportes\EmployeePDFController;
 use App\Http\Controllers\Reportes\SupplierPDFController;
+use App\Http\Controllers\Reportes\AreaPDFController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
@@ -80,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{areas}', [AreasController::class, 'update'])->name('area.update');
         Route::delete('{areas}', [AreasController::class, 'destroy'])->name('area.destroy');
     });
-  #MESAS => BACKEND
+    #MESAS => BACKEND
     Route::prefix('mesa')->group(function () {
         Route::get('/', action: [TablesController::class, 'index'])->name('mesas.index');
         Route::post('/', [TablesController::class, 'store'])->name('mesas.store');
@@ -231,6 +242,72 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/export-pdf-suppliers', [SupplierPDFController::class, 'exportPDF'])->name('export-pdf-suppliers');
         // Ruta para importar desde Excel
         Route::post('/import-excel-suppliers', [SupplierController::class, 'importExcel'])->name('import-excel-suppliers');
+
+        #EXPORTACION Y IMPORTACION PISOS
+        Route::get('/export-excel-floors', [FloorController::class, 'exportExcel'])->name('export-excel-floors');
+        Route::get('/export-pdf-floors', [FloorPDFController::class, 'exportPDF'])->name('export-pdf-floors');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-floors', [FloorController::class, 'importExcel'])->name('import-excel-floors');
+
+        #EXPORTACION Y IMPORTACION AREAS
+        Route::get('/export-excel-areas', [AreasController::class, 'exportExcel'])->name('export-excel-areas');
+        Route::get('/export-pdf-areas', [AreaPDFController::class, 'exportPDF'])->name('export-pdf-areas');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-areas', [AreasController::class, 'importExcel'])->name('import-excel-areas');
+
+        #EXPORTACION Y IMPORTACION PRODUCTOS
+        Route::get('/export-excel-products', [ProductController::class, 'exportExcel'])->name('export-excel-products');
+        Route::get('/export-pdf-products', [ProductPDFController::class, 'exportPDF'])->name('export-pdf-products');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-products', [ProductController::class, 'importExcel'])->name('import-excel-products');
+
+        #EXPORTACION Y IMPORTACION INSUMOS
+        Route::get('/export-excel-inputs', [InputController::class, 'exportExcel'])->name('export-excel-inputs');
+        Route::get('/export-pdf-inputs', [InputPDFController::class, 'exportPDF'])->name('export-pdf-inputs');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-inputs', [InputController::class, 'importExcel'])->name('import-excel-inputs');
+
+        #EXPORTACION Y IMPORTACION PLATOS
+        Route::get('/export-excel-dishes', [DishesController::class, 'exportExcel'])->name('export-excel-dishes');
+        Route::get('/export-pdf-dishes', [DishPDFController::class, 'exportPDF'])->name('export-pdf-dishes');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-dishes', [DishesController::class, 'importExcel'])->name('import-excel-dishes');
+
+        #EXPORTACION Y IMPORTACION MESAS
+        Route::get('/export-excel-tables', [TablesController::class, 'exportExcel'])->name('export-excel-tables');
+        Route::get('/export-pdf-tables', [TablePDFController::class, 'exportPDF'])->name('export-pdf-tables');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-tables', [TablesController::class, 'importExcel'])->name('import-excel-tables');
+
+        #EXPORTACION Y IMPORTACION PRESENTACIONES
+        Route::get('/export-excel-presentations', [PresentationController::class, 'exportExcel'])->name('export-excel-presentations');
+        Route::get('/export-pdf-presentations', [PresentationPDFController::class, 'exportPDF'])->name('export-pdf-presentations');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-presentations', [PresentationController::class, 'importExcel'])->name('import-excel-presentations');
+
+        #EXPORTACION Y IMPORTACION TIPOS DE CLIENTES
+        Route::get('/export-excel-clientTypes', [ClientTypeController::class, 'exportExcel'])->name('export-excel-clientTypes');
+        Route::get('/export-pdf-clientTypes', [ClientTypePDFController::class, 'exportPDF'])->name('export-pdf-clientTypes');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-clientTypes', [ClientTypeController::class, 'importExcel'])->name('import-excel-clientTypes');
+
+        #EXPORTACION Y IMPORTACION TIPOS DE EMPLEADOS
+        Route::get('/export-excel-employeeTypes', [EmployeeTypeController::class, 'exportExcel'])->name('export-excel-employeeTypes');
+        Route::get('/export-pdf-employeeTypes', [EmployeeTypePDFController::class, 'exportPDF'])->name('export-pdf-employeeTypes');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-employeeTypes', [EmployeeTypeController::class, 'importExcel'])->name('import-excel-employeeTypes');
+    
+        #EXPORTACION Y IMPORTACION CLIENTES
+        Route::get('/export-excel-customers', [CustomerController::class, 'exportExcel'])->name('export-excel-customers');
+        Route::get('/export-pdf-customers', [CustomerPDFController::class, 'exportPDF'])->name('export-pdf-customers');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-customers', [CustomerController::class, 'importExcel'])->name('import-excel-customers');
+
+        #EXPORTACION Y IMPORTACION EMPLEADOS
+        Route::get('/export-excel-employees', [EmployeeController::class, 'exportExcel'])->name('export-excel-employees');
+        Route::get('/export-pdf-employees', [EmployeePDFController::class, 'exportPDF'])->name('export-pdf-employees');
+        // Ruta para importar desde Excel
+        Route::post('/import-excel-employees', [EmployeeController::class, 'importExcel'])->name('import-excel-employees');
     });
 }); 
 

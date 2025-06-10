@@ -1,7 +1,11 @@
 <template>
     <Toolbar class="mb-6">
         <template #start>
-            <Button label="Nuevo" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
+            <Button label="Nuevo plato" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
+        </template>
+        <template #end>
+            <!-- ToolsDish para los botones de exportar e importar -->
+            <ToolsDish @import-success="loadPlato"/>       
         </template>
     </Toolbar>
 
@@ -30,7 +34,7 @@
                 </div>
                 <div class="col-span-6">
                     <label for="price" class="block font-bold mb-3">Precio <span class="text-red-500">*</span></label>
-                    <InputNumber id="price" v-model="plato.price" mode="currency" currency="USD" locale="en-US"
+                    <InputNumber id="price" v-model="plato.price" mode="currency" currency="PEN" locale="es-PE"
                         class="w-full" />
                     <small v-if="submitted && (!plato.price || plato.price <= 0)" class="text-red-500">El precio debe
                         ser
@@ -81,6 +85,7 @@ import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
 import Select from 'primevue/select';
+import ToolsDish from './toolsDish.vue';
 
 const toast = useToast();
 const emit = defineEmits(['plato-agregado']);
@@ -97,7 +102,18 @@ const plato = ref({
     idCategory: null,
     state: true
 });
-
+// Método para recargar la lista de platos
+const loadPlato = async () => {
+    try {
+        const response = await axios.get('/plato');  // Aquí haces una solicitud GET para obtener los platos
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('plato-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los platos', life: 3000 });
+        console.error(error);
+    }
+}
 function resetPlato() {
     plato.value = {
         name: '',
@@ -125,7 +141,7 @@ function guardarPlato() {
     serverErrors.value = {};
 
     axios.post('/plato', plato.value)
-        .then(response => {
+        .then(() => {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Plato registrado', life: 3000 });
             hideDialog();
             emit('plato-agregado');

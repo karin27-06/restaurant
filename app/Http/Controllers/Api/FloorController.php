@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\FloorsExport;
+use App\Imports\FloorImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Pisos\StoreFloorRequest;
 use App\Http\Requests\Pisos\UpdateFloorRequest;
 use App\Http\Resources\FloorResource;
@@ -70,6 +73,25 @@ class FloorController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Piso eliminado correctamente',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new FloorsExport, 'Pisos.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new FloorImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los pisos realizado correctamente.'
         ]);
     }
 }

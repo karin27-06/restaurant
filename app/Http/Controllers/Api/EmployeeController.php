@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\EmployeesExport;
+use App\Imports\EmployeeImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Empleado\StoreEmployeeRequest;
 use App\Http\Requests\Empleado\UpdateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
@@ -63,6 +66,25 @@ class EmployeeController extends Controller{
         return response()->json([
             'status' => true,
             'message' => 'Empleado eliminado correctamente'
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new EmployeesExport, 'Empleados.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new EmployeeImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los empleados realizado correctamente.'
         ]);
     }
 }

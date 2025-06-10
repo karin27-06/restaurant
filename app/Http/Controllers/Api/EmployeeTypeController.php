@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\EmployeeTypesExport;
+use App\Imports\EmployeeTypeImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\EmployeeType;
 use App\Http\Requests\Tipo_Empleado\StoreEmployeeTypeRequest;
 use App\Http\Requests\Tipo_Empleado\UpdateEmployeeTypeRequest;
@@ -82,6 +85,25 @@ class EmployeeTypeController extends Controller{
         return response()->json([
             'state' => true,
             'message' => 'Tipo de empleado eliminado de manera correcta',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new EmployeeTypesExport, 'Tipo_empleados.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new EmployeeTypeImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los tipos de empleado realizada correctamente.'
         ]);
     }
 }

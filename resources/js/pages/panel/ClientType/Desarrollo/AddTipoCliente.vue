@@ -3,6 +3,10 @@
         <template #start>
             <Button label="Nuevo tipo de cliente" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
         </template>
+        <template #end>
+            <!-- ToolsClientType para los botones de exportar e importar -->
+            <ToolsClientType @import-success="loadTipoCliente"/>       
+        </template>
     </Toolbar>
 
     <Dialog v-model:visible="tipoClienteDialog" :style="{ width: '600px' }" header="Registro de tipo de cliente" :modal="true">
@@ -49,6 +53,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
+import ToolsClientType from './toolsClientType.vue';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -60,7 +65,18 @@ const tipoCliente = ref({
     name: '',
     state: true
 });
-
+// Método para recargar la lista de tipos de cliente
+const loadTipoCliente = async () => {
+    try {
+        const response = await axios.get('/tipos_clientes');  // Aquí haces una solicitud GET para obtener los tipos de cliente
+        console.log(response.data);
+        // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
+        emit('tipos_clientes-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los tipos de cliente', life: 3000 });
+        console.error(error);
+    }
+}
 function resetTipoCliente() {
     tipoCliente.value = {
         name: '',

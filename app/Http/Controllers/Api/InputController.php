@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Exports\InputsExport;
+use App\Imports\InputImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\Inputs\StoreInputRequest;
 use App\Http\Requests\Inputs\UpdateInputRequest;
 use App\Http\Resources\InputResource;
@@ -101,6 +104,25 @@ class InputController extends Controller
         return response()->json([
             'state' => true,
             'message' => 'Insumo eliminado correctamente',
+        ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new InputsExport, 'Insumos.xlsx');
+    }
+
+    #IMPORTACION
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+    
+        Excel::import(new InputImport, $request->file('archivo'));
+    
+        return response()->json([
+            'message' => 'Importación de los insumos realizado correctamente.'
         ]);
     }
 }
