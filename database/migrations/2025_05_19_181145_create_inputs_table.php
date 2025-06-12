@@ -11,11 +11,11 @@ class CreateInputsTable extends Migration
         Schema::create('inputs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('price', 10, 2);
-            $table->integer('quantity');
+            $table->decimal('priceBuy', 10, 2)->nullable();
+            $table->decimal('priceSale', 10, 2);
             $table->foreignId('idAlmacen')->constrained('almacens')->onDelete('cascade');
-            $table->foreignId('idSupplier')->constrained('suppliers')->onDelete('cascade');
             $table->text('description')->nullable();
+            $table->string(column: 'unitMeasure');
             $table->boolean('state')->default(true);
             $table->timestamps();
         });

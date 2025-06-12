@@ -11,12 +11,12 @@ class Input extends Model
 
     protected $fillable = [
         'name',
-        'price',
-        'quantity',
+        'priceBuy',
+        'priceSale',
         'idAlmacen',
-        'idSupplier',
         'description',
         'state',
+        'unitMeasure',
     ];
 
     public function almacen()
@@ -24,8 +24,5 @@ class Input extends Model
         return $this->belongsTo(Almacen::class, 'idAlmacen');
     }
 
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class, 'idSupplier');
-    }
+  
 }

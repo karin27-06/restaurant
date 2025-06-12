@@ -8,7 +8,7 @@
 
             <template v-else>
                 <div class="card">
-                    <AddInputs @tables-agregado="refrescarListado"/>
+                    <AddInputs @inputs-agregado="refrescarListado"/>
                     <ListInputs :refresh="refreshKey"/>
                 </div>
             </template>

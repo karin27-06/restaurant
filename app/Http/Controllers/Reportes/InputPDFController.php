@@ -18,10 +18,9 @@ class InputPDFController extends Controller
                 'id' => $input->id,
                 'name' => $input->name,
                 'description' => $input->description,
-                'price' => $input->price,
-                'quantity' => $input->quantity,
+                'priceBuy' => $input->priceBuy,    
+                'priceSale' => $input->priceSale,            
                 'almacen_name' => $input->almacen->name,
-                'supplier_name' => $input->supplier->name,
                 'state' => $input->state == 1 ? 'Activo' : 'Inactivo',
                 'created_at' => $input->created_at,
                 'updated_at' => $input->updated_at,
@@ -56,8 +55,9 @@ class InputPDFController extends Controller
         $pdf->SetFont('helvetica', 'B', 7);
         $pdf->SetFillColor(242, 242, 242);  // Color de fondo para los encabezados
 
-        $header = ['ID', 'Nombre', 'Descripcion', 'Precio', 'Cantidad', 'Almacen', 'Proveedor', 'Estado', 'Creación', 'Actualización'];
-        $widths = [5, 17, 35, 12, 13, 23, 30, 12, 23, 23]; // Tamaños adecuados para las celdas
+        $header = ['ID', 'Nombre', 'Descripcion', 'Precio de Compra', 'Precio de Venta', 'Almacen', 'Estado', 'Creación', 'Actualización'];
+$widths = [5, 15, 40, 20, 20, 25, 15, 25, 25]; // Tamaños ajustados para las celdas
+
         // Establecer los encabezados de la tabla en la primera página
         foreach ($header as $i => $col) {
             $pdf->MultiCell($widths[$i], 7, $col, 1, 'C', 1, 0);
@@ -81,17 +81,16 @@ class InputPDFController extends Controller
             }
 
             // Asegurarse de que las celdas no se sobrepasen
-            $pdf->SetFont('helvetica', '', 6);
-            $pdf->MultiCell($widths[0], 6, $input['id'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[1], 6, $input['name'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[2], 6, $input['description'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[3], 6, 'S/.' . number_format($input['price'], 2), 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[4], 6, $input['quantity'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[5], 6, $input['almacen_name'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[6], 6, $input['supplier_name'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[7], 6, $input['state'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[8], 6, $input['created_at'], 1, 'C', 0, 0);
-            $pdf->MultiCell($widths[9], 6, $input['updated_at'], 1, 'C', 0, 0);
+            $pdf->SetFont('helvetica', '', 7);
+            $pdf->MultiCell($widths[0], 7, $input['id'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[1], 7, $input['name'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[2], 7, $input['description'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[3], 7, 'S/.' . number_format($input['priceBuy'], 2), 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[4], 7, 'S/.' . number_format($input['priceSale'], 2), 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[5], 7, $input['almacen_name'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[6], 7, $input['state'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[7], 7, $input['created_at'], 1, 'C', 0, 0);
+            $pdf->MultiCell($widths[8], 7, $input['updated_at'], 1, 'C', 0, 0);
             $pdf->Ln();  // Salto de línea después de cada fila
         }
         // Detenemos cualquier salida previa si la hay

@@ -22,12 +22,12 @@ class StoreInputRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
+            'priceSale' => 'required|numeric|min:0',
+            'priceBuy' => 'nullable|numeric|min:0',
             'idAlmacen' => 'required|exists:almacens,id',
-            'idSupplier' => 'required|exists:suppliers,id',
             'description' => 'nullable|string',
             'state' => 'required|boolean',
+            'unitMeasure' => 'required|string|max:100',
         ];
     }
 
@@ -38,19 +38,12 @@ class StoreInputRequest extends FormRequest
             'name.string' => 'El nombre debe ser texto.',
             'name.max' => 'El nombre no debe exceder los 100 caracteres.',
 
-            'price.required' => 'El precio es obligatorio.',
-            'price.numeric' => 'El precio debe ser un número.',
-            'price.min' => 'El precio no puede ser negativo.',
-
-            'quantity.required' => 'La cantidad es obligatoria.',
-            'quantity.integer' => 'La cantidad debe ser un número entero.',
-            'quantity.min' => 'La cantidad no puede ser negativa.',
+            'priceSale.required' => 'El precio es obligatorio.',
+            'priceSale.numeric' => 'El precio debe ser un número.',
+            'priceSale.min' => 'El precio no puede ser negativo.',
 
             'idAlmacen.required' => 'El almacén es obligatorio.',
             'idAlmacen.exists' => 'El almacén seleccionado no existe.',
-
-            'idSupplier.required' => 'El proveedor es obligatorio.',
-            'idSupplier.exists' => 'El proveedor seleccionado no existe.',
 
             'description.string' => 'La descripción debe ser texto.',
 

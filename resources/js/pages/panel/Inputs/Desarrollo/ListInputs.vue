@@ -24,7 +24,6 @@ const input = ref({});
 const currentPage = ref(1);
 const selectedColumns = ref([]);
 const selectedAlmacen = ref(null);
-const selectedSupplier = ref(null);
 const selectedEstadoInput = ref(null);
 
 const pagination = ref({
@@ -32,6 +31,7 @@ const pagination = ref({
     perPage: 15,
     total: 0
 });
+const refreshCount = ref(0);  // Variable que se incrementa cuando se agrega un insumo
 
 const estadoInputOptions = ref([
     { name: 'TODOS', value: '' },
@@ -63,7 +63,6 @@ const loadInputs = async () => {
             per_page: pagination.value.perPage,
             search: globalFilterValue.value,
             almacen: selectedAlmacen?.value,
-            supplier: selectedSupplier?.value,
             state: selectedEstadoInput.value?.value ?? '',
         };
         const response = await axios.get('/insumo', { params });
@@ -83,7 +82,8 @@ const props = defineProps({
         required: true
     }
 });
-
+// Recarga la tabla cuando `refreshCount` cambia
+watch(refreshCount, loadInputs);
 watch(() => props.refresh, loadInputs);
 watch(() => selectedEstadoInput.value, () => {
     currentPage.value = 1;
@@ -156,14 +156,12 @@ onMounted(loadInputs);
 
         <Column selectionMode="multiple" style="width: 1rem" />
         <Column field="name" header="Nombre" sortable style="min-width: 10rem" />
-<Column field="price" header="Precio" sortable style="min-width: 10rem">
+
+<Column field="priceSale" header="Precio Venta" sortable style="min-width: 10rem">
   <template #body="{ data }">
-    {{ formatCurrency(data.price) }}
+    {{ formatCurrency(data.priceSale) }}
   </template>
-</Column>
-        <Column field="quantity" header="Cantidad" sortable style="min-width: 10rem" />
-        <Column field="almacen_name" header="Almacen" sortable style="min-width: 10rem" />
-        <Column field="supplier_name" header="Proveedor" sortable style="min-width: 10rem"/>
+</Column>        <Column field="almacen_name" header="Almacen" sortable style="min-width: 10rem" />
         <Column field="creacion" header="Creación" sortable style="min-width: 13rem" />
         <Column field="actualizacion" header="Actualización" sortable style="min-width: 13rem"/>
         <Column field="state" header="Estado" sortable>

@@ -19,7 +19,6 @@ const model = computed(() => [
         items: [
             hasPermission('ver productos') && { label: 'Productos', icon: 'pi pi-fw pi-box', to: '/productos' },
             hasPermission('ver categorias') && { label: 'Categorías', icon: 'pi pi-fw pi-tags', to: '/categorias' },
-            hasPermission('ver almacenes') && { label: 'Almacenes', icon: 'pi pi-fw pi-building', to: '/almacenes' },
             hasPermission('ver proveedores') && { label: 'Proveedores', icon: 'pi pi-fw pi-truck', to: '/proveedores' },
             hasPermission('ver insumos') && { label: 'Insumos', icon: 'pi pi-fw pi-box', to: '/insumos' },
         ].filter(Boolean),
@@ -31,8 +30,10 @@ const model = computed(() => [
         ].filter(Boolean),
     },
     {
-      label: 'Gestión de Clientes',
+      label: 'Gestión de Logistica',
       items: [
+       hasPermission('ver proveedores') && { label: 'Proveedores', icon: 'pi pi-fw pi-truck', to: '/proveedores' },
+            hasPermission('ver almacenes') && { label: 'Almacenes', icon: 'pi pi-fw pi-building', to: '/almacenes' },
       (hasPermission('ver clientes') || hasPermission('ver tipos_clientes')) && {
         label: 'Cliente',
         icon: 'pi pi-fw pi-users',

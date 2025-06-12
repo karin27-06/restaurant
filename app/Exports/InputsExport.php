@@ -23,10 +23,9 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $input->id,
             $input->name,
             $input->description,
-            $input->price,
-            $input->quantity,
+            $input->priceBuy,
+            $input->priceSale,
             $input->almacen->name,
-            $input->supplier->name,
             $input->state == 1 ? 'Activo' : 'Inactivo',
             $input->created_at->format('d-m-Y H:i:s'), // Fecha de creación formateada
             $input->updated_at->format('d-m-Y H:i:s')  // Fecha de actualización formateada
@@ -38,7 +37,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     return [
         ['LISTA DE INSUMOS', '', '', '', '', '', '', '', '', ''],  // Fila 1 con el título
         [],  // Fila 2 en blanco (espaciado entre el título y los encabezados)
-        ['ID', 'Nombre', 'Descripcion', 'Precio', 'Cantidad', 'Almacen', 'Proveedor', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
+        ['ID', 'Nombre', 'Descripcion', 'Precio de Compra', 'Precio de Venta', 'Almacen', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
     ];
 
     }
@@ -50,8 +49,8 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     public function styles(Worksheet $sheet)
     {
         // Estilos para las celdas
-        $sheet->mergeCells('A1:J1');
-        $sheet->getStyle('A1:J1')->applyFromArray([
+        $sheet->mergeCells('A1:I1');
+        $sheet->getStyle('A1:I1')->applyFromArray([
             'font' => ['bold' => true,'size' => 14],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
             'fill' => [
@@ -61,7 +60,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         ]);
 
         // Estilo para los encabezados de la tabla
-        $sheet->getStyle('A3:J3')->applyFromArray([
+        $sheet->getStyle('A3:I3')->applyFromArray([
         'font' => [
             'bold' => true,
         ],
@@ -81,7 +80,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         ]);
 
         // Estilo para las filas de datos
-        $sheet->getStyle('A4:J' . $sheet->getHighestRow())->applyFromArray([
+        $sheet->getStyle('A4:I' . $sheet->getHighestRow())->applyFromArray([
             'alignment' => [
                 'horizontal' => 'center',
                 'vertical' => 'center',
@@ -94,9 +93,11 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         ]);
         // Estilo específico para la columna de 'Costo' (columna C)
         $sheet->getStyle('D4:D' . ($sheet->getHighestRow()))->getNumberFormat()->setFormatCode('[$S/] #,##0.00');
+         // Estilo específico para la columna de 'Costo' (columna C)
+        $sheet->getStyle('E4:E' . ($sheet->getHighestRow()))->getNumberFormat()->setFormatCode('[$S/] #,##0.00');
         
         // Ajuste de las columnas para darles más espacio
-        foreach (range('A', 'J') as $column) {
+        foreach (range('A', 'I') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
         return [];
