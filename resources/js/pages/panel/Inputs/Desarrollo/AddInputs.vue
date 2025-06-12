@@ -30,29 +30,22 @@
                 <!-- precio -->
 
  <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-2">Precio <span class="text-red-500">*</span></label>
+                    <label for="priceSale" class="block font-bold mb-2">Precio Venta<span class="text-red-500">*</span></label>
                     <InputNumber
-                        id="price"
-                        v-model="input.price"
+                        id="priceSale"
+                        v-model="input.priceSale"
                         :minFractionDigits="2"
                         :maxFractionDigits="2"
                         mode="currency"
                         currency="PEN"
                         locale="es-PE"
                         class="w-full"
-                        :class="{ 'p-invalid': serverErrors.price }"
+                        :class="{ 'p-invalid': serverErrors.priceSale }"
                     />
-                    <small v-if="serverErrors.price" class="p-error">{{ serverErrors.price[0] }}</small>
+                    <small v-if="serverErrors.priceSale" class="p-error">{{ serverErrors.priceSale[0] }}</small>
                 </div>
 
-                <!-- Cantidad -->
-                <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Cantidad <span class="text-red-500">*</span></label>
-                    <InputText v-model.number="input.quantity" type="number" fluid min="1" />
-                    <small v-if="submitted && !input.quantity" class="text-red-500">La cantidad es obligatoria.</small>
-                    <small v-else-if="input.quantity < 1" class="text-red-500">Debe ser al menos 1.</small>
-                    <small v-else-if="serverErrors.quantity" class="text-red-500">{{ serverErrors.quantity[0] }}</small>
-                </div>
+           
 
                 <!-- Almacen -->
                 <div class="col-span-6">
@@ -69,19 +62,18 @@
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>
                 </div>
 
-                <!-- Proveedor -->
+                 <!-- Unidad de Medida -->
                 <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Proveedor <span class="text-red-500">*</span></label>
+                    <label class="mb-2 block font-bold">Unidad de Medida <span class="text-red-500">*</span></label>
                     <Select
-                        v-model="input.idSupplier"
-                        :options="suppliers"
+                        v-model="input.unitMeasure"
                         fluid
+                        :options="unitMeasures"
                         optionLabel="label"
                         optionValue="value"
-                        placeholder="Seleccione Proveedor"
+                        placeholder="Seleccione Unidad de Medida"
                     />
-                    <small v-if="submitted && !input.idSupplier" class="text-red-500">El Proveedor es obligatorio.</small>
-                    <small v-else-if="serverErrors.idSupplier" class="text-red-500">{{ serverErrors.idSupplier[0] }}</small>
+                    <small v-if="serverErrors.unitMeasure" class="p-error">{{ serverErrors.unitMeasure[0] }}</small>
                 </div>
 
                 <!-- description -->
@@ -122,37 +114,46 @@ const emit = defineEmits(['inputs-agregado']);
 
 const input = ref({
     name: '',
-    price: null,
-    quantity: null,
+    priceSale: null,
+    priceBuy: null,  
     state: true,
     idAlmacen: null,
-    idSupplier: null,
-    description: null
+    description: null,
+    unitMeasure: null,
 });
+
+// Listado de unidades de medida
+const unitMeasures = ref([
+    { label: 'Kilogramos', value: 'kg' },
+    { label: 'Gramos', value: 'g' },
+    { label: 'Litros', value: 'litros' },
+    { label: 'Mililitros', value: 'ml' },
+    { label: 'Unidad', value: 'unidad' }
+]);
+
 // Método para recargar la lista de insumos
 const loadInsumo = async () => {
     try {
         const response = await axios.get('/insumo');  // Aquí haces una solicitud GET para obtener los insumos
         console.log(response.data);
         // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
-        emit('insumo-agregada');  // Si quieres que un componente padre reciba la notificación de la actualización
+        emit('insumo-agregado');  // Si quieres que un componente padre reciba la notificación de la actualización
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los insumos', life: 3000 });
         console.error(error);
     }
 }
 const almacens = ref([]);
-const suppliers = ref([]);
 
 function resetInput() {
     input.value = {
     name: '',
-    price: null,
-    quantity: null,
+    priceSale: null,
+    priceBuy: null,
     state: true,
     idAlmacen: null,
-    idSupplier: null,
     description: null,
+    unitMeasure: null,
     };
     serverErrors.value = {};
     submitted.value = false;
@@ -161,7 +162,6 @@ function resetInput() {
 
 function openNew() {
     resetInput();
-    fetchSuppliers();
     fetchAlmacens();
     inputDialog.value = true;
 }
@@ -180,27 +180,19 @@ async function fetchAlmacens() {
     }
 }
 
-async function fetchSuppliers() {
-    try {
-        const { data } = await axios.get('/proveedor', { params: { state: 1 } });
-        suppliers.value = data.data.map((a) => ({ label: a.name, value: a.id }));
-    } catch (e) {
-        toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los proveedores' });
-    }
-}
+
 
 function guardarInput() {
     submitted.value = true;
     serverErrors.value = {};
   const dataToSend = {
             name: input.value.name,
-price: parseFloat(input.value.price),
-            quantity: input.value.quantity,
+            priceSale: parseFloat(input.value.priceSale),
+            priceBuy: input.value.priceBuy ? parseFloat(input.value.priceBuy) : null,
             state: input.value.state === true,
             idAlmacen: input.value.idAlmacen, 
-            idSupplier: input.value.idSupplier,            
             description: input.value.description,
-
+            unitMeasure: input.value.unitMeasure,
         };
       
     axios
@@ -209,6 +201,7 @@ price: parseFloat(input.value.price),
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Insumo registrado', life: 3000 });
             hideDialog();
             emit('inputs-agregado');
+            
         })
         .catch((error) => {
             if (error.response?.status === 422) {

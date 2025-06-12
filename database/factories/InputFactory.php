@@ -33,18 +33,23 @@ class InputFactory extends Factory
         'Pasta',
         'Caldo de pollo',
     ];
-
+    protected static $unitMeasures = [
+        'kg', 'g', 'litros', 'ml', 'unidad'
+    ];
     public function definition()
     {
+        $priceBuy = $this->faker->randomFloat(2, 1, 5); 
+        $priceSale = $this->faker->randomFloat(2, $priceBuy + 1.00, 10); 
 
         return [
             'name' => $this->faker->unique()->randomElement(self::$insumos),
-            'price' => $this->faker->randomFloat(2, 1, 500),
-            'quantity' => $this->faker->numberBetween(1, 200),
+            'priceBuy' => $priceBuy,
+            'priceSale' => $priceSale,
             'idAlmacen' => Almacen::inRandomOrder()->first()->id,
-            'idSupplier' => Supplier::inRandomOrder()->first()->id,
             'description' => $this->faker->sentence(),
             'state' => $this->faker->boolean(90),
+            'unitMeasure' => $this->faker->randomElement(self::$unitMeasures), 
+
         ];
     }
 }

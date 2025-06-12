@@ -22,10 +22,9 @@ class UpdateInputRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
+            'priceSale' => 'required|numeric|min:0',
             'idAlmacen' => 'required|exists:almacens,id',
-            'idSupplier' => 'required|exists:suppliers,id',
+            'unitMeasure' => 'required|string|max:100',
             'description' => 'nullable|string',
             'state' => ['required', 'boolean'],
         ];
@@ -37,20 +36,19 @@ class UpdateInputRequest extends FormRequest
             'name.required' => 'El nombre es obligatorio.',
             'name.string' => 'El nombre debe ser una cadena de texto.',
             'name.max' => 'El nombre no puede tener más de 100 caracteres.',
+            
 
-            'price.required' => 'El precio es obligatorio.',
-            'price.numeric' => 'El precio debe ser un número.',
-            'price.min' => 'El precio no puede ser negativo.',
+            'priceSale.required' => 'El precio es obligatorio.',
+            'priceSale.numeric' => 'El precio debe ser un número.',
+            'priceSale.min' => 'El precio no puede ser negativo.',
 
-            'quantity.required' => 'La cantidad es obligatoria.',
-            'quantity.integer' => 'La cantidad debe ser un número entero.',
-            'quantity.min' => 'La cantidad no puede ser negativa.',
+            'unitMeasure.required' => 'La Unidad de Medida es obligatorio.',
+            'unitMeasure.string' => 'La Unidad de Medida  debe ser una cadena de texto.',
+            'unitMeasure.max' => 'La Unidad de Medida no puede tener más de 100 caracteres.',
 
             'idAlmacen.required' => 'El almacén es obligatorio.',
             'idAlmacen.exists' => 'El almacén seleccionado no existe.',
 
-            'idSupplier.required' => 'El proveedor es obligatorio.',
-            'idSupplier.exists' => 'El proveedor seleccionado no existe.',
 
             'description.string' => 'La descripción debe ser texto.',
 

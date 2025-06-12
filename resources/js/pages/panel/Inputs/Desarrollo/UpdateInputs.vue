@@ -30,16 +30,13 @@ watch(dialogVisible, (val) => emit('update:visible', val));
 
 const input = ref({
     name: '',
-    price: null,
-    quantity: null,
+    priceSale: null,
     state: true,
     idAlmacen: null,
-    idSupplier: null,
     description: null,
 });
 
 const almacens = ref([]);
-const suppliers = ref([]);
 
 watch(
     () => props.visible,
@@ -47,7 +44,6 @@ watch(
         if (val && props.inputId) {
             await fetchInput();
             await fetchAlmacens();
-            await fetchSuppliers();
         }
     },
 );
@@ -59,11 +55,10 @@ const fetchInput = async () => {
         const i = data.input;
         input.value = {
             name: i.name,
-            price: i.price,
+            priceSale: i.priceSale,
             quantity: i.quantity,
             state: i.state,
             idAlmacen: i.idAlmacen,
-            idSupplier: i.idSupplier,
             description: i.description,
 
         };
@@ -89,14 +84,7 @@ const fetchAlmacens = async () => {
     }
 };
 
-const fetchSuppliers = async () => {
-    try {
-        const { data } = await axios.get('/proveedor', { params: { state: 1 } });
-        suppliers.value = data.data.map((a) => ({ label: a.name, value: a.id }));
-    } catch (e) {
-        toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los proveedores' });
-    }
-};
+
 
 const updateInput = async () => {
     submitted.value = true;
@@ -105,21 +93,17 @@ const updateInput = async () => {
     try {
         const dataToSend = {
             name: input.value.name,
-price: parseFloat(input.value.price),
-            quantity: input.value.quantity,
+priceSale: parseFloat(input.value.priceSale),
             state: input.value.state === true,
             idAlmacen: input.value.idAlmacen, 
-            idSupplier: input.value.idSupplier,            
             description: input.value.description,
 
         };
 console.log('Datos a enviar:', {
     name: input.value.name,
-    price: input.value.price,
-    quantity: input.value.quantity,
+    priceSale: input.value.priceSale,
     state: input.value.state === true,
     idAlmacen: input.value.idAlmacen,
-    idSupplier: input.value.idSupplier,
     description: input.value.description,
 });
         await axios.put(`/insumo/${props.inputId}`, dataToSend);
@@ -176,29 +160,22 @@ console.log('Datos a enviar:', {
                 <!-- precio -->
 
  <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-2">Precio <span class="text-red-500">*</span></label>
+                    <label for="priceSale" class="block font-bold mb-2">Precio de Venta <span class="text-red-500">*</span></label>
                     <InputNumber
-                        id="price"
-                        v-model="input.price"
+                        id="priceSale"
+                        v-model="input.priceSale"
                         :minFractionDigits="2"
                         :maxFractionDigits="2"
                         mode="currency"
                         currency="PEN"
                         locale="es-PE"
                         class="w-full"
-                        :class="{ 'p-invalid': serverErrors.price }"
+                        :class="{ 'p-invalid': serverErrors.priceSale }"
                     />
-                    <small v-if="serverErrors.price" class="p-error">{{ serverErrors.price[0] }}</small>
+                    <small v-if="serverErrors.priceSale" class="p-error">{{ serverErrors.priceSale[0] }}</small>
                 </div>
 
-                <!-- Cantidad -->
-                <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Cantidad <span class="text-red-500">*</span></label>
-                    <InputText v-model.number="input.quantity" type="number" fluid min="1" />
-                    <small v-if="submitted && !input.quantity" class="text-red-500">La cantidad es obligatoria.</small>
-                    <small v-else-if="input.quantity < 1" class="text-red-500">Debe ser al menos 1.</small>
-                    <small v-else-if="serverErrors.quantity" class="text-red-500">{{ serverErrors.quantity[0] }}</small>
-                </div>
+      
 
                 <!-- Almacen -->
                 <div class="col-span-6">
@@ -215,20 +192,6 @@ console.log('Datos a enviar:', {
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>
                 </div>
 
-                <!-- Proveedor -->
-                <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Proveedor <span class="text-red-500">*</span></label>
-                    <Select
-                        v-model="input.idSupplier"
-                        :options="suppliers"
-                        fluid
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Seleccione Proveedor"
-                    />
-                    <small v-if="submitted && !input.idSupplier" class="text-red-500">El Proveedor es obligatorio.</small>
-                    <small v-else-if="serverErrors.idSupplier" class="text-red-500">{{ serverErrors.idSupplier[0] }}</small>
-                </div>
 
                 <!-- description -->
                 <div class="col-span-12">
