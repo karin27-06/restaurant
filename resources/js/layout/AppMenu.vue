@@ -39,12 +39,21 @@ const model = computed(() => [
     {
       label: 'Gestión de Clientes',
       items: [
+       hasPermission('ver proveedores') && { label: 'Proveedores', icon: 'pi pi-fw pi-truck', to: '/proveedores' },
+      hasPermission('ver almacenes') && { label: 'Almacenes', icon: 'pi pi-fw pi-building', to: '/almacenes' },
       (hasPermission('ver clientes') || hasPermission('ver tipos_clientes')) && {
         label: 'Cliente',
         icon: 'pi pi-fw pi-users',
         items: [
           hasPermission('ver clientes') && { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/clientes' },
           hasPermission('ver tipos_clientes') && { label: 'Tipo de Clientes', icon: 'pi pi-fw pi-id-card', to: '/tipo_clientes' },
+        ].filter(Boolean),
+      },
+(hasPermission('ver movimientos') || hasPermission('ver movimientos')) && {
+        label: 'Movimientos',
+        icon: 'pi pi-fw pi-box layout-menuitem-icon',
+        items: [
+          hasPermission('ver facturas insumos') && { label: 'Compras de Insumos', icon: 'pi pi-fw pi-users', to: '/insumos/movimientos' },
         ].filter(Boolean),
       },
       ].filter(Boolean),

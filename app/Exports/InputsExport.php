@@ -23,6 +23,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $input->id,
             $input->name,
             $input->description,
+            $input->unitMeasure,
             $input->priceBuy,
             $input->priceSale,
             $input->almacen->name,
@@ -37,7 +38,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     return [
         ['LISTA DE INSUMOS', '', '', '', '', '', '', '', '', ''],  // Fila 1 con el título
         [],  // Fila 2 en blanco (espaciado entre el título y los encabezados)
-        ['ID', 'Nombre', 'Descripcion', 'Precio de Compra', 'Precio de Venta', 'Almacen', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
+        ['ID', 'Nombre', 'Descripcion', 'Unidad de Mdidad','Precio de Compra', 'Precio de Venta', 'Almacen', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
     ];
 
     }
@@ -49,8 +50,8 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     public function styles(Worksheet $sheet)
     {
         // Estilos para las celdas
-        $sheet->mergeCells('A1:I1');
-        $sheet->getStyle('A1:I1')->applyFromArray([
+        $sheet->mergeCells('A1:J');
+        $sheet->getStyle('A1:J')->applyFromArray([
             'font' => ['bold' => true,'size' => 14],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
             'fill' => [
@@ -80,7 +81,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         ]);
 
         // Estilo para las filas de datos
-        $sheet->getStyle('A4:I' . $sheet->getHighestRow())->applyFromArray([
+        $sheet->getStyle('A4:J' . $sheet->getHighestRow())->applyFromArray([
             'alignment' => [
                 'horizontal' => 'center',
                 'vertical' => 'center',
@@ -97,7 +98,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         $sheet->getStyle('E4:E' . ($sheet->getHighestRow()))->getNumberFormat()->setFormatCode('[$S/] #,##0.00');
         
         // Ajuste de las columnas para darles más espacio
-        foreach (range('A', 'I') as $column) {
+        foreach (range('A', 'J') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
         return [];

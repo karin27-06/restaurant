@@ -161,7 +161,14 @@ onMounted(loadInputs);
   <template #body="{ data }">
     {{ formatCurrency(data.priceSale) }}
   </template>
-</Column>        <Column field="almacen_name" header="Almacen" sortable style="min-width: 10rem" />
+</Column>  
+
+<Column field="unitMeasure" header="Unidad de Medida" sortable style="min-width: 10rem">
+  <template #body="{ data }">
+    {{ data.unitMeasure}}
+  </template>
+</Column>  
+      <Column field="almacen_name" header="Almacen" sortable style="min-width: 10rem" />
         <Column field="creacion" header="Creación" sortable style="min-width: 13rem" />
         <Column field="actualizacion" header="Actualización" sortable style="min-width: 13rem"/>
         <Column field="state" header="Estado" sortable>

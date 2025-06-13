@@ -101,5 +101,14 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar insumos']);
         Permission::create(['name' => 'eliminar insumos']);
         Permission::create(['name' => 'ver insumos']);
+
+        #seccion de movimientos
+        Permission::create(['name' => 'ver movimientos']);
+
+        #insumos
+        Permission::create(['name' => 'crear facturas insumos']);
+        Permission::create(['name' => 'editar facturas insumos']);
+        Permission::create(['name' => 'eliminar facturas insumos']);
+        Permission::create(['name' => 'ver facturas insumos']);
     }
 }

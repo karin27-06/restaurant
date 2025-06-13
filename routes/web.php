@@ -16,6 +16,7 @@ use App\Http\Controllers\Reportes\EmployeePDFController;
 use App\Http\Controllers\Reportes\SupplierPDFController;
 use App\Http\Controllers\Reportes\AreaPDFController;
 use App\Http\Controllers\Api\InputController;
+use App\Http\Controllers\Api\MovementInputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\CajaController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Web\DishesWebController;
 use App\Http\Controllers\Web\EmployeeWebController;
 use App\Http\Controllers\Web\FloorWebController;
 use App\Http\Controllers\Web\InputWebController;
+use App\Http\Controllers\Web\MovementInputsWebController;
 use App\Http\Controllers\Web\ProductWebController;
 use App\Http\Controllers\Web\TableWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
@@ -81,7 +83,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/platos', [DishesWebController::class,'index'])->name('index.view');
     Route::get('/mesas', [TableWebController::class,'index'])->name('index.view');
     Route::get('/insumos', [InputWebController::class,'index'])->name('index.view');
+    Route::get('/insumos/movimientos', action: [MovementInputsWebController::class, 'index'])->name('index.view');
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
+
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
@@ -110,6 +114,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{input}', [InputController::class, 'update'])->name('inputs.update');
         Route::delete('{input}', [InputController::class, 'destroy'])->name('inputs.destroy');
     });
+
+        
+        // INSUMOS -> MOVIMIENTOS (BACKEND)
+    Route::prefix('insumos/movimiento')->group(function () {
+    Route::get('/', [MovementInputController::class, 'index'])->name('movimientos.index');
+    Route::post('/', [MovementInputController::class, 'store'])->name('movimientos.store');
+    Route::get('{movementInput}', [MovementInputController::class, 'show'])->name('movimientos.show');
+    Route::put('{movementInput}', [MovementInputController::class, 'update'])->name('movimientos.update');
+    Route::delete('{movementInput}', [MovementInputController::class, 'destroy'])->name('movimientos.destroy');
+});
     #PLATOS => BACKEND
     Route::prefix('plato')->group(function () {
         Route::get('/', [DishesController::class, 'index'])->name('plato.index');
@@ -226,6 +240,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/{user}',[UsuariosController::class, 'update'])->name('usuarios.update');
         Route::delete('/{user}',[UsuariosController::class, 'destroy'])->name('usuarios.destroy');
     });
+
+
+
 
     #ROLES => BACKEND
     Route::prefix('rol')->group(function () {
