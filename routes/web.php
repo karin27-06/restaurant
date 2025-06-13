@@ -18,6 +18,7 @@ use App\Http\Controllers\Reportes\AreaPDFController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
+use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PresentationController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\AreasWebController;
+use App\Http\Controllers\Web\CajaWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\SupplierWebController;
 use App\Http\Controllers\Web\PresentationWebController;
@@ -73,6 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tipo_empleados', [EmployeeTypeWebController::class, 'index'])->name('index.view');
     Route::get('/pisos', [FloorWebController::class, 'index'])->name('index.view');
     Route::get('/productos', [ProductWebController::class, 'index'])->name('index.view');
+    Route::get('/cajas', [CajaWebController::class, 'index'])->name('index.view');
     Route::get('/usuario', [UsuarioWebController::class,'index'])->name('index.view');
     Route::get('/areas', [AreasWebController::class,'index'])->name('index.view');
     Route::get('/platos', [DishesWebController::class,'index'])->name('index.view');
@@ -204,6 +207,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{product}',[ProductController::class, 'show'])->name('Productos.show');
         Route::put('/{product}',[ProductController::class, 'update'])->name('Productos.update');
         Route::delete('/{product}',[ProductController::class, 'destroy'])->name('Productos.destroy');
+    });
+
+    #CAJAS -> BACKEND
+    Route::prefix('caja')->group(function(){
+        Route::get('/', [CajaController::class, 'index'])->name('Cajas.index');
+        Route::post('/',[CajaController::class, 'store'])->name('Cajas.store');
+        Route::get('/{caja}',[CajaController::class, 'show'])->name('Cajas.show');
+        Route::put('/{caja}',[CajaController::class, 'update'])->name('Cajas.update');
+        Route::delete('/{caja}',[CajaController::class, 'destroy'])->name('Cajas.destroy');
     });
 
     #USUARIOS -> BACKEND

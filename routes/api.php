@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\AreasController;
+use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\TablesController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('empleado', EmployeeController::class);
     Route::apiResource('piso', FloorController::class);
     Route::apiResource('producto', ProductController::class);
+    //Route::apiResource('caja', CajaController::class);
 
     #EXPORT API
     // Exportación a Excel
