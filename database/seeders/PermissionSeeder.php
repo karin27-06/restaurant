@@ -36,6 +36,11 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar productos']);
         Permission::create(['name' => 'eliminar productos']);
         Permission::create(['name' => 'ver productos']);
+        #cajas
+        Permission::create(['name' => 'crear cajas']);
+        Permission::create(['name' => 'editar cajas']);
+        Permission::create(['name' => 'eliminar cajas']);
+        Permission::create(['name' => 'ver cajas']);
         #Almacenes
         Permission::create(['name' => 'crear almacenes']);
         Permission::create(['name' => 'editar almacenes']);
