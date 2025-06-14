@@ -24,6 +24,7 @@ class StoreInputRequest extends FormRequest
             'name' => 'required|string|max:100',
             'priceSale' => 'required|numeric|min:0',
             'priceBuy' => 'nullable|numeric|min:0',
+            'quantityUnitMeasure' => 'nullable|numeric|min:0',
             'idAlmacen' => 'required|exists:almacens,id',
             'description' => 'nullable|string',
             'state' => 'required|boolean',
@@ -41,6 +42,10 @@ class StoreInputRequest extends FormRequest
             'priceSale.required' => 'El precio es obligatorio.',
             'priceSale.numeric' => 'El precio debe ser un número.',
             'priceSale.min' => 'El precio no puede ser negativo.',
+                
+            'quantityUnitMeasure.required' => 'La cantidad de medida es obligatorio.',
+            'quantityUnitMeasure.numeric' => 'La cantidad de medida  debe ser un número.',
+            'quantityUnitMeasure.min' => 'La cantidad de medida  no puede ser negativo.',
 
             'idAlmacen.required' => 'El almacén es obligatorio.',
             'idAlmacen.exists' => 'El almacén seleccionado no existe.',

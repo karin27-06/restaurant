@@ -144,7 +144,7 @@ onMounted(loadCajas);
                 <Tag :value="data.state ?  'Sin ocupar':'Ocupada' " :severity="getSeverity(data.state)" />
             </template>
         </Column>
-        <Column field="vendedor" header="Vendedor" sortable style="min-width: 20rem" />
+        <Column field="vendedorNombre" header="Vendedor" sortable style="min-width: 20rem" />
         <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="{ data }">
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarCaja(data)" />

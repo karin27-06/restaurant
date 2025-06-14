@@ -40,11 +40,13 @@ class InputFactory extends Factory
     {
         $priceBuy = $this->faker->randomFloat(2, 1, 5); 
         $priceSale = $this->faker->randomFloat(2, $priceBuy + 1.00, 10); 
+        $quantity = $this->faker->randomFloat(2, 1, 5); 
 
         return [
             'name' => $this->faker->unique()->randomElement(self::$insumos),
             'priceBuy' => $priceBuy,
             'priceSale' => $priceSale,
+            'quantityUnitMeasure'=>$quantity,
             'idAlmacen' => Almacen::inRandomOrder()->first()->id,
             'description' => $this->faker->sentence(),
             'state' => $this->faker->boolean(90),

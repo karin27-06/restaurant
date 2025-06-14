@@ -15,6 +15,7 @@ class InputResource extends JsonResource
             'name' => $this->name,
             'priceBuy' => $this->priceBuy,
             'priceSale' => $this->priceSale,
+            'quantityUnitMeasure'=>$this->quantityUnitMeasure,
             'idAlmacen' => $this->idAlmacen,
             'almacen_name'=>$this->almacen?->name,
             'description' => $this->description,

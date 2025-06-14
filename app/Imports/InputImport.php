@@ -15,6 +15,7 @@ class InputImport implements ToCollection, WithHeadingRow
             Input::create([
                 'name' => $row['nombre'],
                 'description' => $row['descripción'],
+                'unitMeasure' => $row['Unidad de Medida'],
                 'priceBuy' => $row['precio Compra'],
                 'priceSale' => $row['precio Venta'],
                 'idAlmacen' => $row['almacen'],

@@ -64,14 +64,12 @@ const fetchCaja = async () => {
 
 const fetchVendedores = async () => {
     try {
-        const { data } = await axios.get('/usuarios', { params: { state: 1 } });
-        // Modificando los datos para que el label sea el nombre completo del vendedor
-        vendedores.value = data.map(v => ({ label: v.name1, value: v.id }));
+        const { data } = await axios.get('/usuarios', { params: { status: true } });
+        vendedores.value = data.data.map((c) => ({ label: c.name1, value: c.id }));
     } catch (e) {
         toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'No se pudieron cargar los vendedores' });
     }
 };
-
 
 const updateCaja = async () => {
     submitted.value = true;
@@ -117,40 +115,41 @@ const updateCaja = async () => {
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" header="Editar Caja" modal :closable="true" :closeOnEscape="true" :style="{ width: '500px' }">
-        <div class="flex flex-col gap-6">
-            <div class="grid grid-cols-12 gap-4">
-                <!-- Número de caja -->
-                <div class="col-span-9">
-                    <label class="block font-bold mb-2">Número de caja</label>
-                    <InputText v-model="caja.numero_cajas" readonly fluid />
-                </div>
-
-                <!-- Estado -->
-                <div class="col-span-2">
-                    <label class="block font-bold mb-2">Estado <span class="text-red-500">*</span></label>
-                    <div class="flex items-center gap-3">
-                        <Checkbox v-model="caja.state" :binary="true" fluid />
-                        <Tag :value="caja.state ? 'Sin ocupar' : 'Ocupada'"
-                            :severity="caja.state ? 'success' : 'danger'" />
-                    </div>
-                </div>
-
-                <!-- Vendedor-->
-                <div class="col-span-12">
-                    <label class="block font-bold mb-2">Vendedor <span class="text-red-500">*</span></label>
-                    <Select v-model="caja.idVendedor" :options="vendedores" optionLabel="label"
-                        optionValue="value" placeholder="Seleccione vendedor" fluid
-                        :class="{ 'p-invalid': serverErrors.idVendedor }" />
-                    <small v-if="serverErrors.idVendedor" class="p-error">{{ serverErrors.idVendedor[0] }}</small>
-                </div>
-
+  <Dialog v-model:visible="dialogVisible" header="Editar Caja" modal :closable="true" :closeOnEscape="true" :style="{ width: '500px' }">
+    <div class="flex flex-col gap-6">
+        <div class="grid grid-cols-12 gap-4">
+            <!-- Número de caja -->
+            <div class="col-span-9">
+                <label class="block font-bold mb-2">Número de caja</label>
+                <InputText v-model="caja.numero_cajas" readonly fluid />
             </div>
-        </div>
 
-        <template #footer>
-            <Button label="Cancelar" icon="pi pi-times" text @click="dialogVisible = false" />
-            <Button label="Guardar" icon="pi pi-check" @click="updateCaja" :loading="loading" />
-        </template>
-    </Dialog>
+            <!-- Estado -->
+            <div class="col-span-2">
+                <label class="block font-bold mb-2">Estado <span class="text-red-500">*</span></label>
+                <div class="flex items-center gap-3">
+                    <Checkbox v-model="caja.state" :binary="true" fluid />
+                    <Tag :value="caja.state ? 'Sin ocupar' : 'Ocupada'"
+                        :severity="caja.state ? 'success' : 'danger'" />
+                </div>
+            </div>
+
+            <!-- Vendedor-->
+            <div class="col-span-12">
+                <label class="block font-bold mb-2">Vendedor <span class="text-red-500">*</span></label>
+                <Select v-model="caja.idVendedor" :options="vendedores" optionLabel="label"
+                    optionValue="value" placeholder="Seleccione vendedor" fluid
+                    :class="{ 'p-invalid': serverErrors.idVendedor }" @change="onVendedorSelect" />
+                <small v-if="serverErrors.idVendedor" class="p-error">{{ serverErrors.idVendedor[0] }}</small>
+            </div>
+
+        </div>
+    </div>
+
+    <template #footer>
+        <Button label="Cancelar" icon="pi pi-times" text @click="dialogVisible = false" />
+        <Button label="Guardar" icon="pi pi-check" @click="updateCaja" :loading="loading" />
+    </template>
+</Dialog>
+
 </template>

@@ -9,6 +9,7 @@ import { useToast } from 'primevue/usetoast';
 import Tag from 'primevue/tag';
 import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select';
+import MultiSelect from 'primevue/multiselect'; // Importar MultiSelect de PrimeVue
 
 const props = defineProps({
     visible: Boolean,
@@ -22,6 +23,8 @@ const toast = useToast();
 const loading = ref(false);
 const loadingCategories = ref(false);
 const categories = ref([]);
+const insumos = ref([]); // Lista para almacenar los insumos
+const loadingInsumos = ref(false);
 
 const dialogVisible = ref(props.visible);
 watch(() => props.visible, (val) => dialogVisible.value = val);
@@ -32,22 +35,16 @@ const plato = ref({
     price: 0,
     quantity: 0,
     idCategory: null,
-    state: false
+    state: true,
+    insumos: [] // Campo para almacenar los insumos seleccionados
 });
-
-watch(() => [props.visible, props.PlatoId], ([newVisible, newPlatoId]) => {
-    if (newVisible && newPlatoId) {
-        fetchPlato();
-    }
-}, { immediate: true });
 
 const fetchPlato = async () => {
     loading.value = true;
-    
+
     try {
         const response = await axios.get(`/plato/${props.PlatoId}`);
         
-        // Reemplazar "data" con "dishes"
         if (response.data && response.data.dishes) {
             const data = response.data.dishes;
             plato.value = {
@@ -55,7 +52,9 @@ const fetchPlato = async () => {
                 price: parseFloat(data.price) || 0,
                 quantity: data.quantity || 0,
                 idCategory: data.idCategory || null,
-                state: data.state === true
+                state: data.state === true,
+                // Asegúrate de que los insumos seleccionados se asignen correctamente
+                insumos: data.insumos.map(insumo => insumo.id) || [] // Asegúrate de que insumos contenga los IDs de los insumos seleccionados
             };
         } else {
             toast.add({
@@ -77,6 +76,16 @@ const fetchPlato = async () => {
     }
 };
 
+
+
+// Asegurarte de que el fetchPlato se ejecute correctamente
+watch(() => [props.visible, props.PlatoId], ([newVisible, newPlatoId]) => {
+    if (newVisible && newPlatoId) {
+        fetchPlato(); // Llamada a fetchPlato después de asegurarse que los datos estén listos
+    }
+}, { immediate: true });
+
+// Cargar las categorías
 const loadCategories = async () => {
     loadingCategories.value = true;
     try {
@@ -99,10 +108,12 @@ const loadCategories = async () => {
     }
 };
 
+// Actualizar el plato
 const updatePlato = async () => {
     submitted.value = true;
     serverErrors.value = {};
 
+    // Validación de los campos
     if (!plato.value.name.trim()) {
         serverErrors.value.name = ['El nombre es requerido'];
         return;
@@ -123,17 +134,21 @@ const updatePlato = async () => {
         return;
     }
 
+    // Crear el objeto con los datos del plato
+    const platoData = {
+        name: plato.value.name,
+        price: plato.value.price,
+        quantity: plato.value.quantity,
+        idCategory: plato.value.idCategory,
+        state: plato.value.state === true,
+        insumos: plato.value.insumos // Aquí añadimos los insumos seleccionados
+    };
+
     try {
-        const platoData = {
-            name: plato.value.name,
-            price: plato.value.price,
-            quantity: plato.value.quantity,
-            idCategory: plato.value.idCategory,
-            state: plato.value.state === true
-        };
+        // Hacemos la solicitud PUT para actualizar el plato
+        const response = await axios.put(`/plato/${props.PlatoId}`, platoData);
 
-        await axios.put(`/plato/${props.PlatoId}`, platoData);
-
+        // Si la actualización es exitosa
         toast.add({
             severity: 'success',
             summary: 'Actualizado',
@@ -144,7 +159,7 @@ const updatePlato = async () => {
         dialogVisible.value = false;
         emit('updated');
     } catch (error) {
-        
+        // Manejo de errores
         if (error.response && error.response.data?.errors) {
             serverErrors.value = error.response.data.errors;
             toast.add({
@@ -164,8 +179,36 @@ const updatePlato = async () => {
     }
 };
 
+const cargarInsumos = async () => {
+    loadingInsumos.value = true;
+    try {
+        const response = await axios.get('/insumo');
+        console.log(response.data); // Verifica la estructura de los datos aquí
+        if (response.data && response.data.data) {
+            // Mapea los insumos correctamente
+            insumos.value = response.data.data.map(insumo => ({
+                id: insumo.id,
+                name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`, // Formato adecuado para mostrar
+            }));
+        }
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudieron cargar los insumos',
+            life: 3000
+        });
+    } finally {
+        loadingInsumos.value = false;
+    }
+};
+
+
 onMounted(() => {
     loadCategories();
+    cargarInsumos(); // Cargar insumos al montar el componente
+    console.log(insumos.value); // Verifica si los insumos se cargaron correctamente
+
 });
 </script>
 
@@ -240,6 +283,27 @@ onMounted(() => {
                         <Checkbox v-model="plato.state" :binary="true" inputId="state" />
                         <Tag :value="plato.state ? 'Activo' : 'Inactivo'" :severity="plato.state ? 'success' : 'danger'" />
                     </div>
+
+                    
+                </div>
+                   <!-- Campo para seleccionar insumos -->
+                <div class="col-span-12">
+                    <label for="insumos" class="block font-bold mb-3">Insumos</label>
+      <MultiSelect 
+    v-model="plato.insumos" 
+    :options="insumos" 
+    optionLabel="name" 
+    optionValue="id" 
+    placeholder="Seleccionar insumos" 
+    :loading="loadingInsumos" 
+    display="chip" 
+    class="w-full" 
+/>
+
+
+
+                    <small v-if="submitted && plato.insumos.length === 0" class="text-red-500">Debe seleccionar al menos un insumo.</small>
+                    <small v-else-if="serverErrors.insumos" class="text-red-500">{{ serverErrors.insumos[0] }}</small>
                 </div>
             </div>
         </div>

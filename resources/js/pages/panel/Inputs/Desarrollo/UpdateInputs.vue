@@ -34,6 +34,7 @@ const input = ref({
     state: true,
     idAlmacen: null,
     description: null,
+    unitMeasure: null,
 });
 
 const almacens = ref([]);
@@ -60,6 +61,7 @@ const fetchInput = async () => {
             state: i.state,
             idAlmacen: i.idAlmacen,
             description: i.description,
+            unitMeasure: i.unitMeasure,
 
         };
     } catch (error) {
@@ -74,7 +76,14 @@ const fetchInput = async () => {
     }
     
 };
-
+// Listado de unidades de medida
+const unitMeasures = ref([
+    { label: 'Kilogramos', value: 'kg' },
+    { label: 'Gramos', value: 'g' },
+    { label: 'Litros', value: 'litros' },
+    { label: 'Mililitros', value: 'ml' },
+    { label: 'Unidad', value: 'unidad' },
+]);
 const fetchAlmacens = async () => {
     try {
         const { data } = await axios.get('/almacen', { params: { state: 1 } });
@@ -175,7 +184,37 @@ console.log('Datos a enviar:', {
                     <small v-if="serverErrors.priceSale" class="p-error">{{ serverErrors.priceSale[0] }}</small>
                 </div>
 
-      
+       <!-- Cantidad por medida -->
+
+                <div class="col-span-6">
+                    <label for="quantityUnitMeasure" class="mb-2 block font-bold">Cantidad por medida<span class="text-red-500">*</span></label>
+                    <InputNumber
+                        id="quantityUnitMeasure"
+                        v-model="input.quantityUnitMeasure"
+                        :minFractionDigits="2"
+                        :maxFractionDigits="2"
+                        mode="currency"
+                        currency="PEN"
+                        locale="es-PE"
+                        class="w-full"
+                        :class="{ 'p-invalid': serverErrors.quantityUnitMeasure }"
+                    />
+                    <small v-if="serverErrors.quantityUnitMeasure" class="p-error">{{ serverErrors.quantityUnitMeasure[0] }}</small>
+                </div>
+<!-- Unidad de Medida -->
+                <div class="col-span-6">
+                    <label class="mb-2 block font-bold">Unidad de Medida <span class="text-red-500">*</span></label>
+                    <Select
+                        v-model="input.unitMeasure"
+                        fluid
+                        :options="unitMeasures"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccione Unidad de Medida"
+                    />
+                    <small v-if="serverErrors.unitMeasure" class="p-error">{{ serverErrors.unitMeasure[0] }}</small>
+                </div>
+             
 
                 <!-- Almacen -->
                 <div class="col-span-6">

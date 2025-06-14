@@ -13,6 +13,7 @@ class CreateInputsTable extends Migration
             $table->string('name');
             $table->decimal('priceBuy', 10, 2)->nullable();
             $table->decimal('priceSale', 10, 2);
+            $table->decimal('quantityUnitMeasure', 10, 2);
             $table->foreignId('idAlmacen')->constrained('almacens')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->string(column: 'unitMeasure');

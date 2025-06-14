@@ -11,7 +11,8 @@ use Spatie\Permission\Models\Role;
 class UserSeeder extends Seeder{
     public function run(): void{
         $adminRole = Role::where('name', 'administrador')->first();
-        $personalRole = Role::where('name', 'personal')->first();
+        $personalRole = Role::where('name', operator: 'personal')->first();
+        $vendedorRole = Role::where('name', operator: 'vendedor')->first();
         $permissions = Permission::all();
         if ($adminRole) {
             $adminRole->syncPermissions($permissions);
