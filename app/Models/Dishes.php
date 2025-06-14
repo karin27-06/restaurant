@@ -18,4 +18,10 @@ class Dishes extends Model
     public function category(){
         return $this->belongsTo(Category::class, 'idCategory');
     }
+
+ public function insumos()
+    {
+        return $this->belongsToMany(Input::class, 'dish_input', 'dish_id', 'input_id');
+    }
+    
 }

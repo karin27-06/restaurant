@@ -171,8 +171,6 @@ const getMovementTypeLabel = (value) => {
         <Column field="updated_at" header="Actualización" sortable style="min-width: 10rem"/>
         <Column field="accions" header="Acciones" :exportable="false" style="min-width: 12rem">
             <template #body="{ data }">
-                  <Button icon="pi pi-eye" outlined rounded class="mr-2" @click="verDetalle(data)" />
-
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarMovementInput(data)" />
                 <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarDeleteMovementInput(data)" />
             </template>

@@ -31,22 +31,35 @@ class DishesController extends Controller{
 
         return DishesResource::collection($query->paginate($perPage));
     }
-    public function store(StoreDishesRequests $request){
-        Gate::authorize('create', Dishes::class);
-        $validated = $request->validated();
-        $exists = Dishes::whereRaw('LOWER(name) = ?', [$validated['name']])->exists();
-        if ($exists) {
-            return response()->json([
-                'errors' => ['name' => ['Este nombre ya está registrado.']]
-            ], 422);
-        }
-        $dishes = Dishes::create($validated);
+    public function store(StoreDishesRequests $request)
+{
+    Gate::authorize('create', Dishes::class);
+    $validated = $request->validated();
+
+    // Verificar si el plato con el mismo nombre ya existe (sin importar mayúsculas y minúsculas)
+    $exists = Dishes::whereRaw('LOWER(name) = ?', [$validated['name']])->exists();
+    if ($exists) {
         return response()->json([
-            'state' => true,
-            'message' => 'Plato registrado correctamente.',
-            'dishes' => $dishes
-        ]);
+            'errors' => ['name' => ['Este nombre ya está registrado.']]
+        ], 422);
     }
+
+    // Crear el plato
+    $dishes = Dishes::create($validated);
+
+    // Verificar si se enviaron insumos (inputs)
+    if ($request->has('insumos') && !empty($request->insumos)) {
+        // Asociar los insumos seleccionados al plato
+        $dishes->insumos()->sync($request->insumos); // `sync` mantiene la relación muchos a muchos
+    }
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Plato registrado correctamente.',
+        'dishes' => $dishes
+    ]);
+}
+
     public function show(Dishes $dishes){
         Gate::authorize('view', $dishes);
         return response()->json([
@@ -55,24 +68,38 @@ class DishesController extends Controller{
             'dishes' => new DishesResource($dishes),
         ], 200);
     }
-    public function update(UpdateDishesRequests $request, Dishes $dishes){
-        Gate::authorize('update', $dishes);
-        $validated = $request->validated();
-        $exists = Dishes::whereRaw('LOWER(name) = ?', [$validated['name']])
-            ->where('id', '!=', $dishes->id)
-            ->exists();
-        if ($exists) {
-            return response()->json([
-                'errors' => ['name' => ['Este nombre ya está registrado.']]
-            ], 422);
-        }
-        $dishes->update($validated);
+public function update(UpdateDishesRequests $request, Dishes $dishes)
+{
+    Gate::authorize('update', $dishes);
+
+    $validated = $request->validated();
+
+    // Verificar si el plato con el mismo nombre ya existe (sin importar mayúsculas y minúsculas)
+    $exists = Dishes::whereRaw('LOWER(name) = ?', [$validated['name']])
+        ->where('id', '!=', $dishes->id)
+        ->exists();
+
+    if ($exists) {
         return response()->json([
-            'state' => true,
-            'message' => 'Patos actualizado correctamente.',
-            'dishes' => $dishes->refresh()
-        ]);
+            'errors' => ['name' => ['Este nombre ya está registrado.']]
+        ], 422);
     }
+
+    // Actualizamos el plato
+    $dishes->update($validated);
+
+    // Si los insumos fueron proporcionados, actualizamos la relación
+    if ($request->has('insumos') && !empty($request->insumos)) {
+        $dishes->insumos()->sync($request->insumos); // Sincroniza los insumos seleccionados
+    }
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Plato actualizado correctamente',
+        'dishes' => new DishesResource($dishes->refresh())
+    ]);
+}
+
     public function destroy(Dishes $dishes){
         Gate::authorize('delete', $dishes);
         $dishes->delete();
