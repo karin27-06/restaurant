@@ -154,7 +154,8 @@ onMounted(loadInputs);
             </div>
         </template>
 
-        <Column selectionMode="multiple" style="width: 1rem" />
+                <Column selectionMode="multiple" style="width: 1rem" :exportable="false"></Column>
+
         <Column field="name" header="Nombre" sortable style="min-width: 10rem" />
 
 <Column field="priceSale" header="Precio Venta" sortable style="min-width: 10rem">
@@ -162,6 +163,8 @@ onMounted(loadInputs);
     {{ formatCurrency(data.priceSale) }}
   </template>
 </Column>  
+        <Column field="quantityUnitMeasure" header="Cantidad" sortable style="min-width: 10rem" />
+
 
 <Column field="unitMeasure" header="Unidad de Medida" sortable style="min-width: 10rem">
   <template #body="{ data }">

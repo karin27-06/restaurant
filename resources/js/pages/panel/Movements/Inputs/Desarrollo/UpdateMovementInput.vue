@@ -56,6 +56,7 @@ watch(
 watch(dialogVisible, (val) => emit('update:visible', val));
 
 const movementInput = ref({
+    idmovement: '',
     code: '',
     issueDate: null,
     executionDate: null,
@@ -83,6 +84,7 @@ const fetchMovementInput = async () => {
         const { data } = await axios.get(`/insumos/movimiento/${props.movementInputId}`);
         const i = data.movement;
         movementInput.value = {
+            idmovement: i.id,
             code: i.code,
             issueDate: new Date(i.issue_date.split('-').reverse().join('-')), // Convierte a Date
             executionDate: new Date(i.execution_date.split('-').reverse().join('-')), // Convierte a Date
@@ -135,7 +137,7 @@ const updateMovementInput = async () => {
     try {
         // Prepara los datos para enviar
         const dataToSend = {
-            code: movementInput.value.code,  // Este valor debe ser un string simple
+            code: movementInput.value.code, // Este valor debe ser un string simple
             issue_date: movementInput.value.issueDate.toISOString().split('T')[0], // Formatea solo la fecha
             execution_date: movementInput.value.executionDate.toISOString().split('T')[0], // Formatea solo la fecha
             supplier_id: movementInput.value.supplierId,
@@ -146,12 +148,11 @@ const updateMovementInput = async () => {
             payment_type: movementInput.value.paymentType,
         };
 
-        // Agregar un log para verificar los datos enviados
-        console.log("Datos enviados:", dataToSend);
+
 
         // Enviar la solicitud PUT
         const response = await axios.put(`/insumos/movimiento/${props.movementInputId}`, dataToSend);
-        
+
         if (response.status === 200) {
             toast.add({
                 severity: 'success',
@@ -159,7 +160,7 @@ const updateMovementInput = async () => {
                 detail: 'Movimiento de insumo actualizado correctamente',
                 life: 3000,
             });
-
+            window.location.href = `/insumos/movimientos/detalles/${props.movementInputId}`;
             // Emitir evento para cerrar el diálogo
             emit('updated');
             dialogVisible.value = false; // Cerrar el diálogo
@@ -178,22 +179,21 @@ const updateMovementInput = async () => {
     }
 };
 
-
 // Función para convertir el tipo de movimiento ('FACTURA', 'BOLETA', 'GUIA') a un valor numérico
 function getMovementTypeValueNum(type) {
     const types = {
-        'FACTURA': 1,
-        'GUIA': 2,
-        'BOLETA': 3
+        FACTURA: 1,
+        GUIA: 2,
+        BOLETA: 3,
     };
-    return types[type] || 0;  // Default to 0 if the type is invalid
+    return types[type] || 0; // Default to 0 if the type is invalid
 }
 
 function getIgvStateValueNum(igvState) {
     if (igvState === undefined || igvState === null) {
-        return null;  // Deja vacío si no tiene datos
+        return null; // Deja vacío si no tiene datos
     }
-    return igvState === 'INCLUIDO' ? 0 : 1;  // Convert 'INCLUIDO' to 0, 'NO INCLUIDO' to 1
+    return igvState === 'INCLUIDO' ? 0 : 1; // Convert 'INCLUIDO' to 0, 'NO INCLUIDO' to 1
 }
 </script>
 

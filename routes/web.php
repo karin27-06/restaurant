@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\MovementInputDetailController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\AreasWebController;
 use App\Http\Controllers\Web\CajaWebController;
@@ -50,6 +51,7 @@ use App\Http\Controllers\Web\MovementInputsWebController;
 use App\Http\Controllers\Web\ProductWebController;
 use App\Http\Controllers\Web\TableWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
+use App\Http\Controllers\Web\MovementInputDetailWebController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -78,13 +80,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pisos', [FloorWebController::class, 'index'])->name('index.view');
     Route::get('/productos', [ProductWebController::class, 'index'])->name('index.view');
     Route::get('/cajas', [CajaWebController::class, 'index'])->name('index.view');
-    Route::get('/usuario', [UsuarioWebController::class,'index'])->name('index.view');
-    Route::get('/areas', [AreasWebController::class,'index'])->name('index.view');
-    Route::get('/platos', [DishesWebController::class,'index'])->name('index.view');
-    Route::get('/mesas', [TableWebController::class,'index'])->name('index.view');
-    Route::get('/insumos', [InputWebController::class,'index'])->name('index.view');
+    Route::get('/usuario', [UsuarioWebController::class, 'index'])->name('index.view');
+    Route::get('/areas', [AreasWebController::class, 'index'])->name('index.view');
+    Route::get('/platos', [DishesWebController::class, 'index'])->name('index.view');
+    Route::get('/mesas', [TableWebController::class, 'index'])->name('index.view');
+    Route::get('/insumos', [InputWebController::class, 'index'])->name('index.view');
     Route::get('/insumos/movimientos', action: [MovementInputsWebController::class, 'index'])->name('index.view');
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
+    Route::get(uri: '/insumos/movimientos/detalles/{id}', action: [MovementInputDetailWebController::class, 'index'])->name('index.view');
 
 
     #CONSULTA  => BACKEND
@@ -115,15 +118,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('{input}', [InputController::class, 'destroy'])->name('inputs.destroy');
     });
 
-        
-        // INSUMOS -> MOVIMIENTOS (BACKEND)
+
+    // INSUMOS -> MOVIMIENTOS (BACKEND)
     Route::prefix('insumos/movimiento')->group(function () {
-    Route::get('/', [MovementInputController::class, 'index'])->name('movimientos.index');
-    Route::post('/', [MovementInputController::class, 'store'])->name('movimientos.store');
-    Route::get('{movementInput}', [MovementInputController::class, 'show'])->name('movimientos.show');
-    Route::put('{movementInput}', [MovementInputController::class, 'update'])->name('movimientos.update');
-    Route::delete('{movementInput}', [MovementInputController::class, 'destroy'])->name('movimientos.destroy');
-});
+        Route::get('/', [MovementInputController::class, 'index'])->name('movimientos.index');
+        Route::post('/', [MovementInputController::class, 'store'])->name('movimientos.store');
+        Route::get('{movementInput}', [MovementInputController::class, 'show'])->name('movimientos.show');
+        Route::put('{movementInput}', [MovementInputController::class, 'update'])->name('movimientos.update');
+        Route::delete('{movementInput}', [MovementInputController::class, 'destroy'])->name('movimientos.destroy');
+    });
+    // INSUMOS -> MOVIMIENTOS -> DETALLES (BACKEND)
+    Route::prefix('insumos/movimientos/detalle')->group(function () {
+        Route::get('{id}', [MovementInputDetailController::class, 'index'])->name('movimientosinput.index');
+        Route::delete('{id}', [MovementInputDetailController::class, 'destroy'])->name('movimientosinput.destroy');
+        Route::put('{MovementInputDetail}', [MovementInputDetailController::class, 'update'])->name('movimientosinput.update');
+        Route::post('/', [MovementInputDetailController::class, 'store'])->name('movimientosinput.store');
+    });
+
+
+
+
     #PLATOS => BACKEND
     Route::prefix('plato')->group(function () {
         Route::get('/', [DishesController::class, 'index'])->name('plato.index');
@@ -143,7 +157,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // PROVEEDOR -> BACKEND
-    Route::prefix('proveedor')->group(function(){
+    Route::prefix('proveedor')->group(function () {
         Route::get('/', [SupplierController::class, 'index'])->name('proveedor.index');
         Route::post('/', [SupplierController::class, 'store'])->name('proveedores.store');
         Route::get('/{supplier}', [SupplierController::class, 'show'])->name('proveedores.show');
@@ -152,7 +166,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // PRESENTACION -> BACKEND
-    Route::prefix('presentacion')->group(function(){
+    Route::prefix('presentacion')->group(function () {
         Route::get('/', [PresentationController::class, 'index'])->name('presentacion.index');
         Route::post('/', [PresentationController::class, 'store'])->name('presentaciones.store');
         Route::get('/{presentation}', [PresentationController::class, 'show'])->name('presentaciones.show');
@@ -170,75 +184,75 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     #ALMACENES -> BACKEND
-    Route::prefix('almacen')->group(function(){
+    Route::prefix('almacen')->group(function () {
         Route::get('/', [AlmacenController::class, 'index'])->name('almacen.index');
-        Route::post('/',[AlmacenController::class, 'store'])->name('almacen.store');
-        Route::get('/{almacen}',[AlmacenController::class, 'show'])->name('almacen.show');
-        Route::put('/{almacen}',[AlmacenController::class, 'update'])->name('almacen.update');
-        Route::delete('/{almacen}',[AlmacenController::class, 'destroy'])->name('almacen.destroy');
+        Route::post('/', [AlmacenController::class, 'store'])->name('almacen.store');
+        Route::get('/{almacen}', [AlmacenController::class, 'show'])->name('almacen.show');
+        Route::put('/{almacen}', [AlmacenController::class, 'update'])->name('almacen.update');
+        Route::delete('/{almacen}', [AlmacenController::class, 'destroy'])->name('almacen.destroy');
     });
 
     #CATEGORIA -> BACKEND
-    Route::prefix('categoria')->group(function(){
+    Route::prefix('categoria')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('Categoria.index');
-        Route::post('/',[CategoryController::class, 'store'])->name('Categoria.store');
-        Route::get('/{category}',[CategoryController::class, 'show'])->name('Categoria.show');
-        Route::put('/{category}',[CategoryController::class, 'update'])->name('Categoria.update');
-        Route::delete('/{category}',[CategoryController::class, 'destroy'])->name('Categoria.destroy');
+        Route::post('/', [CategoryController::class, 'store'])->name('Categoria.store');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('Categoria.show');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('Categoria.update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('Categoria.destroy');
     });
 
     #TIPOS DE CLIENTES -> BACKEND
-    Route::prefix('tipo_cliente')->group(function(){
+    Route::prefix('tipo_cliente')->group(function () {
         Route::get('/', [ClientTypeController::class, 'index'])->name('Tipos_Clientes.index');
-        Route::post('/',[ClientTypeController::class, 'store'])->name('Tipos_Clientes.store');
-        Route::get('/{clientType}',[ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
-        Route::put('/{clientType}',[ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
-        Route::delete('/{clientType}',[ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
+        Route::post('/', [ClientTypeController::class, 'store'])->name('Tipos_Clientes.store');
+        Route::get('/{clientType}', [ClientTypeController::class, 'show'])->name('Tipos_Clientes.show');
+        Route::put('/{clientType}', [ClientTypeController::class, 'update'])->name('Tipos_Clientes.update');
+        Route::delete('/{clientType}', [ClientTypeController::class, 'destroy'])->name('Tipos_Clientes.destroy');
     });
-    
+
     #TIPOS DE EMPLEADOS -> BACKEND
-    Route::prefix('tipo_empleado')->group(function(){
+    Route::prefix('tipo_empleado')->group(function () {
         Route::get('/', [EmployeeTypeController::class, 'index'])->name('Tipos_Empleados.index');
-        Route::post('/',[EmployeeTypeController::class, 'store'])->name('Tipos_Empleados.store');
+        Route::post('/', [EmployeeTypeController::class, 'store'])->name('Tipos_Empleados.store');
         Route::get('/{employeeType}', [EmployeeTypeController::class, 'show'])->name('Tipos_Empleados.show');
         Route::put('/{employeeType}', [EmployeeTypeController::class, 'update'])->name('Tipos_Empleados.update');
         Route::delete('/{employeeType}', [EmployeeTypeController::class, 'destroy'])->name('Tipos_Empleados.destroy');
     });
 
     #PISOS -> BACKEND
-    Route::prefix('piso')->group(function(){
+    Route::prefix('piso')->group(function () {
         Route::get('/', [FloorController::class, 'index'])->name('Pisos.index');
-        Route::post('/',[FloorController::class, 'store'])->name('Pisos.store');
-        Route::get('/{floor}',[FloorController::class, 'show'])->name('Pisos.show');
-        Route::put('/{floor}',[FloorController::class, 'update'])->name('Pisos.update');
-        Route::delete('/{floor}',[FloorController::class, 'destroy'])->name('Pisos.destroy');
+        Route::post('/', [FloorController::class, 'store'])->name('Pisos.store');
+        Route::get('/{floor}', [FloorController::class, 'show'])->name('Pisos.show');
+        Route::put('/{floor}', [FloorController::class, 'update'])->name('Pisos.update');
+        Route::delete('/{floor}', [FloorController::class, 'destroy'])->name('Pisos.destroy');
     });
 
     #PRODUCTOS -> BACKEND
-    Route::prefix('producto')->group(function(){
+    Route::prefix('producto')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('Productos.index');
-        Route::post('/',[ProductController::class, 'store'])->name('Productos.store');
-        Route::get('/{product}',[ProductController::class, 'show'])->name('Productos.show');
-        Route::put('/{product}',[ProductController::class, 'update'])->name('Productos.update');
-        Route::delete('/{product}',[ProductController::class, 'destroy'])->name('Productos.destroy');
+        Route::post('/', [ProductController::class, 'store'])->name('Productos.store');
+        Route::get('/{product}', [ProductController::class, 'show'])->name('Productos.show');
+        Route::put('/{product}', [ProductController::class, 'update'])->name('Productos.update');
+        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('Productos.destroy');
     });
 
     #CAJAS -> BACKEND
-    Route::prefix('caja')->group(function(){
+    Route::prefix('caja')->group(function () {
         Route::get('/', [CajaController::class, 'index'])->name('Cajas.index');
-        Route::post('/',[CajaController::class, 'store'])->name('Cajas.store');
-        Route::get('/{caja}',[CajaController::class, 'show'])->name('Cajas.show');
-        Route::put('/{caja}',[CajaController::class, 'update'])->name('Cajas.update');
-        Route::delete('/{caja}',[CajaController::class, 'destroy'])->name('Cajas.destroy');
+        Route::post('/', [CajaController::class, 'store'])->name('Cajas.store');
+        Route::get('/{caja}', [CajaController::class, 'show'])->name('Cajas.show');
+        Route::put('/{caja}', [CajaController::class, 'update'])->name('Cajas.update');
+        Route::delete('/{caja}', [CajaController::class, 'destroy'])->name('Cajas.destroy');
     });
 
     #USUARIOS -> BACKEND
-    Route::prefix('usuarios')->group(function(){
+    Route::prefix('usuarios')->group(function () {
         Route::get('/', [UsuariosController::class, 'index'])->name('usuarios.index');
-        Route::post('/',[UsuariosController::class, 'store'])->name('usuarios.store');
-        Route::get('/{user}',[UsuariosController::class, 'show'])->name('usuarios.show');
-        Route::put('/{user}',[UsuariosController::class, 'update'])->name('usuarios.update');
-        Route::delete('/{user}',[UsuariosController::class, 'destroy'])->name('usuarios.destroy');
+        Route::post('/', [UsuariosController::class, 'store'])->name('usuarios.store');
+        Route::get('/{user}', [UsuariosController::class, 'show'])->name('usuarios.show');
+        Route::put('/{user}', [UsuariosController::class, 'update'])->name('usuarios.update');
+        Route::delete('/{user}', [UsuariosController::class, 'destroy'])->name('usuarios.destroy');
     });
 
 
@@ -325,7 +339,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/export-pdf-employeeTypes', [EmployeeTypePDFController::class, 'exportPDF'])->name('export-pdf-employeeTypes');
         // Ruta para importar desde Excel
         Route::post('/import-excel-employeeTypes', [EmployeeTypeController::class, 'importExcel'])->name('import-excel-employeeTypes');
-    
+
         #EXPORTACION Y IMPORTACION CLIENTES
         Route::get('/export-excel-customers', [CustomerController::class, 'exportExcel'])->name('export-excel-customers');
         Route::get('/export-pdf-customers', [CustomerPDFController::class, 'exportPDF'])->name('export-pdf-customers');
@@ -338,8 +352,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Ruta para importar desde Excel
         Route::post('/import-excel-employees', [EmployeeController::class, 'importExcel'])->name('import-excel-employees');
     });
-}); 
+});
 
 // Archivos de configuración adicionales
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

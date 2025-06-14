@@ -68,24 +68,29 @@ class MovementInputController extends Controller
     }
 
     public function update(UpdateMovementInputRequest $request, MovementInput $movementInput)
-{
-    // Autorización de la acción de actualización
-    Gate::authorize('update', $movementInput);
+    {
+        Gate::authorize('update', arguments: $movementInput);
 
-    // Validación de los datos de la solicitud
-    $validated = $request->validated();
+        $validated = $request->validated();
 
-    // Actualización del movimiento con los datos validados
-    $movementInput->update($validated);
+        $codeExists = MovementInput::whereRaw('LOWER(code) = ?', [strtolower($validated['code'])])
+            ->where('id', '!=', $movementInput->id)
+            ->exists();
 
-    // Respuesta de éxito con el movimiento actualizado
-    return response()->json([
-        'state' => true,
-        'message' => 'Movimiento de insumo actualizado correctamente.',
-        'movement' => $movementInput->refresh() // Retorna el movimiento actualizado
-    ]);
-}
+        if ($codeExists) {
+            return response()->json([
+                'errors' => ['code' => ['Este código ya está registrado.']]
+            ], 422);
+        }
 
+        $movementInput->update($validated);
+
+        return response()->json([
+            'state' => true,
+            'message' => 'Movimiento actualizado de manera correcta',
+            'movement' => new MovementInputResource($movementInput->refresh()),
+        ]);
+    }
 
     public function destroy(MovementInput $movementInput)
     {

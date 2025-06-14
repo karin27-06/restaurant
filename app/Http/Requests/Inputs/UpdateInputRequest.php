@@ -24,6 +24,7 @@ class UpdateInputRequest extends FormRequest
             'name' => 'required|string|max:100',
             'priceSale' => 'required|numeric|min:0',
             'idAlmacen' => 'required|exists:almacens,id',
+            'quantityUnitMeasure' => 'nullable|numeric|min:0',
             'unitMeasure' => 'required|string|max:100',
             'description' => 'nullable|string',
             'state' => ['required', 'boolean'],
@@ -41,6 +42,10 @@ class UpdateInputRequest extends FormRequest
             'priceSale.required' => 'El precio es obligatorio.',
             'priceSale.numeric' => 'El precio debe ser un número.',
             'priceSale.min' => 'El precio no puede ser negativo.',
+
+            'quantityUnitMeasure.required' => 'La cantidad de medida es obligatorio.',
+            'quantityUnitMeasure.numeric' => 'La cantidad de medida  debe ser un número.',
+            'quantityUnitMeasure.min' => 'La cantidad de medida  no puede ser negativo.',
 
             'unitMeasure.required' => 'La Unidad de Medida es obligatorio.',
             'unitMeasure.string' => 'La Unidad de Medida  debe ser una cadena de texto.',

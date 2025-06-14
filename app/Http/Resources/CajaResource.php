@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Resources;
 
@@ -14,9 +14,9 @@ class CajaResource extends JsonResource
             'id' => $this->id,
             'idUsuario' => $this->idUsuario,
             'idVendedor' => $this->idVendedor,
-            'numero_cajas' => $this->numero_cajas, // Asegúrate de que este campo se incluye
+            'numero_cajas' => $this->numero_cajas, 
             'state' => $this->state,
-            'vendedor' => $this->vendedor ? $this->vendedor->name1 : 'Sin asignar',
+            'vendedorNombre' => $this->vendedor ? $this->vendedor->name . ' ' . $this->vendedor->apellidos: 'Sin asignar', // Concatenamos nombre y apellido
             'creacion' => Carbon::parse($this->created_at)->format('d-m-Y H:i:s A'),
             'actualizacion' => Carbon::parse($this->updated_at)->format('d-m-Y H:i:s A'),
         ];

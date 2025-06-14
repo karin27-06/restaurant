@@ -114,17 +114,18 @@ const submitted = ref(false);
 const inputDialog = ref(false);
 const serverErrors = ref({});
 const emit = defineEmits(['inputs-agregado','movementsinputAgregado']);
+const selectedMovementInputs = ref([]);  // Si es un array vacío, de esta forma lo defines.
 
 
 const movementInput = ref({
-    code: null,                  // Código del movimiento
-    issueDate: null,           // Fecha de emisión
-    executionDate: null,       // Fecha de ejecución
-    supplierId: null,          // ID del proveedor
-    movementType: null,          // Tipo de movimiento ('Factura', 'Boleta', 'Guía')
-    state: true,               // Estado (activo/inactivo)
-    igvState: null,               // Estado del IGV (0 para no incluido, 1 para incluido)
-    paymentType: '',           // Tipo de pago ('contado', 'credito')
+    code: null,                 
+    issueDate: null,        
+    executionDate: null,       
+    supplierId: null,         
+    movementType: null,          
+    state: true,              
+    igvState: null,              
+    paymentType: '',         
 });
 
 // Variable para guardar todos los datos de acuerdo a las columnas de la tabla
@@ -177,36 +178,39 @@ function hideDialog() {
     inputDialog.value = false;
 }
 
-
-// Guardar movimiento e imprimir los datos en la consola
 function saveMovement() {
-    // Asegurarnos de que las fechas estén en el formato correcto "YYYY-MM-DD"
     movementData.value = {
-        code: movementInput.value.code, // El código es un string
-        issue_date: formatDate(movementInput.value.issueDate), // Asegura que la fecha esté en formato ISO
-        execution_date: formatDate(movementInput.value.executionDate), // Asegura que la fecha esté en formato ISO
-        supplier_id: movementInput.value.supplierId, // ID del proveedor
-        user_id: 2,  // Suponiendo que el ID del usuario es 2
-        movement_type: getMovementTypeValue(movementInput.value.documentType), // 1 para factura, 2 para guía, 3 para boleta
+        code: movementInput.value.code,
+        issue_date: formatDate(movementInput.value.issueDate), 
+        execution_date: formatDate(movementInput.value.executionDate),
+        supplier_id: movementInput.value.supplierId, 
+        user_id: 2, 
+        movement_type: getMovementTypeValue(movementInput.value.documentType),
         state: movementInput.value.state, // true o false
-        igv_state: getIgvStateValue(movementInput.value.igvState), // 0 para incluir IGV, 1 para no incluir IGV
-        payment_type: movementInput.value.paymentType, // 'contado' o 'credito'
+        igv_state: getIgvStateValue(movementInput.value.igvState),
+        payment_type: movementInput.value.paymentType,
     };
 
-    console.log("Datos enviados:", movementData.value); // Verifica los datos antes de enviarlos
-    
-    // Enviar los datos al backend mediante una solicitud POST con axios
+    console.log("Datos enviados:", movementData.value); 
+
     axios.post('/insumos/movimiento', movementData.value)
         .then(response => {
             // Si la solicitud es exitosa
-            console.log("Respuesta del servidor:", response.data);
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento registrado correctamente' });
-            hideDialog();  // Cierra el diálogo de movimiento
-                        resetForm();  // Resetear el formulario
-            emit('movementsinput-agregado');
 
+            // Obtener el ID del nuevo movimiento
+            const movementId = response.data.movement.id;
+            console.log("ID del nuevo movimiento:", movementId);
+
+            // Cerrar el formulario y resetear los datos
+            hideDialog();
+            resetForm();
+
+            // Redirigir a la URL con el ID del nuevo movimiento
+            emit('movementsinput-agregado');
+            window.location.href = `/insumos/movimientos/detalles/${movementId}`;
         })
-       .catch(error => {
+        .catch(error => {
             if (error.response?.status === 422) {
                 serverErrors.value = error.response.data.errors || {};
             } else {
@@ -220,14 +224,14 @@ function saveMovement() {
         });
 }
 
-// Función para formatear las fechas en "día/mes/año" a formato ISO "YYYY-MM-DD"
+
+
 function formatDate(date) {
     if (!date) return null;
     const d = new Date(date);
     return d.toISOString().split('T')[0];  // Formato "YYYY-MM-DD"
 }
 
-// Función para convertir el tipo de movimiento ('FACTURA', 'BOLETA', 'GUIA') a un valor numérico
 function getMovementTypeValue(type) {
     const types = {
         'FACTURA': 1,

@@ -145,9 +145,10 @@ const getMovementTypeLabel = (value) => {
                 </div>
             </div>
         </template>
+        <Column selectionMode="multiple" style="width: 1rem" :exportable="false"></Column>
 
         <Column field="code" header="Código" sortable style="min-width: 7rem" />
-        <Column field="movement_type" header="Tipo" sortable style="min-width: 7rem">
+        <Column field="movement_type" header="Tipo" sortable style="min-width: 5rem">
   <template #body="{ data }">
     <span>
       {{ getMovementTypeLabel(data.movement_type) }}
@@ -155,17 +156,17 @@ const getMovementTypeLabel = (value) => {
   </template>
 </Column>
         <Column field="supplier_name" header="Proveedor" sortable style="min-width: 14rem" />
-        <Column field="payment_type" header="Pago" sortable style="min-width: 7rem" />
+        <Column field="payment_type" header="Pago" sortable style="min-width: 6rem" />
         <Column field="issue_date" header="Emisión" sortable style="min-width: 8rem" />
-        <Column field="execution_date" header="Ejecución" sortable style="min-width: 8rem" />
-        <Column field="sub" header="Sub" sortable style="min-width: 7rem" />
-        <Column field="IGV" header="IGV" sortable style="min-width: 7rem" />
-        <Column field="total" header="Total" sortable style="min-width: 7rem" />
+        <Column field="execution_date" header="Ejecución" sortable style="min-width: 7rem" />
+        <Column field="sub" header="Sub" sortable style="min-width: 5rem" />
+        <Column field="igv" header="IGV" sortable style="min-width: 5rem" />
+        <Column field="total" header="Total" sortable style="min-width: 5rem" />
 
        
-        <Column field="created_at" header="Creación" sortable style="min-width: 13rem" />
-        <Column field="updated_at" header="Actualización" sortable style="min-width: 13rem"/>
-        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 13rem">
+        <Column field="created_at" header="Creación" sortable style="min-width: 10rem" />
+        <Column field="updated_at" header="Actualización" sortable style="min-width: 10rem"/>
+        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 12rem">
             <template #body="{ data }">
                   <Button icon="pi pi-eye" outlined rounded class="mr-2" @click="verDetalle(data)" />
 

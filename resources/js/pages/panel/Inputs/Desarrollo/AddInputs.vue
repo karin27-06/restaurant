@@ -5,7 +5,7 @@
         </template>
         <template #end>
             <!-- ToolsInput para los botones de exportar e importar -->
-            <ToolsInput @import-success="loadInsumo"/>       
+            <ToolsInput @import-success="loadInsumo" />
         </template>
     </Toolbar>
 
@@ -29,8 +29,8 @@
                 </div>
                 <!-- precio -->
 
- <div class="col-span-6">
-                    <label for="priceSale" class="block font-bold mb-2">Precio Venta<span class="text-red-500">*</span></label>
+                <div class="col-span-6">
+                    <label for="priceSale" class="mb-2 block font-bold">Precio Venta<span class="text-red-500">*</span></label>
                     <InputNumber
                         id="priceSale"
                         v-model="input.priceSale"
@@ -44,10 +44,7 @@
                     />
                     <small v-if="serverErrors.priceSale" class="p-error">{{ serverErrors.priceSale[0] }}</small>
                 </div>
-
-           
-
-                <!-- Almacen -->
+   <!-- Almacen -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Almacen <span class="text-red-500">*</span></label>
                     <Select
@@ -61,8 +58,24 @@
                     <small v-if="submitted && !input.idAlmacen" class="text-red-500">El Almacen es obligatorio.</small>
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>
                 </div>
+                <!-- Cantidad por medida -->
 
-                 <!-- Unidad de Medida -->
+                <div class="col-span-6">
+                    <label for="quantityUnitMeasure" class="mb-2 block font-bold">Cantidad por medida<span class="text-red-500">*</span></label>
+                    <InputNumber
+                        id="quantityUnitMeasure"
+                        v-model="input.quantityUnitMeasure"
+                        :minFractionDigits="2"
+                        :maxFractionDigits="2"
+                        mode="currency"
+                        currency="PEN"
+                        locale="es-PE"
+                        class="w-full"
+                        :class="{ 'p-invalid': serverErrors.quantityUnitMeasure }"
+                    />
+                    <small v-if="serverErrors.quantityUnitMeasure" class="p-error">{{ serverErrors.quantityUnitMeasure[0] }}</small>
+                </div>
+<!-- Unidad de Medida -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Unidad de Medida <span class="text-red-500">*</span></label>
                     <Select
@@ -75,6 +88,9 @@
                     />
                     <small v-if="serverErrors.unitMeasure" class="p-error">{{ serverErrors.unitMeasure[0] }}</small>
                 </div>
+             
+
+                
 
                 <!-- description -->
                 <div class="col-span-12">
@@ -97,13 +113,13 @@ import axios from 'axios';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import Dialog from 'primevue/dialog';
+import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
-import InputNumber from 'primevue/inputnumber';
 import ToolsInput from './toolsInput.vue';
 
 const toast = useToast();
@@ -115,11 +131,12 @@ const emit = defineEmits(['inputs-agregado']);
 const input = ref({
     name: '',
     priceSale: null,
-    priceBuy: null,  
+    priceBuy: null,
     state: true,
     idAlmacen: null,
     description: null,
     unitMeasure: null,
+    quantityUnitMeasure: null,
 });
 
 // Listado de unidades de medida
@@ -128,37 +145,37 @@ const unitMeasures = ref([
     { label: 'Gramos', value: 'g' },
     { label: 'Litros', value: 'litros' },
     { label: 'Mililitros', value: 'ml' },
-    { label: 'Unidad', value: 'unidad' }
+    { label: 'Unidad', value: 'unidad' },
 ]);
 
 // Método para recargar la lista de insumos
 const loadInsumo = async () => {
     try {
-        const response = await axios.get('/insumo');  // Aquí haces una solicitud GET para obtener los insumos
+        const response = await axios.get('/insumo'); // Aquí haces una solicitud GET para obtener los insumos
         console.log(response.data);
         // Realiza lo que necesites con la respuesta, como actualizar el listado en un componente superior
-        emit('insumo-agregado');  // Si quieres que un componente padre reciba la notificación de la actualización
+        emit('insumo-agregado'); // Si quieres que un componente padre reciba la notificación de la actualización
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los insumos', life: 3000 });
         console.error(error);
     }
-}
+};
 const almacens = ref([]);
 
 function resetInput() {
     input.value = {
-    name: '',
-    priceSale: null,
-    priceBuy: null,
-    state: true,
-    idAlmacen: null,
-    description: null,
-    unitMeasure: null,
+        name: '',
+        priceSale: null,
+        priceBuy: null,
+        state: true,
+        idAlmacen: null,
+        description: null,
+        unitMeasure: null,
+        quantityUnitMeasure: null,
     };
     serverErrors.value = {};
     submitted.value = false;
 }
-
 
 function openNew() {
     resetInput();
@@ -180,28 +197,26 @@ async function fetchAlmacens() {
     }
 }
 
-
-
 function guardarInput() {
     submitted.value = true;
     serverErrors.value = {};
-  const dataToSend = {
-            name: input.value.name,
-            priceSale: parseFloat(input.value.priceSale),
-            priceBuy: input.value.priceBuy ? parseFloat(input.value.priceBuy) : null,
-            state: input.value.state === true,
-            idAlmacen: input.value.idAlmacen, 
-            description: input.value.description,
-            unitMeasure: input.value.unitMeasure,
-        };
-      
+    const dataToSend = {
+        name: input.value.name,
+        priceSale: parseFloat(input.value.priceSale),
+        priceBuy: input.value.priceBuy ? parseFloat(input.value.priceBuy) : null,
+        state: input.value.state === true,
+        idAlmacen: input.value.idAlmacen,
+        description: input.value.description,
+        unitMeasure: input.value.unitMeasure,
+        quantityUnitMeasure: input.value.quantityUnitMeasure,
+    };
+
     axios
         .post('/insumo', dataToSend)
         .then(() => {
             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Insumo registrado', life: 3000 });
             hideDialog();
             emit('inputs-agregado');
-            
         })
         .catch((error) => {
             if (error.response?.status === 422) {
