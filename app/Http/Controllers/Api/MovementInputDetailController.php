@@ -16,19 +16,30 @@ use Illuminate\Support\Facades\Gate;
 
 class MovementInputDetailController extends Controller
 {
-   public function index(Request $request, $id)
+public function index(Request $request, $id)
 {
     Gate::authorize('viewAny', MovementInputDetail::class);
 
     $perPage = $request->input('per_page', 15);
 
-    // Aplicando filtros con Pipeline y buscando solo los detalles correspondientes a un idMovementInput específico
+    // Intentar buscar los detalles con el primer filtro por idMovementInput
     $movementInputDetails = app(Pipeline::class)
         ->send(MovementInputDetail::query()->where('idMovementInput', $id))  // Filtro por idMovementInput
         ->through([new FilterByNameInput($request->input('search'))])
         ->thenReturn()
         ->with('movementInput', 'input')  // Cargar relaciones necesarias
         ->paginate($perPage);  // Pagina los resultados
+
+    // Verificar si no hay datos (vacío) con el filtro original
+    if ($movementInputDetails->isEmpty()) {
+        // Si no hay resultados, intentar con el filtro por 'id'
+        $movementInputDetails = app(Pipeline::class)
+            ->send(MovementInputDetail::query()->where('id', $id))  // Filtro por id
+            ->through([new FilterByNameInput($request->input('search'))])
+            ->thenReturn()
+            ->with('movementInput', 'input')  // Cargar relaciones necesarias
+            ->paginate($perPage);  // Pagina los resultados
+    }
 
     // Variables para los totales
     $subtotal = 0;
@@ -76,6 +87,7 @@ class MovementInputDetailController extends Controller
         'total' => number_format($total, 2),
     ]);
 }
+
 
 
 

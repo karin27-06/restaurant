@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PresentationController;
 use App\Http\Controllers\Api\ConsultasDni;
+use App\Http\Controllers\Api\ConsultasId;
 use App\Http\Controllers\Api\DishesController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
@@ -92,6 +93,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
+    Route::get('/user-id', [ConsultasId::class, 'getUserId'])->middleware('auth:api');
 
     #AREAS => BACKEND
     Route::prefix('area')->group(function () {

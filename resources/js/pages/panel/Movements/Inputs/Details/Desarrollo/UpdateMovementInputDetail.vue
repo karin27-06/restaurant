@@ -33,7 +33,7 @@ watch(dialogVisible, (val) => emit('update:visible', val));
 
 const movementInput = ref({
     batch: '',
-    
+    idMovementInput: '',
 });
 
 
@@ -57,14 +57,15 @@ const fetchMovementInput = async () => {
         data.data.forEach((item) => {
             if (item.id === props.movementInputId) {
                 movementInput.value = {
-                    idMovementInput: item.idMovementInput,
                     batch: item.batch,  
                     quantity: item.quantity,
                     expirationDate: item.expirationDate,
                     totalPrice: item.totalPrice,
-                    unitPrice: item.priceUnit,  
+                    unitPrice: item.priceUnit,
+                    idMovementInput: item.idMovementInput,
                 };
-                
+                                console.log('Movimiento actualizado:', movementInput.value);
+
                 // Preseleccionar insumo basado en idInput
                 if (item.input) {
                     selectedInsumo.value = item.input; // Asignar el insumo correspondiente
@@ -146,15 +147,7 @@ function hideDialog() {
     dialogVisible.value = false;
     inputDialog.value = false;
 
-    // Restablecer el formulario
-    movementInput.value = {
-        inputName: '',
-        batch: '',
-        quantity: null,
-        expirationDate: null,
-        totalPrice: null,
-        unitPrice: '',
-    };
+
 
     // Limpiar la búsqueda y la selección
     clearSearch();
@@ -177,7 +170,7 @@ const saveMovement = async () => {
 
         // Preparar los datos a enviar
         const formData = {
-            idMovementInput: movementInput.value.idMovementInput, // ID del movimiento de insumo
+            idMovementInput: movementInput.value.idMovementInput,
             idInput: selectedInsumo.value ? selectedInsumo.value.id : null, // ID del insumo
             quantity: movementInput.value.quantity,
             totalPrice: movementInput.value.totalPrice,
@@ -199,7 +192,7 @@ const saveMovement = async () => {
                 detail: 'Detalle de movimiento actualizado correctamente.',
                 life: 3000,
             });
-        emit('updated');
+            emit('updated');
 
             // Cerrar el diálogo y restablecer el formulario
             hideDialog();

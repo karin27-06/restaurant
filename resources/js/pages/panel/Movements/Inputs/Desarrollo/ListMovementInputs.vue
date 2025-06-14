@@ -122,6 +122,9 @@ const getMovementTypeLabel = (value) => {
   };
   return movementTypes[value] || 'Desconocido'; // Valor por defecto si no encuentra el tipo
 };
+
+
+
 </script>
 
 <template>
@@ -186,4 +189,6 @@ const getMovementTypeLabel = (value) => {
         :movementInputId="selectedMovementInputId"
         @updated="handleMovementInputUpdated"
     />
+
+    
 </template>

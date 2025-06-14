@@ -59,7 +59,7 @@ async function deleteInput() {
     <Dialog v-model:visible="localVisible" :style="{ width: '450px', 'z-index': 9999 }" header="Confirmar" :modal="true">
         <div class="flex items-center gap-4">
             <i class="pi pi-exclamation-triangle !text-3xl" />
-            <span v-if="movementInput">¿Estás seguro de eliminar el insumo <b>{{ movementInput.input.name }} del movimiento</b>?</span>
+            <span v-if="movementInput">¿Estás seguro de eliminar el insumo <b>{{ movementInput.input.name }}</b> del movimiento?</span>
         </div>
         <template #footer>
             <Button label="No" icon="pi pi-times" text @click="closeDialog" />

@@ -37,12 +37,7 @@ const isColumnSelected = (fieldName) => {
     return selectedColumns.value.some((col) => col.field === fieldName);
 };
 
-const formatCurrency = (value) => {
-    if (value != null) {
-        return 'S/. ' + parseFloat(value).toFixed(2);
-    }
-    return '';
-};
+
 const subtotal = ref(0);
 const igv = ref(0);
 const total = ref(0);
@@ -63,10 +58,10 @@ const loadMovementInputs = async () => {
         // Asignamos los datos de la respuesta a la variable reactiva
         movementInputs.value = response.data.data;
 
-        // Asignamos los valores de subtotal, total_igv y total
-        subtotal.value = response.data.subtotal;
-        igv.value = response.data.total_igv;
-        total.value = response.data.total;
+        // Aseguramos que los valores de subtotal, total_igv y total sean números
+        subtotal.value = parseFloat(response.data.subtotal.replace(/,/g, '')); // Remover las comas y convertir a número
+        igv.value = parseFloat(response.data.total_igv.replace(/,/g, ''));
+        total.value = parseFloat(response.data.total.replace(/,/g, ''));
 
         // Actualizamos la paginación
         pagination.value.currentPage = response.data.meta.current_page;
@@ -77,6 +72,15 @@ const loadMovementInputs = async () => {
         loading.value = false;
     }
 };
+
+const formatCurrency = (value) => {
+    if (value != null) {
+        // Formatear el número como moneda con 2 decimales y símbolo "S/."
+        return 'S/. ' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+    return '';
+};
+
 
 const props = defineProps({
     refresh: {

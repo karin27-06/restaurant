@@ -178,13 +178,41 @@ function hideDialog() {
     inputDialog.value = false;
 }
 
-function saveMovement() {
+async function fetchUserId() {
+    try {
+        // Hacemos la solicitud al backend para obtener el user_id
+        const { data } = await axios.get('/user-id');
+
+        // Verificamos si la solicitud fue exitosa
+        if (data.success) {
+            return data.user_id; // Retornamos el user_id
+        } else {
+            console.error("Error al obtener el user_id");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error en la solicitud:", e);
+        return null;
+    }
+}
+
+
+
+
+async function saveMovement() {
+   const userId = await fetchUserId(); // Esperar a obtener el user_id
+
+    if (!userId) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el user_id' });
+        return; // Si no se obtiene el user_id, no continuar con el registro
+    }
+
     movementData.value = {
         code: movementInput.value.code,
         issue_date: formatDate(movementInput.value.issueDate), 
         execution_date: formatDate(movementInput.value.executionDate),
         supplier_id: movementInput.value.supplierId, 
-        user_id: 2, 
+        user_id: userId,  // Aquí se agrega el user_id
         movement_type: getMovementTypeValue(movementInput.value.documentType),
         state: movementInput.value.state, // true o false
         igv_state: getIgvStateValue(movementInput.value.igvState),
