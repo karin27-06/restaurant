@@ -179,29 +179,26 @@ const updatePlato = async () => {
     }
 };
 
-const cargarInsumos = async () => {
+function cargarInsumos() {
     loadingInsumos.value = true;
-    try {
-        const response = await axios.get('/insumo');
-        console.log(response.data); // Verifica la estructura de los datos aquí
-        if (response.data && response.data.data) {
-            // Mapea los insumos correctamente
-            insumos.value = response.data.data.map(insumo => ({
-                id: insumo.id,
-                name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`, // Formato adecuado para mostrar
-            }));
-        }
-    } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudieron cargar los insumos',
-            life: 3000
+    axios.get('/insumos/con-stock')
+        .then(response => {
+            if (response.data && response.data.inputs) {
+                insumos.value = response.data.inputs.map(insumo => ({
+                    id: insumo.id,
+                    name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`,
+                    stock: insumo.stock  // Incluimos el stock en el objeto
+                }));
+            }
+        })
+        .catch(() => {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los insumos', life: 3000 });
+        })
+        .finally(() => {
+            loadingInsumos.value = false;
         });
-    } finally {
-        loadingInsumos.value = false;
-    }
-};
+}
+
 
 
 onMounted(() => {

@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\DishesController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
+use App\Http\Controllers\Api\InputStockController;
 use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
@@ -122,6 +123,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{input}', [InputController::class, 'update'])->name('inputs.update');
         Route::delete('{input}', [InputController::class, 'destroy'])->name('inputs.destroy');
     });
+Route::prefix('insumos')->group(function () {
+    Route::get('/con-stock', [InputStockController::class, 'index'])->name('inputs.withStock');
+});
 
 
     // INSUMOS -> MOVIMIENTOS (BACKEND)

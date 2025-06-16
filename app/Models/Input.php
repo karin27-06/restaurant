@@ -17,6 +17,7 @@ class Input extends Model
         'description',
         'state',
         'unitMeasure',
+        'quantityUnitMeasure',
     ];
 
     public function almacen()

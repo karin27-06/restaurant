@@ -22,8 +22,8 @@ class StoreDishesRequests extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0|max:999999.99',
-            'quantity' => 'required|integer|min:0|max:1000000',
+            'price' => 'required|numeric|min:1|max:999999.99',
+            'quantity' => 'required|integer|min:1|max:1000000',
             'idCategory' => 'required|exists:categories,id',
             'state' => 'required|boolean',
         ];
