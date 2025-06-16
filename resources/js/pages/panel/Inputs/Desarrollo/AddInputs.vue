@@ -60,21 +60,19 @@
                 </div>
                 <!-- Cantidad por medida -->
 
-                <div class="col-span-6">
-                    <label for="quantityUnitMeasure" class="mb-2 block font-bold">Cantidad por medida<span class="text-red-500">*</span></label>
-                    <InputNumber
-                        id="quantityUnitMeasure"
-                        v-model="input.quantityUnitMeasure"
-                        :minFractionDigits="2"
-                        :maxFractionDigits="2"
-                        mode="currency"
-                        currency="PEN"
-                        locale="es-PE"
-                        class="w-full"
-                        :class="{ 'p-invalid': serverErrors.quantityUnitMeasure }"
-                    />
-                    <small v-if="serverErrors.quantityUnitMeasure" class="p-error">{{ serverErrors.quantityUnitMeasure[0] }}</small>
-                </div>
+              <div class="col-span-6">
+    <label for="quantityUnitMeasure" class="mb-2 block font-bold">Cantidad por medida<span class="text-red-500">*</span></label>
+    <InputNumber
+        id="quantityUnitMeasure"
+        v-model="input.quantityUnitMeasure"
+        :minFractionDigits="2"
+        :maxFractionDigits="2"
+        class="w-full"
+        :class="{ 'p-invalid': serverErrors.quantityUnitMeasure }"
+    />
+    <small v-if="serverErrors.quantityUnitMeasure" class="p-error">{{ serverErrors.quantityUnitMeasure[0] }}</small>
+</div>
+
 <!-- Unidad de Medida -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Unidad de Medida <span class="text-red-500">*</span></label>
@@ -203,14 +201,14 @@ function guardarInput() {
     const dataToSend = {
         name: input.value.name,
         priceSale: parseFloat(input.value.priceSale),
-        priceBuy: input.value.priceBuy ? parseFloat(input.value.priceBuy) : null,
+        priceBuy: null,
         state: input.value.state === true,
         idAlmacen: input.value.idAlmacen,
         description: input.value.description,
         unitMeasure: input.value.unitMeasure,
         quantityUnitMeasure: input.value.quantityUnitMeasure,
     };
-
+    console.log(dataToSend);
     axios
         .post('/insumo', dataToSend)
         .then(() => {

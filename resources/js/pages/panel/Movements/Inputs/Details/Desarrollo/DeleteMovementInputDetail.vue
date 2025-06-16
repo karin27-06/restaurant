@@ -29,10 +29,8 @@ async function deleteInput() {
     console.log('ID a eliminar:', props.movementInput.id);  // Verifica que el ID es correcto
 
     try {
-        // Hacemos la solicitud DELETE pasando el ID correcto
         const response = await axios.delete(`/insumos/movimientos/detalle/${props.movementInput.id}`);
-        console.log('Respuesta del servidor:', response);  // Verifica la respuesta
-
+deleteInputKardex();
         emit('deleted');
         closeDialog();
         toast.add({
@@ -41,6 +39,8 @@ async function deleteInput() {
             detail: 'Movimiento de Insumo eliminado correctamente',
             life: 3000
         });
+
+
     } catch (error) {
         console.error(error);
         let errorMessage = 'Error al eliminar el movimiento de insumo';
@@ -48,6 +48,25 @@ async function deleteInput() {
             errorMessage = error.response.data.message;
         }
         toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 });
+    }
+}
+
+async function deleteInputKardex() {
+    const { idMovementInput } = props.movementInput;  
+    const idInput = props.movementInput.input.id;   
+
+    try {
+        const response = await axios.get(`/insumos/karde?idMovementInput=${idMovementInput}&idInput=${idInput}`);
+        
+        const id = response.data.data[0].id;
+
+        const deleteResponse = await axios.delete(`/insumos/karde/${id}`);
+        console.log('Respuesta del servidor:', deleteResponse);  // Verifica la respuesta
+
+        emit('deleted');
+        closeDialog();
+
+    } catch (error) {
     }
 }
 

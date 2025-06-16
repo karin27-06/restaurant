@@ -54,6 +54,8 @@ const model = computed(() => [
         icon: 'pi pi-fw pi-box layout-menuitem-icon',
         items: [
           hasPermission('ver facturas insumos') && { label: 'Compras de Insumos', icon: 'pi pi-fw pi-users', to: '/insumos/movimientos' },
+                    hasPermission('ver kardex insumos') && { label: 'Kardex de Insumos', icon: 'pi pi-fw pi-users', to: '/insumos/kardex' },
+
         ].filter(Boolean),
       },
       ].filter(Boolean),

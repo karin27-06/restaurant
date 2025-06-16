@@ -8,6 +8,9 @@ import Select from 'primevue/select';
 import SelectButton from 'primevue/selectbutton';
 import { useToast } from 'primevue/usetoast';
 import { ref, watch } from 'vue';
+    import {
+        router
+    } from '@inertiajs/core';
 
 const props = defineProps({
     visible: Boolean,
@@ -160,7 +163,11 @@ const updateMovementInput = async () => {
                 detail: 'Movimiento de insumo actualizado correctamente',
                 life: 3000,
             });
-            window.location.href = `/insumos/movimientos/detalles/${props.movementInputId}`;
+
+ const url = `/insumos/movimientos/detalles/${props.movementInputId}`;
+                router.visit(url);
+
+
             // Emitir evento para cerrar el diálogo
             emit('updated');
             dialogVisible.value = false; // Cerrar el diálogo

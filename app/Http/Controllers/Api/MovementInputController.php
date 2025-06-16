@@ -92,17 +92,24 @@ class MovementInputController extends Controller
         ]);
     }
 
-    public function destroy(MovementInput $movementInput)
-    {
-        Gate::authorize('delete', $movementInput);
+ public function destroy(MovementInput $movementInput)
+{
+    Gate::authorize('delete', $movementInput);
 
-        $movementInput->delete();
+    // Eliminar los registros relacionados en la tabla detail_movements_inputs
+    $movementInput->detailMovements()->delete();  // Esto eliminará todos los registros relacionados
+    
+    $movementInput->kardexInputs()->delete();  // Esto eliminará todos los registros relacionados
 
-        return response()->json([
-            'state' => true,
-            'message' => 'Movimiento eliminado correctamente',
-        ]);
-    }
+    // Ahora puedes eliminar el movimiento en movementsInput
+    $movementInput->delete();
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Movimiento eliminado correctamente',
+    ]);
+}
+
 
  
 

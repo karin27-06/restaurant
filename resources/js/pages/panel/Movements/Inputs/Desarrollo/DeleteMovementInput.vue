@@ -37,6 +37,7 @@ async function deleteInput() {
             detail: 'Movimiento de Insumo eliminado correctamente',
             life: 3000
         });
+
     } catch (error) {
         console.error(error);
         let errorMessage = 'Error al eliminar el movimiento de insumo';
@@ -46,6 +47,30 @@ async function deleteInput() {
         toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 });
     }
 }
+
+async function deleteKardex() {
+    try {
+        // Enviar el id del movimiento a la API para eliminar el registro correspondiente en el kardex
+        await axios.delete(`/insumos/karde/props.movementInput.id`);
+        
+        emit('deleted');
+        closeDialog();
+        toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Movimiento de Kardex eliminado correctamente',
+            life: 3000
+        });
+    } catch (error) {
+        console.error(error);
+        let errorMessage = 'Error al eliminar el movimiento de Kardex';
+        if (error.response?.data?.message) {
+            errorMessage = error.response.data.message;
+        }
+        toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 });
+    }
+}
+
 </script>
 
 <template>

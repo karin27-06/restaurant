@@ -62,7 +62,7 @@ const fetchInput = async () => {
             idAlmacen: i.idAlmacen,
             description: i.description,
             unitMeasure: i.unitMeasure,
-
+            quantityUnitMeasure:i.quantityUnitMeasure,
         };
     } catch (error) {
         toast.add({
@@ -106,7 +106,8 @@ priceSale: parseFloat(input.value.priceSale),
             state: input.value.state === true,
             idAlmacen: input.value.idAlmacen, 
             description: input.value.description,
-
+            unitMeasure: input.value.unitMeasure,
+            quantityUnitMeasure:input.value.quantityUnitMeasure,
         };
 console.log('Datos a enviar:', {
     name: input.value.name,

@@ -181,13 +181,13 @@ function cargarCategorias() {
 
 function cargarInsumos() {
     loadingInsumos.value = true;
-    axios.get('/insumo')
+    axios.get('/insumos/con-stock')
         .then(response => {
-            if (response.data && response.data.data) {
-                insumos.value = response.data.data.map(insumo => ({
+            if (response.data && response.data.inputs) {
+                insumos.value = response.data.inputs.map(insumo => ({
                     id: insumo.id,
-name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`,
-
+                    name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`,
+                    stock: insumo.stock  // Incluimos el stock en el objeto
                 }));
             }
         })
@@ -198,6 +198,7 @@ name: `${insumo.name} - ${insumo.quantityUnitMeasure} ${insumo.unitMeasure}`,
             loadingInsumos.value = false;
         });
 }
+
 
 onMounted(() => {
     cargarCategorias();
