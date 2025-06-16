@@ -42,6 +42,12 @@ class MovementInput extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-    // Si necesitas agregar más funciones o scopes para facilitar consultas, puedes agregarlos aquí.
+public function detailMovements()
+{
+    return $this->hasMany(MovementInputDetail::class, 'idMovementInput');
+}
+public function kardexInputs()
+{
+    return $this->hasMany(KardexInput::class, 'idMovementInput');
+}
 }

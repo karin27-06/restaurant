@@ -17,6 +17,8 @@ const props = defineProps({
     visible: Boolean,
     movementInputId: Number,
 });
+
+
 const emit = defineEmits(['update:visible', 'updated']);
 
 const toast = useToast();
@@ -157,7 +159,6 @@ function hideDialog() {
 const saveMovement = async () => {
     loading.value = true;
     try {
-        // Validar los datos antes de enviarlos
         if (!movementInput.value.batch || !movementInput.value.quantity || !movementInput.value.expirationDate || !movementInput.value.totalPrice || !movementInput.value.unitPrice) {
             toast.add({
                 severity: 'error',
@@ -165,26 +166,23 @@ const saveMovement = async () => {
                 detail: 'Todos los campos son obligatorios.',
                 life: 3000,
             });
-            return; // No continuar si faltan campos obligatorios
+            return; 
         }
 
-        // Preparar los datos a enviar
         const formData = {
             idMovementInput: movementInput.value.idMovementInput,
-            idInput: selectedInsumo.value ? selectedInsumo.value.id : null, // ID del insumo
+            idInput: selectedInsumo.value ? selectedInsumo.value.id : null,
             quantity: movementInput.value.quantity,
             totalPrice: movementInput.value.totalPrice,
             priceUnit: movementInput.value.unitPrice,
             batch: movementInput.value.batch,
-            expirationDate: "2025-06-24", // Asegúrate de que esta fecha sea válida
+            expirationDate: movementInput.value.expirationDate, 
         };
 
         console.log(formData);
 
-        // Realizar la solicitud PUT al backend para actualizar el movimiento de insumo
         const response = await axios.put(`/insumos/movimientos/detalle/${props.movementInputId}`, formData);
 
-        // Si la respuesta es exitosa, mostrar mensaje y vaciar formulario
         if (response.data.state) {
             toast.add({
                 severity: 'success',
@@ -193,11 +191,9 @@ const saveMovement = async () => {
                 life: 3000,
             });
             emit('updated');
-
-            // Cerrar el diálogo y restablecer el formulario
+            await updateKardex();
             hideDialog();
         } else {
-            // Si hay algún problema en la respuesta, mostrar mensaje de error
             toast.add({
                 severity: 'error',
                 summary: 'Error',
@@ -207,7 +203,6 @@ const saveMovement = async () => {
         }
 
     } catch (error) {
-        // Si ocurre un error en la solicitud
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -218,6 +213,36 @@ const saveMovement = async () => {
         loading.value = false;
     }
 };
+
+const updateKardex = async () => {
+    try {
+        const idMovementInput = movementInput.value.idMovementInput;
+        const idInput = selectedInsumo.value ? selectedInsumo.value.id : null;
+
+        const response = await axios.get(`/insumos/karde?idMovementInput=${idMovementInput}&idInput=${idInput}`);
+
+        const id = response.data.data[0].id;
+        const formDataKardex = {
+            idInput: idInput, 
+            idMovementInput: idMovementInput, 
+            totalPrice: movementInput.value.totalPrice, 
+        };
+
+        console.log(formDataKardex); 
+
+        const updateResponse = await axios.put(`/insumos/karde/${id}`, formDataKardex);
+
+      
+    } catch (error) {
+    }
+};
+
+
+
+
+
+
+
 
 
 
@@ -308,6 +333,9 @@ const saveMovement = async () => {
                         v-model="movementInput.totalPrice"
                         required
                         min="0"
+                        mode="decimal"
+                        minFractionDigits="2" 
+                        maxFractionDigits="2"
                         class="w-full"
                         :class="{ 'p-invalid': serverErrors.totalPrice }"
                     />

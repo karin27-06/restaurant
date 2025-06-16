@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\FloorController;
+use App\Http\Controllers\Api\MovementInputKardexController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\MovementInputDetailController;
 use App\Http\Controllers\Web\AlmacenWebController;
@@ -52,6 +53,7 @@ use App\Http\Controllers\Web\MovementInputsWebController;
 use App\Http\Controllers\Web\ProductWebController;
 use App\Http\Controllers\Web\TableWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
+use App\Http\Controllers\Web\MovementInputKardexWebController;
 use App\Http\Controllers\Web\MovementInputDetailWebController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -89,6 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/insumos/movimientos', action: [MovementInputsWebController::class, 'index'])->name('index.view');
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
     Route::get(uri: '/insumos/movimientos/detalles/{id}', action: [MovementInputDetailWebController::class, 'index'])->name('index.view');
+    Route::get('/insumos/kardex', [MovementInputKardexWebController::class, 'index'])->name('index.view');
 
 
     #CONSULTA  => BACKEND
@@ -137,7 +140,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [MovementInputDetailController::class, 'store'])->name('movimientosinput.store');
     });
 
-
+  // INSUMOS -> KARDEX  (BACKEND)
+    Route::prefix('insumos/karde')->group(function () {
+        Route::get('/', [MovementInputKardexController::class, 'index'])->name('kardexinput.index');
+        Route::post('/', [MovementInputKardexController::class, 'store'])->name('kardexinput.store');
+        Route::get('{kardexInput}', action: [MovementInputKardexController::class, 'show'])->name('kardexinput.show');
+        Route::put('{kardexInput}', [MovementInputKardexController::class, 'update'])->name('kardexinput.update');
+        Route::delete('{kardexInput}', [MovementInputKardexController::class, 'destroy'])->name('kardexinput.destroy');
+    });
 
 
     #PLATOS => BACKEND

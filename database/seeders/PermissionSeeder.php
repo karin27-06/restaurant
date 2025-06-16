@@ -105,10 +105,16 @@ class PermissionSeeder extends Seeder{
         #seccion de movimientos
         Permission::create(['name' => 'ver movimientos']);
 
-        #insumos
+        #Movimientos de insumos
         Permission::create(['name' => 'crear facturas insumos']);
         Permission::create(['name' => 'editar facturas insumos']);
         Permission::create(['name' => 'eliminar facturas insumos']);
         Permission::create(['name' => 'ver facturas insumos']);
+        
+        #Kardex de insumos
+        Permission::create(['name' => 'crear kardex insumos']);
+        Permission::create(['name' => 'editar kardex insumos']);
+        Permission::create(['name' => 'eliminar kardex insumos']);
+        Permission::create(['name' => 'ver kardex insumos']);
     }
 }

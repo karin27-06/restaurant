@@ -27,6 +27,6 @@ class Input extends Model
     // Relación muchos a muchos con Plato
     public function dishes()
     {
-        return $this->belongsToMany(Dish::class, 'dish_input', 'input_id', 'dish_id');
+        return $this->belongsToMany(Dishes::class, 'dish_input', 'input_id', 'dish_id');
     }
 }

@@ -82,6 +82,8 @@
                         v-model="movementInput.totalPrice"
                         required
                         min="0"
+                        minFractionDigits="2" 
+                        maxFractionDigits="2"
                         class="w-full"
                         :class="{ 'p-invalid': serverErrors.totalPrice }"
                     />
@@ -190,10 +192,36 @@ function openNew() {
 }
 
 
+    import {
+        router
+    } from '@inertiajs/core';
 
 function goBack() {
-    window.location.href = '/insumos/movimientos';
+
+ const url = `/insumos/movimientos`;
+                router.visit(url);
 }
+
+
+async function fetchUserId() {
+    try {
+        // Hacemos la solicitud al backend para obtener el user_id
+        const { data } = await axios.get('/user-id');
+
+        // Verificamos si la solicitud fue exitosa
+        if (data.success) {
+            return data.user_id; // Retornamos el user_id
+        } else {
+            console.error("Error al obtener el user_id");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error en la solicitud:", e);
+        return null;
+    }
+}
+
+
 
 const saveMovement = async () => {
     try {
@@ -211,37 +239,60 @@ const saveMovement = async () => {
         });
 
         if (response.data.state) {
-            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Insumo agregado correctamente al Movimiento' });
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Insumo agregado correctamente al Movimiento',
+            life: 3000});
             emit('movementsinput-agregado');
-
+            // Aquí pasas los valores correctos de totalPrice y idInput a la función enviarkardexinputs
+            enviarkardexinputs(selectedInsumo.value.id, movementInput.value.totalPrice); 
             hideDialog();
-
-            // Restablecer el formulario después de agregar el insumo
-            movementInput.value = {
-                inputName: '',
-                batch: '',
-                quantity: null,
-                expirationDate: null,
-                totalPrice: null,
-                unitPrice: '',
-            };
-            clearSearch();
-            selectedInsumo.value = null;
         }
     } catch (error) {
-        // Verificar si el error es un error de validación del backend (como el error que configuraste)
-        if (error.response && error.response.data && error.response.data.message) {
-            toast.add({ 
-                severity: 'error', 
-                summary: 'Error', 
-                detail: error.response.data.message // Mostrar el mensaje que viene del backend
-            });
+        // Manejo de errores
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al guardar los datos',
+            life: 3000});
+    }
+};
+
+const enviarkardexinputs = async (idInput, totalPrice) => {
+    const userId = await fetchUserId(); // Esperar a obtener el user_id
+
+    if (!userId) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el user_id' });
+        return; // Si no se obtiene el user_id, no continuar con el registro
+    }
+
+    try {
+        // Obtener los detalles del movimiento de insumo
+        const movementResponse = await axios.get(`/insumos/movimientos/detalle/${id}`);
+        
+        // Extraer el code y payment_type desde el movimiento
+        const movementInput = movementResponse.data.data[0].movementInput; // Suponiendo que solo tienes un movimiento
+        const code = movementInput.code;
+        const payment_type = movementInput.payment_type;
+
+        // Crear los datos para el kardex
+        const movementDataKardex = {
+            idUser: userId,
+            idInput: idInput, // Recibido como parámetro
+            idMovementInput: id, // Asegúrate de que este id esté correctamente definido
+            movement_type: "0", // Asegúrate de que movement_type esté presente en el movimiento
+            totalPrice: totalPrice, // Recibido como parámetro
+        };
+
+        // Enviar los datos para registrar el Kardex
+        const response = await axios.post('/insumos/karde', movementDataKardex);
+        console.log('Kardex registrado correctamente:', response.data);
+    } catch (error) {
+        console.error('Error al registrar el kardex:', error);
+        if (error.response && error.response.data && error.response.data.errors) {
+            console.error('Errores de validación:', error.response.data.errors);
         } else {
-            // Si es cualquier otro tipo de error, mostrar un mensaje genérico
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al guardar los datos' });
+            console.error('Error desconocido:', error);
         }
     }
 };
+
+
 
 function hideDialog() {
     inputDialog.value = false;

@@ -115,6 +115,9 @@ const inputDialog = ref(false);
 const serverErrors = ref({});
 const emit = defineEmits(['inputs-agregado','movementsinputAgregado']);
 const selectedMovementInputs = ref([]);  // Si es un array vacío, de esta forma lo defines.
+    import {
+        router
+    } from '@inertiajs/core';
 
 
 const movementInput = ref({
@@ -198,7 +201,6 @@ async function fetchUserId() {
 
 
 
-
 async function saveMovement() {
    const userId = await fetchUserId(); // Esperar a obtener el user_id
 
@@ -223,8 +225,10 @@ async function saveMovement() {
 
     axios.post('/insumos/movimiento', movementData.value)
         .then(response => {
+           
             // Si la solicitud es exitosa
-            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento registrado correctamente' });
+            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento registrado correctamente',
+            life: 3000 });
 
             // Obtener el ID del nuevo movimiento
             const movementId = response.data.movement.id;
@@ -236,7 +240,10 @@ async function saveMovement() {
 
             // Redirigir a la URL con el ID del nuevo movimiento
             emit('movementsinput-agregado');
-            window.location.href = `/insumos/movimientos/detalles/${movementId}`;
+ const url = `/insumos/movimientos/detalles/${movementId}`;
+                router.visit(url);
+
+
         })
         .catch(error => {
             if (error.response?.status === 422) {
