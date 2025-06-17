@@ -15,4 +15,9 @@ class CajaWebController extends Controller
         Gate::authorize('viewAny', Caja::class);
         return Inertia::render('panel/Caja/indexCaja');
     }
+    public function aperturar(): Response
+    {
+        return Inertia::render('panel/Caja/AperturarCaja');
+    }
+
 }
