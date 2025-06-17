@@ -167,9 +167,9 @@ const getMovementTypeLabel = (value) => {
         <Column field="total" header="Total" sortable style="min-width: 5rem" />
 
        
-        <Column field="created_at" header="Creación" sortable style="min-width: 10rem" />
-        <Column field="updated_at" header="Actualización" sortable style="min-width: 10rem"/>
-        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 12rem">
+        <Column field="created_at" header="Creación" sortable style="min-width: 13rem" />
+        <Column field="updated_at" header="Actualización" sortable style="min-width: 13rem"/>
+        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 10rem">
             <template #body="{ data }">
                 <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarMovementInput(data)" />
                 <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmarDeleteMovementInput(data)" />
