@@ -106,5 +106,44 @@ class CajaController extends Controller
         'message' => 'Caja eliminada correctamente.'
     ]);
 }
+    public function disponibles()
+    {
+        Gate::authorize('viewAny', Caja::class);
 
+        return Caja::where('state', true)
+            ->select('id', 'numero_cajas', 'state')
+            ->orderBy('numero_cajas', 'asc')
+            ->get();
+    }
+
+    public function aperturar(Request $request)
+    {
+        Gate::authorize('update', Caja::class);
+
+        $request->validate([
+            'caja_id' => 'required|exists:cajas,id'
+        ]);
+
+        $caja = Caja::find($request->caja_id);
+
+        // Verificar que la caja esté disponible
+        if (!$caja->state) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La caja seleccionada no está disponible'
+            ], 422);
+        }
+
+        // Actualizar la caja a ocupada
+        $caja->update([
+            'state' => false,
+            'idVendedor' => Auth::id()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Caja aperturada correctamente',
+            'caja' => new CajaResource($caja)
+        ]);
+    }
 }
