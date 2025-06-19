@@ -72,9 +72,9 @@ onMounted(async () => {
   try {
     // Obtener datos del usuario autenticado (nombre del vendedor)
     const userResponse = await axios.get('/usuarios', { params: { status: true } });
-    vendedorNombre.value = userResponse.data.map((c) => ({ label: c.name1, value: c.id }));  // Suponiendo que el id del usuario es 3 (puedes obtener esto dinámicamente)
-    
-    
+    const vendedor = userResponse.data.data.find(user => user.id === 2);  // Suponemos que el id de usuario es 3 (puedes obtenerlo dinámicamente)
+    vendedorNombre.value = vendedor ? vendedor.name1 : 'Sin asignar';
+
     // Obtener cajas disponibles (sin ocupar)
     const cajasResponse = await axios.get('/caja/disponibles');
     cajasDisponibles.value = cajasResponse.data.map(caja => ({
@@ -82,7 +82,6 @@ onMounted(async () => {
       numero_cajas: caja.numero_cajas,
       state: caja.state
     }));
-    
   } catch (error) {
     console.error('Error cargando datos:', error);
     toast.add({
@@ -123,7 +122,7 @@ const aperturarCaja = async () => {
     await axios.post('/caja/aperturar-caja', {
       caja_id: cajaSeleccionada.value
     });
-    
+
     toast.add({
       severity: 'success',
       summary: 'Éxito',
@@ -133,7 +132,6 @@ const aperturarCaja = async () => {
 
     // Redirigir a la vista de cajas
     router.push('/cajas');
-    
   } catch (error) {
     toast.add({
       severity: 'error',
