@@ -11,7 +11,7 @@
           <div class="mb-4">
             <label class="block font-medium mb-2">Vendedor:</label>
             <InputText 
-              :value="vendedorNombre" 
+              :value="username" 
               class="w-full bg-gray-100" 
               readonly 
             />
@@ -23,7 +23,7 @@
           <h2 class="text-lg font-semibold mb-4">Caja</h2>
           <div class="mb-4">
             <label class="block font-medium mb-2">Seleccionar caja:</label>
-            <Dropdown 
+            <Select 
               v-model="cajaSeleccionada"
               :options="cajasDisponibles"
               optionLabel="numero_cajas"
@@ -54,26 +54,29 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
-import { router } from '@inertiajs/vue3';
 import AppLayout from '@/layout/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import InputText from 'primevue/inputtext';
-import Dropdown from 'primevue/dropdown';
+import Select from 'primevue/dropdown';
 import Button from 'primevue/button';
 import axios from 'axios';
 
 const toast = useToast();
-const vendedorNombre = ref('');
+const username = ref('');  // Variable para almacenar el nombre completo del usuario autenticado
 const cajaSeleccionada = ref(null);
 const cajasDisponibles = ref([]);
 
 // Obtener el nombre del vendedor y las cajas disponibles cuando se monta el componente
 onMounted(async () => {
   try {
-    // Obtener datos del usuario autenticado (nombre del vendedor)
-    const userResponse = await axios.get('/usuarios', { params: { status: true } });
-    const vendedor = userResponse.data.data.find(user => user.id === 2);  // Suponemos que el id de usuario es 3 (puedes obtenerlo dinámicamente)
-    vendedorNombre.value = vendedor ? vendedor.name1 : 'Sin asignar';
+    // Obtener el user_id, name y apellidos desde la API
+    const userResponse = await axios.get('/user-id');  // Solicitud a la API /user-id
+
+    if (userResponse.data.success) {
+      // Guardamos el nombre completo (name + apellidos) en la variable username
+      username.value = `${userResponse.data.name} ${userResponse.data.apellidos}`;
+      console.log('Nombre del usuario:', username.value);  // Imprimir en la consola el nombre completo
+    }
 
     // Obtener cajas disponibles (sin ocupar)
     const cajasResponse = await axios.get('/caja/disponibles');
@@ -130,8 +133,8 @@ const aperturarCaja = async () => {
       life: 3000
     });
 
-    // Redirigir a la vista de cajas
-    router.push('/cajas');
+   // Redirigir a la vista de cajas
+    window.location.href = '/cajas';
   } catch (error) {
     toast.add({
       severity: 'error',

@@ -138,7 +138,7 @@ class CajaController extends Controller
     }
 
     public function aperturar(Request $request)
-{
+    {
     // Encuentra la caja por el ID
     $caja = Caja::find($request->caja_id);
 
@@ -158,13 +158,11 @@ class CajaController extends Controller
 
     // Actualizar la caja a ocupada
     $caja->update([
-        'state' => false,
-        'idVendedor' => Auth::id()
+    'state' => false,
+    'idVendedor' => Auth::id()
     ]);
 
-    // Obtener el nombre del vendedor
-    $vendedor = $caja->vendedor;
-
+    $vendedor = $caja->vendedor; // Asegúrate de que la relación 'vendedor' esté cargada
     return response()->json([
         'success' => true,
         'message' => 'Caja aperturada correctamente',
@@ -172,6 +170,18 @@ class CajaController extends Controller
         'vendedorNombre' => $vendedor ? $vendedor->name1 : 'Sin asignar',
     ]);
 }
+// En CajaController.php
+public function miCajaActiva()
+{
+    $user = Auth::user();
+    $caja = Caja::where('idVendedor', $user->id)
+                ->where('state', false) // Caja ocupada
+                ->first();
 
+    return response()->json([
+        'state' => true,
+        'caja' => $caja ? new CajaResource($caja) : null
+    ]);
+}
 
 }
