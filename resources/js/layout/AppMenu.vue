@@ -34,6 +34,8 @@ const model = computed(() => [
         label: 'Gestión de Comercio',
         items: [
             hasPermission('ver cajas') && { label: 'Cajas', icon: 'pi pi-fw pi-cart-plus', to: '/cajas' },
+           hasPermission('ver ordenes') && { label: 'Ordenes', icon: 'pi pi-fw pi-list', to: '/ordenes' },
+    hasPermission('ver mesas') && { label: 'Lista de Mesas', icon: 'pi pi-fw pi-table', to: '/ordenes/mesas' },
         ].filter(Boolean),
     },
     {

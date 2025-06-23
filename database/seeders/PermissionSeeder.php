@@ -103,6 +103,9 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'ver insumos']);
 
         #seccion de movimientos
+        Permission::create(['name' => 'crear movimientos']);
+        Permission::create(['name' => 'editar movimientos']);
+        Permission::create(['name' => 'eliminar movimientos']);
         Permission::create(['name' => 'ver movimientos']);
 
         #Movimientos de insumos
@@ -116,5 +119,13 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar kardex insumos']);
         Permission::create(['name' => 'eliminar kardex insumos']);
         Permission::create(['name' => 'ver kardex insumos']);
+    
+            #seccion de ordenes
+        Permission::create(['name' => 'crear ordenes']);
+        Permission::create(['name' => 'editar ordenes']);
+        Permission::create(['name' => 'eliminar ordenes']);
+        Permission::create(['name' => 'ver ordenes']);
+
+    
     }
 }

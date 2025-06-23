@@ -13,28 +13,44 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Gate;
-use App\Pipelines\FilterByName;
+use App\Pipelines\FilterByNumTable;
 use App\Pipelines\FilterByState;
 
 class TablesController extends Controller
 {
-    public function index(Request $request)
-    {
-        Gate::authorize('viewAny', Table::class);
+public function index(Request $request)
+{
+    Gate::authorize('viewAny', Table::class);
 
-        $perPage = $request->input('per_page', 15);
+    $perPage = $request->input('per_page', 15);
 
-        $tables = app(Pipeline::class)
-            ->send(Table::query())
-            ->through([
-                new FilterByName($request->input('search')),
-                new FilterByState($request->input('state')),
-            ])
-            ->thenReturn()
-            ->paginate($perPage);
+    // Obtenemos los filtros de idArea e idFloor
+    $idArea = $request->input('idArea');
+    $idFloor = $request->input('idFloor');
 
-        return TableResource::collection($tables);
+    $tables = app(Pipeline::class)
+        ->send(Table::query())
+        ->through([
+            new FilterByNumTable($request->input('search')),
+            new FilterByState($request->input('state')),
+        ])
+        ->thenReturn();
+
+    // Aplicamos el filtro por idArea si existe
+    if ($idArea) {
+        $tables->where('idArea', $idArea);
     }
+
+    // Aplicamos el filtro por idFloor si existe
+    if ($idFloor) {
+        $tables->where('idFloor', $idFloor);
+    }
+
+    $tables = $tables->paginate($perPage);
+
+    return TableResource::collection($tables);
+}
+
 
     public function store(StoreTableRequest $request)
     {

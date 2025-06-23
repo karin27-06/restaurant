@@ -53,7 +53,9 @@ use App\Http\Controllers\Web\InputWebController;
 use App\Http\Controllers\Web\MovementInputsWebController;
 use App\Http\Controllers\Web\ProductWebController;
 use App\Http\Controllers\Web\TableWebController;
+use App\Http\Controllers\Web\OrdersWebController;
 use App\Http\Controllers\Web\UsuarioWebController;
+use App\Http\Controllers\Web\OrdersTablesWebController;
 use App\Http\Controllers\Web\MovementInputKardexWebController;
 use App\Http\Controllers\Web\MovementInputDetailWebController;
 use Illuminate\Support\Facades\Route;
@@ -93,6 +95,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/roles', [UsuarioWebController::class, 'roles'])->name('roles.view');
     Route::get(uri: '/insumos/movimientos/detalles/{id}', action: [MovementInputDetailWebController::class, 'index'])->name('index.view');
     Route::get('/insumos/kardex', [MovementInputKardexWebController::class, 'index'])->name('index.view');
+    Route::get('/ordenes', [OrdersWebController::class, 'index'])->name('index.view');
+    Route::get('/ordenes/mesas', [OrdersTablesWebController::class, 'index'])->name('index.view');
 
 
     #CONSULTA  => BACKEND
@@ -115,6 +119,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('{table}', [TablesController::class, 'update'])->name('mesas.update');
         Route::delete('{table}', [TablesController::class, 'destroy'])->name('mesas.destroy');
     });
+
+    
     #INSUMOS => BACKEND
     Route::prefix('insumo')->group(function () {
         Route::get('/', action: [InputController::class, 'index'])->name('inputs.index');
