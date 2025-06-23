@@ -10,8 +10,33 @@ const mustReset = page.props.mustReset;
 // Obtener el usuario autenticado
 const user = page.props.auth.user;
 
+// Función para determinar el saludo
+const getGreeting = () => {
+  const hours = new Date().getHours();
+  if (hours < 12) {
+    return 'Buenos días';
+  } else if (hours < 18) {
+    return 'Buenas tardes';
+  } else {
+    return 'Buenas noches';
+  }
+};
+// Mensajes motivacionales
+const motivationalMessages = [
+  "¡Estás haciendo un gran trabajo, sigue así!",
+  "¡Hoy es un buen día para alcanzar tus metas!",
+  "¡La perseverancia te lleva lejos, nunca pares!",
+  "¡Cada paso te acerca más a tu éxito!"
+];
 
+// Escoger un mensaje aleatorio y almacenarlo en una variable reactiva
+const motivationalMessage = getMotivationalMessage();
 
+// Función para obtener un mensaje aleatorio
+function getMotivationalMessage() {
+  const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
+  return motivationalMessages[randomIndex];
+}
 
 
 
@@ -26,6 +51,13 @@ const user = page.props.auth.user;
     </div>
   </div>
   <AppLayout v-else>
+    <div class="card">
+      <!-- Saludo y nombre completo del usuario -->
+      <h2>{{ getGreeting() }}, {{ user.name }}!</h2>
+      <br>
+      <!-- Mensaje motivacional -->
+      <Message severity="info">{{ motivationalMessage }}</Message>
+    </div>
     <div class="grid grid-cols-12 gap-8">
       <!-- Orders Card -->
       <div class="col-span-12 lg:col-span-6 xl:col-span-3">
@@ -97,7 +129,7 @@ const user = page.props.auth.user;
           <div class="font-semibold text-xl mb-4">Recent Sales</div>
           <div class="p-datatable p-component">
             <div class="p-datatable-table-container" style="overflow: auto;">
-              <table role="table" class="p-datatable-table">
+              <table role="table" class="p-datatable-table" style="table-layout: fixed; width: 100%;">
                 <thead class="p-datatable-thead" style="position: sticky;">
                   <tr role="row">
                     <th class="p-datatable-header-cell" style="width: 15%;">Image</th>
@@ -153,7 +185,16 @@ const user = page.props.auth.user;
           </div>
         </div>
       </div>
-
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+  body {
+    overflow-x: hidden; /* Previene el desbordamiento horizontal */
+  }
+  .p-datatable-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+</style>

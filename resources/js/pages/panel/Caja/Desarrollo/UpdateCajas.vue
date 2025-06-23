@@ -81,6 +81,7 @@ const updateCaja = async () => {
             idVendedor: caja.value.idVendedor
         };
 
+        // Realiza la actualización
         await axios.put(`/caja/${props.cajaId}`, dataToSend);
 
         toast.add({
@@ -90,17 +91,16 @@ const updateCaja = async () => {
             life: 3000
         });
 
-        // Aquí actualizas el estado de la lista de cajas en el frontend
         dialogVisible.value = false;
         emit('updated');
     } catch (error) {
-        if (error.response?.data?.errors) {
-            serverErrors.value = error.response.data.errors;
+        // Si hay un error de validación (por ejemplo, el vendedor ya está asignado)
+        if (error.response?.status === 422 && error.response?.data?.message) {
             toast.add({
                 severity: 'error',
-                summary: 'Error de validación',
-                detail: error.response.data.message || 'Revisa los campos.',
-                life: 5000
+                summary: 'Error',
+                detail: error.response.data.message, // Mostrar el mensaje de error
+                life: 3000
             });
         } else {
             toast.add({
