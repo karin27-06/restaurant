@@ -11,7 +11,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <AddCajas @caja-agregada="refrescarListado"/>
                         <Button 
-                            label="Aperturar Caja" 
+                            label="Ir a ventas" 
                             icon="pi pi-lock-open" 
                             severity="success"
                             @click="goToApertura"
@@ -33,6 +33,7 @@ import Espera from '@/components/Espera.vue';
 import ListCajas from './Desarrollo/ListCajas.vue';
 import AddCajas from './Desarrollo/AddCajas.vue';
 import Button from 'primevue/button';
+import axios from 'axios';
 
 const isLoading = ref(true);
 const refreshKey = ref(0);
@@ -40,9 +41,23 @@ const refreshKey = ref(0);
 function refrescarListado() {
     refreshKey.value++;
 }
-function goToApertura() {
-    window.location.href = '/caja/aperturar';
-}
+const goToApertura = async () => {
+  try {
+    // Verificar si el usuario ya tiene una caja ocupada
+    const response = await axios.get('/caja/mi-caja-activa');
+    
+    if (response.data.caja) {
+      // Si ya tiene caja, redirigir a ventas
+      window.location.href = '/categorias'; // Cambia esta ruta por VENTAS (PABLO)
+    } else {
+      // Si no tiene caja, redirigir a apertura
+      window.location.href = '/caja/aperturar';
+    }
+  } catch (error) {
+    console.error('Error verificando caja:', error);
+    window.location.href = '/caja/aperturar'; // Fallback por si hay error
+  }
+};
 onMounted(() => {
     setTimeout(() => {
         isLoading.value = false;
