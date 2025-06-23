@@ -75,16 +75,37 @@ class CajaController extends Controller
         ], 200);
     }
     public function update(UpdateCajaRequest $request, Caja $caja)
-    {
-        Gate::authorize('update', $caja);
-        $validated = $request->validated();
-        $caja->update($validated);
-        return response()->json([
-            'state' => true, //SIN OCUPAR
-            'message' => 'Caja actualizada correctamente.',
-            'caja' => $caja
-        ]);
+{
+    Gate::authorize('update', $caja);
+
+    $validated = $request->validated();
+
+    // Verificar si el vendedor está asignado a alguna otra caja, sin importar el estado
+    if ($validated['idVendedor']) {
+
+        // Comprobamos si el vendedor ya está asignado a cualquier caja (ocupada o no)
+        $existingCaja = Caja::where('idVendedor', $validated['idVendedor'])
+                            ->where('id', '!=', $caja->id) // Excluir la caja que estamos editando
+                            ->first();
+
+        // Si encontramos que el vendedor ya está asignado a otra caja
+        if ($existingCaja) {
+            return response()->json([
+                'state' => false,
+                'message' => 'Este vendedor ya está asignado a otra caja.'  // Aquí devolvemos el mensaje de error
+            ], 422);  // Código de estado 422 para errores de validación
+        }
     }
+
+    // Si la validación pasa, actualizamos la caja con los datos validados
+    $caja->update($validated);
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Caja actualizada correctamente.',
+        'caja' => $caja
+    ]);
+}
 
     public function destroy(Caja $caja)
     {
@@ -104,6 +125,62 @@ class CajaController extends Controller
     return response()->json([
         'state' => true,
         'message' => 'Caja eliminada correctamente.'
+    ]);
+}
+    public function disponibles()
+    {
+        Gate::authorize('viewAny', Caja::class);
+
+        return Caja::where('state', true)
+            ->select('id', 'numero_cajas', 'state')
+            ->orderBy('numero_cajas', 'asc')
+            ->get();
+    }
+
+    public function aperturar(Request $request)
+    {
+    // Encuentra la caja por el ID
+    $caja = Caja::find($request->caja_id);
+
+    // Obtén el usuario autenticado
+    $usuario = Auth::user();
+
+    // Ahora, pasamos ambos parámetros a la política
+    Gate::authorize('update', [$usuario, $caja]);  // Aquí pasamos el usuario y el modelo de la caja
+
+    // Verificar que la caja esté disponible
+    if (!$caja->state) {
+        return response()->json([
+            'success' => false,
+            'message' => 'La caja seleccionada no está disponible'
+        ], 422);
+    }
+
+    // Actualizar la caja a ocupada
+    $caja->update([
+    'state' => false,
+    'idVendedor' => Auth::id()
+    ]);
+
+    $vendedor = $caja->vendedor; // Asegúrate de que la relación 'vendedor' esté cargada
+    return response()->json([
+        'success' => true,
+        'message' => 'Caja aperturada correctamente',
+        'caja' => new CajaResource($caja),
+        'vendedorNombre' => $vendedor ? $vendedor->name1 : 'Sin asignar',
+    ]);
+}
+// En CajaController.php
+public function miCajaActiva()
+{
+    $user = Auth::user();
+    $caja = Caja::where('idVendedor', $user->id)
+                ->where('state', false) // Caja ocupada
+                ->first();
+
+    return response()->json([
+        'state' => true,
+        'caja' => $caja ? new CajaResource($caja) : null
     ]);
 }
 
