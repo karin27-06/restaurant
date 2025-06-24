@@ -30,48 +30,45 @@ public function index(Request $request, $id)
         ->with('movementInput', 'input')  // Cargar relaciones necesarias
         ->paginate($perPage);  // Pagina los resultados
 
-    // Verificar si no hay datos (vacío) con el filtro original
+    // Si no hay detalles, devolver respuesta vacía
     if ($movementInputDetails->isEmpty()) {
-        // Si no hay resultados, intentar con el filtro por 'id'
-        $movementInputDetails = app(Pipeline::class)
-            ->send(MovementInputDetail::query()->where('id', $id))  // Filtro por id
-            ->through([new FilterByNameInput($request->input('search'))])
-            ->thenReturn()
-            ->with('movementInput', 'input')  // Cargar relaciones necesarias
-            ->paginate($perPage);  // Pagina los resultados
+        return response()->json([
+            'state' => true,
+            'message' => 'No hay detalles para este movimiento.',
+            'data' => [],
+            'meta' => [
+                'current_page' => 1,
+                'total' => 0,
+                'last_page' => 1,
+                'per_page' => $perPage,
+            ],
+            'subtotal' => 0,
+            'total_igv' => 0,
+            'total' => 0,
+        ]);
     }
 
-    // Variables para los totales
+    // Si hay detalles, proceder con los cálculos de totales
     $subtotal = 0;
     $totalIGV = 0;
     $total = 0;
 
-    // Recorrer para hacer cálculos
     foreach ($movementInputDetails as $detail) {
-        // Verificar si el IGV está habilitado
+        // Lógica para calcular subtotal, IGV y total
         if ($detail->movementInput->igv_state == 0) {
-            // El totalPrice ya tiene el IGV incluido.
-            // El IGV es el 18% del total (que es el precio con el IGV)
             $igv = $detail->totalPrice * 0.18;
-
-            // El subtotal es el totalPrice menos el IGV
             $subtotal += $detail->totalPrice - $igv;
-
-            // El totalIGV es simplemente el IGV calculado
             $totalIGV += $igv;
         } else if ($detail->movementInput->igv_state == 1) {
             $igv = $detail->totalPrice * 0.18;
             $totalIGV += $igv;
-            
-            // El subtotal es el totalPrice sin el IGV
             $subtotal += $detail->totalPrice;
         }
     }
 
-    // El total final es la suma del subtotal y el total del IGV
+    // Total final
     $total = $subtotal + $totalIGV;
 
-    // Devolver los datos con la paginación y totales
     return response()->json([
         'state' => true,
         'message' => 'Detalles de movimiento cargados correctamente.',

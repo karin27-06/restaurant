@@ -62,19 +62,30 @@ const showOrderFormForMesa = (mesaId, tablenum) => {
     loadPlatos();
 };
 
-// Función para agregar un plato al pedido
 const agregarAlPedido = (plato) => {
     // Verifica si el plato ya está en el pedido
     const platoExistente = order.value.platos.find((pedido) => pedido.id === plato.id);
 
     if (platoExistente) {
         // Si ya existe, solo actualiza la cantidad
-        platoExistente.cantidad = Math.min(platoExistente.cantidad + 1, plato.quantity);
+        platoExistente.cantidad = Math.min(platoExistente.cantidad + 1, plato.stock);
     } else {
         // Si no existe, agregarlo al pedido con cantidad 1
-        order.value.platos.push({ ...plato, cantidad: 1 });
+        order.value.platos.push({
+            id: plato.id,
+            name: plato.name,
+            price: plato.price,
+            stock: plato.quantity, // stock máximo
+            cantidad: 1, // cantidad inicial en el pedido
+        });
     }
+
+    // Imprimir la estructura de los platos en el pedido
+    console.log('Platos en el pedido:', order.value.platos);
 };
+
+
+
 
 // Función para mostrar los insumos de un plato en el Dialog
 const verInsumos = (plato) => {
@@ -230,7 +241,7 @@ const adjustQuantity = (plato, increment) => {
         eliminarDelPedido(order.value.platos.indexOf(plato)); // Elimina el plato
     } else {
         // Actualiza la cantidad, asegurándose de no exceder el stock
-        plato.cantidad = Math.min(Math.max(plato.cantidad + increment, 1), plato.quantity);
+        plato.cantidad = Math.min(Math.max(plato.cantidad + increment, 1), plato.stock);
     }
 };
 
@@ -421,7 +432,7 @@ const realizarPedido = () => {
                                     <!-- Mostrar la cantidad actual -->
                                     <span>{{ plato.cantidad }}</span>
                                     <Button icon="pi pi-plus" class="p-button-text p-button-success" @click="adjustQuantity(plato, 1)" />
-                                    <span>de {{ plato.quantity }} disponibles</span>
+                                    <span>de {{ plato.stock }} disponibles</span>
                                 </div>
 
                                 <!-- Botón para eliminar el plato -->
