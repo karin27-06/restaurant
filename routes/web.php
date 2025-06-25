@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\MovementInputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
@@ -97,7 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/insumos/kardex', [MovementInputKardexWebController::class, 'index'])->name('index.view');
     Route::get('/ordenes', [OrdersWebController::class, 'index'])->name('index.view');
     Route::get('/ordenes/mesas', [OrdersTablesWebController::class, 'index'])->name('index.view');
-
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/caja/aperturar', [CajaWebController::class, 'aperturar'])->name('caja.aperturar');
     Route::get('/caja/disponibles', [CajaController::class, 'disponibles']);
     Route::get('/caja/mi-caja-activa', [CajaController::class, 'miCajaActiva']);

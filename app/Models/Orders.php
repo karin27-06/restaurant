@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Orders extends Model
 {
@@ -12,25 +13,32 @@ class Orders extends Model
     protected $fillable = [
         'idCustomer',
         'idTable',
+        'idEmployee', // Añade este campo
         'totalPrice',
         'state',
     ];
 
     // Relación con el modelo Customer
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'idCustomer');
+    public function customer(): BelongsTo{
+    
+        return $this->belongsTo(Customer::class, 'idCustomer','id');
     }
 
     // Relación con el modelo Table
-    public function table()
-    {
-        return $this->belongsTo(Table::class, 'idTable');
+    public function table(): BelongsTo{
+    
+        return $this->belongsTo(Table::class, 'idTable','id');
+    }
+    // Relación con el modelo Employee
+
+    public function employee(): BelongsTo{
+    
+        return $this->belongsTo(Employee::class, 'idEmployee','id');
     }
 
     // Relación uno a muchos con OrderDish (platos en el pedido)
     public function orderDishes()
     {
-        return $this->hasMany(OrderDishes::class, 'idOrder');
+        return $this->hasMany(OrderDishes::class, 'idOrder','id');
     }
 }
