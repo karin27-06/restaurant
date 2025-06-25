@@ -23,6 +23,9 @@ const showOrderForm = ref(false);
 const selectedMesa = ref(null);
 const platos = ref([]);
 
+//const platosSeleccionados = ref([]) // aquí se almacenan los platos seleccionados
+
+
 const order = ref({
     mesaId: null,
     tablenum: null,
@@ -261,6 +264,11 @@ const capitalizeFirstLetter = (str) => {
     if (!str) return ''; // Retorna vacío si no hay texto
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
+const calcularTotalPedido = () => {
+  return order.value.platos.reduce((total, plato) => {
+    return total + plato.price * plato.cantidad
+  }, 0)
+}
 
 const cancelOrder = () => {
     // Limpiar el pedido (vaciar platos y otros datos)
@@ -280,22 +288,40 @@ const cancelOrder = () => {
         life: 3000,
     });
 };
-const realizarPedido = () => {
-    // Verificar si hay platos seleccionados
+// Función para registrar la orden
+const realizarPedido = async () => {
+  try {
+    const total = calcularTotalPedido()
+
     if (order.value.platos.length === 0) {
-        // Si no hay platos, mostrar un toast
-        toast.add({
-            severity: 'warn',
-            summary: 'No hay platos seleccionados',
-            detail: 'Por favor, selecciona al menos un plato para realizar el pedido.',
-            life: 3000,
-        });
-    } else {
-        // Si hay platos, proceder con la lógica para realizar el pedido
-        console.log('Pedido realizado con éxito!');
-        // Aquí iría la lógica para enviar el pedido a la API o realizar otra acción
+      toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debe seleccionar al menos un plato', life: 3000 })
+      return
     }
-};
+
+    const data = {
+      idCustomer: 1,
+      idEmployee: 1,
+      idTable: order.value.mesaId,
+      totalPrice: total,
+      state: 'pendiente',
+      platos: order.value.platos.map(plato => ({
+        id: plato.id,
+        cantidad: plato.cantidad,
+        price: plato.price,
+      }))
+    };
+
+    const response = await axios.post('/orders', data)
+
+    toast.add({ severity: 'success', summary: 'Éxito', detail: response.data.message, life: 3000 });
+    console.log(response.data);
+
+  } catch (error) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un problema al registrar la orden', life: 3000 });
+    console.error(error);
+  }
+}
+
 </script>
 
 <template>

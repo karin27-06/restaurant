@@ -19,12 +19,12 @@ class OrderDishes extends Model
     // Relación con el modelo Order
     public function order()
     {
-        return $this->belongsTo(Orders::class, 'idOrder');
+        return $this->belongsTo(Orders::class, 'idOrder','id');
     }
 
     // Relación con el modelo Dish
     public function dish()
     {
-        return $this->belongsTo(Dishes::class, 'idDishes');
+        return $this->belongsTo(Dishes::class, 'idDishes','id');
     }
 }
