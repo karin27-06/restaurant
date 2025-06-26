@@ -79,8 +79,15 @@ const loadPlatos = async (search = '') => {
     try {
         // Construir la URL con el parámetro de búsqueda y paginación
         const response = await axios.get(`/plato?search=${search}&page=${currentPage.value}&per_page=${perPage.value}`);
-        platos.value = response.data.data;
-        totalPages.value = response.data.meta.last_page; // Obtener el total de páginas
+
+        // Filtrar los platos para que solo se muestren aquellos con quantity > 0
+        const platosDisponibles = response.data.data.filter(plato => plato.quantity > 0);
+
+        // Asignar solo los platos con cantidad disponible
+        platos.value = platosDisponibles;
+
+        // Obtener el total de páginas
+        totalPages.value = response.data.meta.last_page; 
     } catch (error) {
         console.error('Error cargando platos:', error);
     }
@@ -283,11 +290,16 @@ const goBackOrder = () => {
     order.value.mesaId = null;
     order.value.tablenum = null;
 
+    // Limpiar historial de platos
+    historialPlatos.value = [];
+    historialPagination.value.total = 0;
+
     // Ocultar el formulario de pedido y volver a mostrar las mesas
     showOrderForm.value = false;
     showOrderHistorial.value = false;
     showReciboToolbar.value = false;
 };
+
 
 const tableNumber = ref(1);
 const isPlatoAgregado = (plato) => {
@@ -362,6 +374,9 @@ const realizarPedido = async () => {
         order.value.idOrder = response.data.order.id; // ← backend debe devolver el pedido creado
         order.value.platos = [];
         await loadHistorialPlatos(); // ← recarga historial automáticamente
+
+                await loadPlatos();  // Esto actualiza la lista de platos disponibles (por ejemplo, restando los que se pidieron)
+
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un problema al registrar la orden', life: 3000 });
         console.error(error);
@@ -386,12 +401,6 @@ async function fetchUserId() {
     }
 }
 
-const totalHistorialPedido = computed(() => {
-    return historialPlatos.value
-        .filter((plato) => plato.state !== 'cancelado')
-        .reduce((total, plato) => total + parseFloat(plato.precio) * plato.cantidad, 0)
-        .toFixed(2);
-});
 
 const fetchOpenOrderIdByMesa = async (mesaId) => {
     try {
@@ -448,6 +457,31 @@ const stateOptions = ref([
     { label: 'Completado', value: 'completado' },
     { label: 'Cancelado', value: 'cancelado' },
 ]);
+
+const cancelDish = async (dishId) => {
+    try {
+        const response = await axios.put(`/order-dishes/${dishId}`, { state: 'cancelado' });
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Platillo cancelado', life: 3000 });
+
+        // Actualiza el historial de platos después de la cancelación
+        loadHistorialPlatos();
+        loadPlatos();
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cancelar el platillo', life: 3000 });
+    }
+};
+const totalHistorialPedido = computed(() => {
+    return historialPlatos.value
+        .filter((plato) => plato.state !== 'cancelado') // Filtra los platos que no están cancelados
+        .reduce((total, plato) => {
+            const precio = parseFloat(plato.price) || 0; // Si el precio no es un número válido, se asigna 0
+            const cantidad = parseFloat(plato.quantity) || 0; // Si la cantidad no es un número válido, se asigna 0
+            return total + precio * cantidad; // Calcula el subtotal
+        }, 0) // Inicia la suma desde 0
+        .toFixed(2); // Redondea el resultado a dos decimales
+});
+
+
 </script>
 
 <template>
@@ -497,26 +531,37 @@ const stateOptions = ref([
 
         <!-- Section to display mesas -->
         <div v-if="!showOrderForm" class="grid grid-cols-12 gap-4">
-            <div v-for="mesa in mesas" :key="mesa.id" class="col-span-12 lg:col-span-6 xl:col-span-3">
-                <div class="card mb-0">
-                    <div class="mb-4 flex justify-between">
-                        <div>
-                            <span class="mb-4 block font-medium text-muted-color">Mesa Nº</span>
-                            <div class="text-xl font-medium text-surface-900 dark:text-surface-0">{{ mesa.tablenum }}</div>
-                        </div>
-                        <div
-                            class="flex cursor-pointer items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
-                            style="width: 2.5rem; height: 2.5rem"
-                            @click="showOrderFormForMesa(mesa.id, mesa.tablenum)"
-                        >
-                            <i class="pi pi-plus !text-xl text-blue-500"></i>
-                        </div>
-                    </div>
-                    <div class="flex space-x-4">
-                        <span class="text-muted-color">{{ mesa.floor_name }} - {{ mesa.area_name }} - {{ mesa.capacity }} personas</span>
-                    </div>
-                </div>
+          <div v-for="mesa in mesas" :key="mesa.id" class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="card mb-0">
+        <div class="mb-4 flex justify-between">
+            <div>
+                <span class="mb-4 block font-medium text-muted-color">Mesa Nº</span>
+                <div class="text-xl font-medium text-surface-900 dark:text-surface-0">{{ mesa.tablenum }}</div>
             </div>
+            <div
+                class="flex items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
+                style="width: 2.5rem; height: 2.5rem"
+                @click="showOrderFormForMesa(mesa.id, mesa.tablenum)"
+            >
+                <!-- Condición para mostrar icono según el estado de la mesa -->
+                <i
+                    v-if="mesa.order_status === 'disponible'"
+                    class="pi pi-plus !text-xl text-blue-500"
+                    style="cursor: pointer !important;"
+                ></i>
+                <i
+                    v-else
+                    class="pi pi-clock !text-xl text-yellow-500"
+                    style="cursor: not-allowed !important;"
+                ></i>
+            </div>
+        </div>
+        <div class="flex space-x-4">
+            <span class="text-muted-color">{{ mesa.floor_name }} - {{ mesa.area_name }} - {{ mesa.capacity }} personas</span>
+        </div>
+    </div>
+</div>
+
         </div>
 
         <div>
@@ -601,7 +646,7 @@ const stateOptions = ref([
                         <!-- Botones debajo del total usando PrimeVue -->
                         <div class="mt-4 flex space-x-4">
                             <Button label="Realizar Pedido" icon="pi pi-check" severity="success" class="w-1/2" @click="realizarPedido" />
-                            <Button label="Cancelar Pedido" icon="pi pi-times" severity="danger" class="w-1/2" @click="cancelOrder" />
+                            <Button label="Vaciar" icon="pi pi-times" severity="danger" class="w-1/2" @click="cancelOrder" />
                         </div>
                     </div>
                 </div>
@@ -653,16 +698,29 @@ const stateOptions = ref([
 
                     <Column field="name" header="Nombre" />
                     <Column field="quantity" header="Cantidad" />
-                    <Column field="price" header="Precio">
+                    <Column field="price" header="Precio Unit.">
                         <template #body="{ data }"> S/ {{ parseFloat(data.price).toFixed(2) }} </template>
                     </Column>
+                            <!-- Nueva columna "Subtotal" -->
+        <Column header="Subtotal" style="min-width: 8rem">
+            <template #body="{ data }">
+                S/ {{ (parseFloat(data.quantity) * parseFloat(data.price)).toFixed(2) }}
+            </template>
+        </Column>
+
                     <Column field="state" header="Estado">
-                        <template #body="{ data }">
-                            <Tag :value="data.state" :severity="getSeverity(data.state)" />
-                        </template>
-                    </Column>
+                    <template #body="{ data }">
+                        <Tag :value="data.state" :severity="getSeverity(data.state)" />
+                        <Button v-if="data.state === 'pendiente'" label="Cancelar" icon="pi pi-times" severity="danger" class="p-button-text" @click="cancelDish(data.id)" />
+                    </template>
+                </Column>
                     <Column field="creacion" header="Fecha de creación" />
                 </DataTable>
+                  <!-- Mostrar total del historial de la orden, excluyendo los cancelados -->
+            <div class="p-4 text-right font-semibold">
+                <span>Total: </span>
+                <span>S/ {{ totalHistorialPedido }}</span>
+            </div>
             </div>
             <!-- Dialog para ver los insumos del plato seleccionado -->
             <Dialog v-model:visible="showInsumosDialog" :header="'Insumos de ' + (selectedPlato?.name || 'Cargando...')" modal width="50%">

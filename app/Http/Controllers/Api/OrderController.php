@@ -7,6 +7,7 @@ use App\Http\Requests\Orders\StoreOrdersRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\OrderDishes;
 use App\Models\Orders;
+use App\Models\Dishes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
@@ -66,8 +67,19 @@ public function store(StoreOrdersRequest $request)
                 'price'     => $plato['price'],
             ]);
 
+
+
+             // 3.2 Actualizar el quantity de dishes restando la cantidad pedida
+            $dish = Dishes::find($plato['id']);
+            if ($dish) {
+                $dish->quantity -= $plato['cantidad'];  // Resta la cantidad pedida
+                $dish->save();  // Guarda los cambios
+            }
+
             $totalExtra += $plato['cantidad'] * $plato['price'];
         }
+
+
 
         // 4. Sumamos el total de nuevos platos al total de la orden
         $order->totalPrice += $totalExtra;
