@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\MovementInputController;
 use App\Http\Controllers\Api\TablesController;
 use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderDishController;
 use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
@@ -98,7 +99,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/insumos/kardex', [MovementInputKardexWebController::class, 'index'])->name('index.view');
     Route::get('/ordenes', [OrdersWebController::class, 'index'])->name('index.view');
     Route::get('/ordenes/mesas', [OrdersTablesWebController::class, 'index'])->name('index.view');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/caja/aperturar', [CajaWebController::class, 'aperturar'])->name('caja.aperturar');
     Route::get('/caja/disponibles', [CajaController::class, 'disponibles']);
     Route::get('/caja/mi-caja-activa', [CajaController::class, 'miCajaActiva']);
@@ -107,6 +107,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
     Route::get('/user-id', [ConsultasId::class, 'getUserId'])->middleware('auth:api');
+
+
+     #ORDER => BACKEND
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        Route::post('/', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::delete('{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+
+    });
+
+    Route::prefix('order-dishes')->group(function () {
+        Route::get('/', [OrderDishController::class, 'index'])->name('orderdishes.index');
+        Route::post('/', [OrderDishController::class, 'store'])->name('orderdishes.store');
+        Route::get('{order}', [OrderDishController::class, 'show'])->name('orderdishes.show');
+        Route::put('{order}', [OrderDishController::class, 'update'])->name('orderdishes.update');
+        Route::delete('{order}', [OrderDishController::class, 'destroy'])->name('orderdishes.destroy');
+
+    });
+
+
 
     #AREAS => BACKEND
     Route::prefix('area')->group(function () {

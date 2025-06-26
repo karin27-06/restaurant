@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             AreasSeeder::class,
             TableSeeder::class,
             SupplierSeeder::class,
+            CustomerSeeder::class,
             //development
             PresentationSeeder::class,
             InputSeeder::class,
