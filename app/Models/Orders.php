@@ -13,7 +13,7 @@ class Orders extends Model
     protected $fillable = [
         'idCustomer',
         'idTable',
-        'idEmployee', // Añade este campo
+        'idUser', // Añade este campo
         'totalPrice',
         'state',
     ];
@@ -31,9 +31,9 @@ class Orders extends Model
     }
     // Relación con el modelo Employee
 
-    public function employee(): BelongsTo{
+    public function User(): BelongsTo{
     
-        return $this->belongsTo(Employee::class, 'idEmployee','id');
+        return $this->belongsTo(User::class, 'idUser','id');
     }
 
     // Relación uno a muchos con OrderDish (platos en el pedido)

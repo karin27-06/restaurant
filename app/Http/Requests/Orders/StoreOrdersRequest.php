@@ -15,7 +15,7 @@ class StoreOrdersRequest extends FormRequest
     {
         return [
             'idCustomer'=>'required|exists:customers,id',
-            'idEmployee' => 'required|exists:employees,id',
+            'idUser' => 'required|exists:users,id',
             'idTable' => 'required|exists:tables,id', // Asegura que la mesa exista
             'totalPrice' => 'required|numeric|min:0',
             'state'=>'string|max:255',

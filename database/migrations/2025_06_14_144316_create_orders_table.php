@@ -12,7 +12,7 @@ class CreateOrdersTable extends Migration
             $table->id();  // ID del pedido
             $table->unsignedBigInteger('idCustomer');  // Relación con la tabla customers
             $table->unsignedBigInteger('idTable');  // Relación con la tabla tables
-            $table->unsignedBigInteger('idEmployee');  // Relación con la tabla employees
+            $table->unsignedBigInteger('idUser');  // Relación con la tabla users
             $table->decimal('totalPrice', 10, 2)->nullable();  // Precio total del pedido (acepta null)
             $table->enum('state', ['pendiente', 'en preparación', 'completado'])->default('pendiente');  // Estado del pedido
             $table->timestamps();  // created_at y updated_at
@@ -22,7 +22,7 @@ class CreateOrdersTable extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->foreign('idCustomer')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('idTable')->references('id')->on('tables')->onDelete('cascade');
-            $table->foreign('idEmployee')->references('id')->on('employees')->onDelete('cascade');  // Relación con la tabla employees
+            $table->foreign('idUser')->references('id')->on('users')->onDelete('cascade');  // Relación con la tabla employees
         });
     }
 
@@ -31,7 +31,7 @@ class CreateOrdersTable extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->dropForeign(['idCustomer']);
             $table->dropForeign(['idTable']);
-            $table->dropForeign(['idEmployee']);  // Eliminar la relación con la tabla employees
+            $table->dropForeign(['idUser']);  // Eliminar la relación con la tabla employees
         });
 
         Schema::dropIfExists('orders');

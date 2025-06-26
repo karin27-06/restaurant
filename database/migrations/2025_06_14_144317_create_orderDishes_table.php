@@ -17,6 +17,7 @@ class CreateOrderDishesTable extends Migration
             $table->id();  // ID del detalle del pedido
             $table->unsignedBigInteger('idOrder');  // Relación con la tabla orders
             $table->unsignedBigInteger('idDishes');  // Relación con la tabla dishes
+            $table->enum('state', ['pendiente', 'en preparación', 'en entrega', 'completado', 'cancelado'])->default('pendiente');
             $table->integer('quantity');  // Cantidad de platos
             $table->decimal('price', 10, 2);  // Precio del plato
             $table->timestamps();  // created_at y updated_at

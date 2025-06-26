@@ -13,6 +13,7 @@ class OrderDishes extends Model
         'idOrder',
         'idDishes',
         'quantity',
+        'state',
         'price',
     ];
 
