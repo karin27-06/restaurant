@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orders\StoreOrdersRequest;
+use App\Http\Requests\Orders\UpdateOrdersRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\OrderDishes;
 use App\Models\Orders;
@@ -21,6 +22,7 @@ class OrderController extends Controller
 
         $perPage = $request->input('per_page', 15);
         $mesaId = $request->query('mesa_id');
+    $idOrderDish = $request->query('id'); // Filtro por el id de orderDishes
     $query = Orders::with(['customer', 'table', 'user', 'orderDishes'])
                 ->orderBy('created_at', 'desc');
            
@@ -29,6 +31,12 @@ class OrderController extends Controller
               ->where('state', '!=', 'finalizado');
     }
 
+    // Filtro por id de orderDishes
+    if ($idOrderDish) {
+        $query->whereHas('orderDishes', function ($q) use ($idOrderDish) {
+            $q->where('id', $idOrderDish);
+        });
+    }
         $orders = $query->paginate($perPage);
 
         return OrderResource::collection($orders);
@@ -81,8 +89,6 @@ public function store(StoreOrdersRequest $request)
 
 
 
-        // 4. Sumamos el total de nuevos platos al total de la orden
-        $order->totalPrice += $totalExtra;
         $order->save();
 
         DB::commit();
@@ -109,6 +115,35 @@ public function store(StoreOrdersRequest $request)
         $order->load(['customer', 'table', 'user', 'orderDishes']);
 
         return new OrderResource($order);
+    }
+
+      // Actualizar solo la información de la orden
+    public function update(UpdateOrdersRequest $request, Orders $order)
+    {
+        Gate::authorize('update', $order);
+
+        // Validar los datos del request
+        $validated = $request->validated();
+
+        DB::beginTransaction();
+        try {
+            // 1. Actualizar solo la información de la orden
+            $order->update($validated);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Pedido actualizado correctamente.',
+                'order' => new OrderResource($order->load(['customer', 'table', 'user']))
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error al actualizar el pedido.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // Eliminar pedido

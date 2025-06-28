@@ -17,7 +17,6 @@ class StoreOrdersRequest extends FormRequest
             'idCustomer'=>'required|exists:customers,id',
             'idUser' => 'required|exists:users,id',
             'idTable' => 'required|exists:tables,id', // Asegura que la mesa exista
-            'totalPrice' => 'required|numeric|min:0',
             'state'=>'string|max:255',
 
             // VALIDACIÓN DE PLATOS

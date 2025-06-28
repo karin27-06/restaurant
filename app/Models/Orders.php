@@ -14,7 +14,6 @@ class Orders extends Model
         'idCustomer',
         'idTable',
         'idUser', // Añade este campo
-        'totalPrice',
         'state',
     ];
 

@@ -16,23 +16,31 @@ use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use App\Pipelines\FilterByCodigo;
 
-class CustomerController extends Controller{
-    public function index(Request $request){
+
+class CustomerController extends Controller
+{
+    public function index(Request $request)
+    {
         Gate::authorize('viewAny', Customer::class);
         $perPage = $request->input('per_page', 15);
-        $search = $request->input('search');
+        $search = $request->input(key: 'search');
+        $codigo = $request->input(key: 'codigo');
         $query = app(Pipeline::class)
             ->send(Customer::query())
             ->through([
                 new FilterByName($search),
+                new FilterByCodigo(codigo: $codigo),
+
                 new FilterByState($request->input('state')),
             ])
             ->thenReturn();
 
         return CustomerResource::collection($query->paginate($perPage));
     }
-    public function store(StoreCustomerRequest $request){
+    public function store(StoreCustomerRequest $request)
+    {
         Gate::authorize('create', Customer::class);
         $validated = $request->validated();
         $customer = Customer::create($validated);
@@ -42,7 +50,8 @@ class CustomerController extends Controller{
             'customer' => $customer
         ]);
     }
-    public function show(Customer $customer){
+    public function show(Customer $customer)
+    {
         Gate::authorize('view', $customer);
         return response()->json([
             'status' => true,
@@ -50,7 +59,8 @@ class CustomerController extends Controller{
             'customer' => new CustomerResource($customer)
         ]);
     }
-    public function update(UpdateCustomerRequest $request, Customer $customer){
+    public function update(UpdateCustomerRequest $request, Customer $customer)
+    {
         Gate::authorize('update', $customer);
         $validated = $request->validated();
         $customer->update($validated);
@@ -60,7 +70,8 @@ class CustomerController extends Controller{
             'customer' => $customer->refresh()
         ]);
     }
-    public function destroy(Customer $customer){
+    public function destroy(Customer $customer)
+    {
         Gate::authorize('delete', $customer);
         $customer->delete();
         return response()->json([
@@ -80,9 +91,9 @@ class CustomerController extends Controller{
         $request->validate([
             'archivo' => 'required|file|mimes:xlsx,xls,csv'
         ]);
-    
+
         Excel::import(new CustomerImport, $request->file('archivo'));
-    
+
         return response()->json([
             'message' => 'Importación de los clientes realizado correctamente.'
         ]);

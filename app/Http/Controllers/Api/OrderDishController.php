@@ -25,6 +25,7 @@ public function index(Request $request)
     $perPage = $request->input('per_page', 15);
     $idOrder = $request->input('idOrder');
 
+
     $query = OrderDishes::query();
 
     // Filtro condicional por idOrder

@@ -45,9 +45,91 @@ function showActionMenu(order) {
     showActionsDialog.value = true;
 }
 
+async function obtenerInsumosPorPedido(idOrder) {
+    try {
+        // Primero, obtenemos los detalles del pedido usando la API /orders
+        const orderResponse = await axios.get(`/orders?id=${idOrder}`);
+        const orderDishes = orderResponse.data.data[0].orderDishes; // Suponiendo que solo hay una orden
+
+        // Ahora, para cada orderDish, obtenemos los detalles del plato utilizando la API /plato?id=
+        for (const dish of orderDishes) {
+            const dishId = dish.idDish;
+            const dishResponse = await axios.get(`/plato?id=${dishId}`);
+            const plato = dishResponse.data.data[0]; // Suponiendo que siempre existe el plato
+
+            // Verificamos si el plato tiene insumos
+            if (plato.insumos && plato.insumos.length > 0) {
+                for (const insumo of plato.insumos) {
+                    // Ahora accedemos al idInput del insumo
+                    const kardexInput = {
+                        idUser: 2,  // idUser con valor 2
+                        idInput: insumo.id,  // Correcto, aquí accedemos al id del insumo
+                        idMovementInput: null,  // idMovementInput es null
+                        totalPrice: null,  // totalPrice es null
+                        movement_type: 1  // movement_type es 1
+                    };
+
+                    // Imprimimos los datos antes de enviarlos a la API kardex
+                    console.log('Datos a insertar en kardex_inputs:', kardexInput);
+
+                    // Enviamos el objeto a la API /insumos/karde
+                    try {
+                        const response = await axios.post('/insumos/karde', kardexInput);
+                        console.log('Insumo insertado en kardex:', response.data);
+                    } catch (error) {
+                        console.error('Error al insertar insumo en kardex:', error);
+                    }
+
+                    // Ahora, agregamos los detalles del movimiento de insumo
+                    const movimientoDetalle = {
+                        idMovementInput: null,  // idMovementInput es null
+                        idInput: insumo.id,  // Ahora usamos insumo.id
+                        quantity: 1,  // Cantidad es 1
+                        totalPrice: null,  // totalPrice es null
+                        priceUnit: null,  // priceUnit es null
+                        batch: null,  // batch es null
+                        expirationdate: null  // expirationdate es null
+                    };
+
+                    // Imprimimos los datos antes de enviarlos a la API de movimiento de insumos
+                    console.log('Datos a insertar en /insumos/movimientos/detalle:', movimientoDetalle);
+
+                    // Enviamos el objeto a la API /insumos/movimientos/detalle/{idDish}
+                    try {
+                        const detalleResponse = await axios.post(`/insumos/movimientos/detalle`, movimientoDetalle);
+                        console.log('Detalle de movimiento de insumo insertado:', detalleResponse.data);
+                    } catch (error) {
+                        console.error('Error al insertar detalle de movimiento de insumo:', error);
+                    }
+                }
+            } else {
+                console.log(`El plato ${plato.name} no tiene insumos.`);
+            }
+        }
+    } catch (error) {
+        console.error('Error al obtener los insumos:', error);
+    }
+}
+
+
+
+
+
+
+
+
 async function updateOrderState(newState) {
+
+
+
     try {
         const response = await axios.put(`/order-dishes/${selectedOrder.value.id}`, { state: newState });
+
+ // Si el nuevo estado es "completado", obtenemos los insumos
+        if (newState === 'completado') {
+            await obtenerInsumosPorPedido(selectedOrder.value.id);
+        }
+
         toast.add({ severity: 'success', summary: 'Éxito', detail: `Estado del pedido actualizado a ${newState}`, life: 3000 });
         loadOrdenes(); // Recargar la lista de órdenes
         showActionsDialog.value = false; // Cerrar el diálogo

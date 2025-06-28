@@ -13,7 +13,6 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('idCustomer');  // Relación con la tabla customers
             $table->unsignedBigInteger('idTable');  // Relación con la tabla tables
             $table->unsignedBigInteger('idUser');  // Relación con la tabla users
-            $table->decimal('totalPrice', 10, 2)->nullable();  // Precio total del pedido (acepta null)
             $table->enum('state', ['pendiente', 'finalizado'])->default('pendiente');  // Estado del pedido
             $table->timestamps();  // created_at y updated_at
         });
