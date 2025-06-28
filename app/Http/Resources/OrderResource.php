@@ -18,10 +18,11 @@ class OrderResource extends JsonResource
             'cliente' => $this->customer->name,
             'idUsuario' => $this->user->id,
             'nombreUsuario' => $this->user->name,
-            'total' => $this->totalPrice,
             'state' => $this->state,
             'creacion' => Carbon::parse($this->created_at)->format('d-m-Y H:i:s A'),
             'actualizacion' => Carbon::parse($this->updated_at)->format('d-m-Y H:i:s A'),
+            'orderDishes' => OrderDishResource::collection($this->whenLoaded('orderDishes')), // Incluyendo los platos en el pedido
+
         ];
     }
 }

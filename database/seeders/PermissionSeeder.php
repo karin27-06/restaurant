@@ -125,6 +125,11 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'editar ordenes']);
         Permission::create(['name' => 'eliminar ordenes']);
         Permission::create(['name' => 'ver ordenes']);
+                #seccion de Ventas
+        Permission::create(['name' => 'crear ventas']);
+        Permission::create(['name' => 'editar ventas']);
+        Permission::create(['name' => 'eliminar ventas']);
+        Permission::create(['name' => 'ver ventas']);
 
     
     }

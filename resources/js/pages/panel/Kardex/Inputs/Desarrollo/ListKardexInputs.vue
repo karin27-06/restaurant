@@ -192,14 +192,15 @@ watch(dateRange, () => {
 <Column field="username" header="Usuario" sortable style="min-width: 7rem;" />
      
               <Column field="movement_type" header="Movimiento" sortable style="min-width: 7rem" />
-               <Column field="code" header="Código" sortable style="min-width: 7rem" />
-            <Column field="totalPrice" header="Precio Total" sortable style="min-width: 9rem" />
+             
 <Column field="quantity" header="Cantidad" sortable style="min-width: 7rem" />
               <Column header="Unidad" sortable style="min-width: 7rem">
             <template #body="{ data }">
                 <span>{{ data.quantityUnitMeasure }} {{ data.unitMeasure }}</span>
             </template>
         </Column>
+          <Column field="code" header="Código" sortable style="min-width: 7rem" />
+            <Column field="totalPrice" header="Precio Total" sortable style="min-width: 9rem" />
                <Column field="created_at" header="Fecha" sortable style="min-width: 13rem" />
         <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="{ data }"> <Button icon="pi pi-file-pdf" outlined rounded class="mr-2" @click="generatePDF(data)" /> </template>

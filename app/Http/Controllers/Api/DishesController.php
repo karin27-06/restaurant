@@ -13,6 +13,7 @@ use App\Models\Dishes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Pipelines\FilterByName;
+use App\Pipelines\FilterById;
 use App\Pipelines\FilterByState;
 use Illuminate\Pipeline\Pipeline;
 class DishesController extends Controller{
@@ -20,12 +21,15 @@ class DishesController extends Controller{
         Gate::authorize('viewAny', Dishes::class);
         $perPage = $request->input('per_page', 15);
         $search = $request->input('search');
+        $id = $request->input(key: 'id');
         $state = $request->input('state');
         $query = app(Pipeline::class)
             ->send(Dishes::query())
             ->through([
                 new FilterByName($search),
                 new FilterByState($state),
+                new FilterById($id), 
+
             ])
             ->thenReturn();
 
