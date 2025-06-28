@@ -29,6 +29,7 @@ public function index(Request $request)
     if ($idSale = $request->input('idSale')) {
         $saleOrders->where('idSale', $idSale);
     }
+
     // Filtrar por código de cliente usando LIKE si se pasa en la solicitud
     if ($codigo = $request->input('search')) {
         $saleOrders->whereHas('sale.customer', function ($query) use ($codigo) {
@@ -45,12 +46,63 @@ public function index(Request $request)
         $saleOrders->whereDate('created_at', '<=', $endDate);
     }
 
-    // Paginación
-    $saleOrders = $saleOrders->paginate($perPage);
+    // Calcular el total de ingresos en el rango de fechas
+    $totalIngresos = $saleOrders->sum('subtotal'); // Sumar los subtotales
 
-    return SaleOrderResource::collection($saleOrders);
+    // Calcular los ingresos por tipo de pago
+    $ingresosPorPago = $saleOrders->get()->groupBy('sale.paymentType')->map(function ($group) {
+        return $group->sum('subtotal');  // Sumar los subtotales por tipo de pago
+    });
+
+    // Paginación
+    $saleOrdersPaginated = $saleOrders->paginate($perPage);
+
+    // Retornar el total de ingresos junto con los datos de la venta, los ingresos por tipo de pago y la paginación
+    return response()->json([
+        'data' => SaleOrderResource::collection($saleOrdersPaginated),
+        'total_ingresos' => number_format($totalIngresos, 2), // Total de ingresos
+        'ingresos_por_pago' => $ingresosPorPago->mapWithKeys(function ($total, $key) {
+            return [$key => number_format($total, 2)];  // Formatear los resultados
+        }),
+        'links' => [
+            'first' => $saleOrdersPaginated->url(1),
+            'last' => $saleOrdersPaginated->url($saleOrdersPaginated->lastPage()),
+            'prev' => $saleOrdersPaginated->previousPageUrl(),
+            'next' => $saleOrdersPaginated->nextPageUrl(),
+        ],
+        'meta' => [
+            'current_page' => $saleOrdersPaginated->currentPage(),
+            'from' => $saleOrdersPaginated->firstItem(),
+            'last_page' => $saleOrdersPaginated->lastPage(),
+            'links' => $this->getPaginationLinks($saleOrdersPaginated),
+            'path' => $saleOrdersPaginated->path(),
+            'per_page' => $saleOrdersPaginated->perPage(),
+            'to' => $saleOrdersPaginated->lastItem(),
+            'total' => $saleOrdersPaginated->total()
+        ]
+    ]);
 }
 
+
+/**
+ * Generate the pagination links structure as needed.
+ *
+ * @param \Illuminate\Pagination\LengthAwarePaginator $paginator
+ * @return array
+ */
+private function getPaginationLinks($paginator)
+{
+    $links = [];
+    foreach ($paginator->links() as $key => $link) {
+        $links[] = [
+            'url' => $link['url'] ?? null,
+            'label' => $link['label'],
+            'active' => $link['active'] ?? false
+        ];
+    }
+
+    return $links;
+}
 
 
 

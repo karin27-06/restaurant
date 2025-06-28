@@ -45,7 +45,30 @@ function showActionMenu(order) {
     showActionsDialog.value = true;
 }
 
+async function fetchUserId() {
+    try {
+        // Hacemos la solicitud al backend para obtener el user_id
+        const { data } = await axios.get('/user-id');
+
+        // Verificamos si la solicitud fue exitosa
+        if (data.success) {
+            return data.user_id; // Retornamos el user_id
+        } else {
+            console.error("Error al obtener el user_id");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error en la solicitud:", e);
+        return null;
+    }
+}
 async function obtenerInsumosPorPedido(idOrder) {
+    const userId = await fetchUserId(); // Esperar a obtener el user_id
+
+    if (!userId) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el user_id' });
+        return; // Si no se obtiene el user_id, no continuar con el registro
+    }
     try {
         // Primero, obtenemos los detalles del pedido usando la API /orders
         const orderResponse = await axios.get(`/orders?id=${idOrder}`);
@@ -62,7 +85,7 @@ async function obtenerInsumosPorPedido(idOrder) {
                 for (const insumo of plato.insumos) {
                     // Ahora accedemos al idInput del insumo
                     const kardexInput = {
-                        idUser: 2,  // idUser con valor 2
+                        idUser: userId,  // idUser con valor 2
                         idInput: insumo.id,  // Correcto, aquí accedemos al id del insumo
                         idMovementInput: null,  // idMovementInput es null
                         totalPrice: null,  // totalPrice es null
