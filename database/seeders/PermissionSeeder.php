@@ -126,6 +126,9 @@ class PermissionSeeder extends Seeder{
         Permission::create(['name' => 'eliminar ordenes']);
         Permission::create(['name' => 'ver ordenes']);
 
-    
+                # Reporte de Caja
+        Permission::create(['name' => 'ver reporte_cajas']);
+        Permission::create(['name' => 'editar reporte_cajas']);
+
     }
 }

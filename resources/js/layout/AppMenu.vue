@@ -85,6 +85,13 @@ const model = computed(() => [
     },
     hasPermission('ver presentaciones') && { label: 'Presentaciones', icon: 'pi pi-fw pi-check-square', to: '/presentaciones' },
   ].filter(Boolean),
+},
+{
+  label: 'Reportes y Finanzas',
+  items: [
+    hasPermission('ver reporte_cajas') && { label: 'Reporte de Caja', icon: 'pi pi-fw pi-file', to: '/reporte-cajas' },
+    // ...otros reportes/finanzas
+  ].filter(Boolean)
 }
 ].filter(section => section.items.length > 0));
 </script>

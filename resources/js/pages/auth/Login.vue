@@ -77,13 +77,6 @@ const submit = () => {
                                     <Checkbox v-model="form.remember" id="remember" binary class="mr-2"></Checkbox>
                                     <label for="remember" class="text-surface-600 dark:text-surface-300">Recordarme</label>
                                 </div>
-                                <a 
-                                    v-if="canResetPassword" 
-                                    href="#" 
-                                    class="font-medium no-underline ml-2 text-right cursor-pointer text-primary"
-                                >
-                                    ¿Olvidó su contraseña?
-                                </a>
                             </div>
                             
                             <Button 

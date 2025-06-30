@@ -12,6 +12,7 @@ use App\Pipelines\FilterByState;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\ReporteCaja;
 
 class CajaController extends Controller
 {
@@ -138,17 +139,11 @@ class CajaController extends Controller
     }
 
     public function aperturar(Request $request)
-    {
-    // Encuentra la caja por el ID
+{
     $caja = Caja::find($request->caja_id);
-
-    // Obtén el usuario autenticado
     $usuario = Auth::user();
 
-    // Ahora, pasamos ambos parámetros a la política
-    Gate::authorize('update', [$usuario, $caja]);  // Aquí pasamos el usuario y el modelo de la caja
-
-    // Verificar que la caja esté disponible
+    Gate::authorize('update', [$usuario, $caja]);
     if (!$caja->state) {
         return response()->json([
             'success' => false,
@@ -156,18 +151,33 @@ class CajaController extends Controller
         ], 422);
     }
 
-    // Actualizar la caja a ocupada
+    // Ocupar caja
     $caja->update([
-    'state' => false,
-    'idVendedor' => Auth::id()
+        'state' => false,
+        'idVendedor' => $usuario->id,
     ]);
 
-    $vendedor = $caja->vendedor; // Asegúrate de que la relación 'vendedor' esté cargada
+    // Crear reporte vacío si NO EXISTE UNO ABIERTO para esa caja
+    $reporte = ReporteCaja::where('id_caja', $caja->id)->where('estado_caja', false)->first();
+    if (!$reporte) {
+        ReporteCaja::create([
+            'id_caja' => $caja->id,
+            'idVendedor' => $usuario->id,
+            'monto_efectivo' => 0.00,
+            'monto_tarjeta' => 0.00,
+            'monto_yape' => 0.00,
+            'monto_transferencia' => 0.00,
+            'idUsuario' => $usuario->id,
+            'fecha_salida' => null,
+            'estado_caja' => false, // Abierta (sin cerrar)
+        ]);
+    }
+
     return response()->json([
         'success' => true,
         'message' => 'Caja aperturada correctamente',
         'caja' => new CajaResource($caja),
-        'vendedorNombre' => $vendedor ? $vendedor->name1 : 'Sin asignar',
+        'vendedorNombre' => $usuario->name . ' ' . $usuario->apellidos,
     ]);
 }
 // En CajaController.php
@@ -183,5 +193,42 @@ public function miCajaActiva()
         'caja' => $caja ? new CajaResource($caja) : null
     ]);
 }
+public function cerrarCaja(Request $request, $id)
+{
+    $caja = Caja::findOrFail($id);
 
+    // Buscar el reporte abierto (estado_caja = false)
+    $reporte = ReporteCaja::where('id_caja', $caja->id)
+        ->where('estado_caja', false)
+        ->latest('fecha_ingreso')
+        ->first();
+
+    if (!$reporte) {
+        return response()->json([
+            'state' => false,
+            'message' => 'No hay reporte abierto para esta caja.'
+        ], 404);
+    }
+
+    // Actualizar montos y marcar cierre
+    $reporte->update([
+        'monto_efectivo'      => $request->monto_efectivo ?? 0,
+        'monto_tarjeta'       => $request->monto_tarjeta ?? 0,
+        'monto_yape'          => $request->monto_yape ?? 0,
+        'monto_transferencia' => $request->monto_transferencia ?? 0,
+        'fecha_salida' => now(),
+        'estado_caja'         => true, // Cerrada
+    ]);
+
+    // Liberar caja
+    $caja->update([
+        'state' => true,
+        'idVendedor' => null,
+    ]);
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Caja cerrada y reporte actualizado correctamente.'
+    ]);
+}
 }
