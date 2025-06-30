@@ -12,16 +12,16 @@ class StoreMovementInputKardexRequest extends FormRequest
         return true;
     }
 
-    public function rules()
-    {
-        return [
-            'idUser' => 'required|integer',
-            'idInput' => 'required|integer',
-            'idMovementInput' => 'required|integer',
-            'movement_type' => 'required|integer|in:0,1', // 1: FACTURA, 2: GUIA, 3: BOLETA
-            'totalPrice' => 'required|numeric|min:0', // Asegúrate de que sea un número válido
-        ];
-    }
+  public function rules()
+{
+    return [
+        'idUser' => 'required|integer',
+        'idInput' => 'required|integer',
+        'idMovementInput' => 'nullable|integer', // Permitir nulo
+        'movement_type' => 'required|integer|in:0,1', // 1: FACTURA, 2: GUIA, 3: BOLETA
+        'totalPrice' => 'nullable|numeric|min:0', // Permitir nulo
+    ];
+}
 
     // Agregar mensajes personalizados para cada regla de validación
     public function messages()

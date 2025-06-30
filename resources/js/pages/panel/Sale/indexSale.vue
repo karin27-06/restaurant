@@ -1,5 +1,5 @@
 <template>
-    <Head title="Plato" />
+    <Head title="Insumos" />
     <AppLayout>
         <div>
             <template v-if="isLoading">
@@ -8,8 +8,7 @@
 
             <template v-else>
                 <div class="card">
-                    <AddOrders @plato-agregado="refrescarListado"/>
-                    <ListPedidos @plato-agregado="refrescarListado"/>
+                    <ListSales :refresh="refreshKey"/>
                 </div>
             </template>
         </div>
@@ -21,8 +20,8 @@ import { ref, onMounted } from 'vue';
 import AppLayout from '@/layout/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Espera from '@/components/Espera.vue';
-import AddOrders from './Desarrollo/AddOrders.vue';
-import ListPedidos from './Desarrollo/ListPedidos.vue';
+import ListSales from './Desarrollo/ListSales.vue';
+import AddInputs from './Desarrollo/AddInputs.vue';
 
 const isLoading = ref(true);
 const refreshKey = ref(0);
@@ -30,7 +29,6 @@ const refreshKey = ref(0);
 function refrescarListado() {
     refreshKey.value++;
 }
-
 onMounted(() => {
     setTimeout(() => {
         isLoading.value = false;

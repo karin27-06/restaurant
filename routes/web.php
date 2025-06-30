@@ -15,6 +15,7 @@ use App\Http\Controllers\Reportes\CustomerPDFController;
 use App\Http\Controllers\Reportes\EmployeePDFController;
 use App\Http\Controllers\Reportes\SupplierPDFController;
 use App\Http\Controllers\Reportes\AreaPDFController;
+use App\Http\Controllers\Reportes\SalePDFController;
 use App\Http\Controllers\Api\InputController;
 use App\Http\Controllers\Api\MovementInputController;
 use App\Http\Controllers\Api\TablesController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Api\PresentationController;
 use App\Http\Controllers\Api\ConsultasDni;
 use App\Http\Controllers\Api\ConsultasId;
 use App\Http\Controllers\Api\DishesController;
+use App\Http\Controllers\Api\SalesController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
@@ -37,6 +39,7 @@ use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\FloorController;
+use App\Http\Controllers\Api\SalesOrderController;
 use App\Http\Controllers\Api\MovementInputKardexController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\MovementInputDetailController;
@@ -50,6 +53,7 @@ use App\Http\Controllers\Web\PresentationWebController;
 use App\Http\Controllers\Web\ClientTypeWebController;
 use App\Http\Controllers\Web\EmployeeTypeWebController;
 use App\Http\Controllers\Web\CustomerWebController;
+use App\Http\Controllers\Web\SalesWebController;
 use App\Http\Controllers\Web\DishesWebController;
 use App\Http\Controllers\Web\EmployeeWebController;
 use App\Http\Controllers\Web\FloorWebController;
@@ -89,6 +93,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tipo_empleados', [EmployeeTypeWebController::class, 'index'])->name('index.view');
     Route::get('/pisos', [FloorWebController::class, 'index'])->name('index.view');
     Route::get('/productos', [ProductWebController::class, 'index'])->name('index.view');
+    Route::get('/ventas', [SalesWebController::class, 'index'])->name('index.view');
     Route::get('/cajas', [CajaWebController::class, 'index'])->name('index.view');
     Route::get('/reporte-cajas', [ReporteCajaWebController::class, 'index'])->name('index.view');
     Route::get('/usuario', [UsuarioWebController::class, 'index'])->name('index.view');
@@ -132,14 +137,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('order-dishes')->group(function () {
         Route::get('/', [OrderDishController::class, 'index'])->name('orderdishes.index');
-        Route::post('/', [OrderDishController::class, 'store'])->name('orderdishes.store');
+        Route::post('/', action: [OrderDishController::class, 'store'])->name('orderdishes.store');
         Route::get('{order}', [OrderDishController::class, 'show'])->name('orderdishes.show');
         Route::put('{order}', [OrderDishController::class, 'update'])->name('orderdishes.update');
         Route::delete('{order}', [OrderDishController::class, 'destroy'])->name('orderdishes.destroy');
-
     });
 
+ #VENTAS => BACKEND
+    Route::prefix('sale')->group(function () {
+        Route::get('/', action: [SalesController::class, 'index'])->name('sale.index');
+        Route::post('/', action: [SalesController::class, 'store'])->name('sale.store');
+    });
 
+     #VENTAS ORDENES => BACKEND
+    Route::prefix('venta')->group(function () {
+        Route::get('/', action: [SalesOrderController::class, 'index'])->name('saleorder.index');
+        Route::post('/', action: [SalesOrderController::class, 'store'])->name('saleorder.store');
+        Route::get('/pdf/{idOrder}', [SalePDFController::class, 'exportPDF'])->name('venta.pdf');
+
+    });
 
     #AREAS => BACKEND
     Route::prefix('area')->group(function () {

@@ -54,19 +54,18 @@ const deletePlato = async () => {
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" header="Confirmar eliminación" modal :style="{ width: '450px' }">
-        <div class="flex flex-col align-items-center p-5">
-            <h3>¿Estás seguro de eliminar este plato?</h3>
-            <p class="text-center my-3">
-                <strong>Nombre:</strong> {{ plato.name }}
-            </p>
-            <p class="text-center my-1">
-                Esta acción no se puede deshacer.
-            </p>
+ 
+
+  <Dialog v-model:visible="dialogVisible" :style="{ width: '450px' }" header="Confirmar Eliminacion" :modal="true"
+        @update:visible="closeDialog">
+        <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span v-if="plato">¿Estás seguro de eliminar este plato <b>{{ plato.name }}</b>?</span>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" outlined @click="dialogVisible = false" />
-            <Button label="Sí, eliminar" icon="pi pi-check" severity="danger" @click="deletePlato" :loading="loading" />
+            <Button label="No" icon="pi pi-times" text @click="dialogVisible = false" />
+            <Button label="Sí" icon="pi pi-check" @click="deletePlato" />
         </template>
     </Dialog>
+    
 </template>

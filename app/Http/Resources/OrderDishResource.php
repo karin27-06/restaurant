@@ -21,6 +21,8 @@ class OrderDishResource extends JsonResource
             'state'   => $this->state,
             'creacion' => Carbon::parse($this->created_at)->format('d-m-Y H:i:s A'),
             'actualizacion' => Carbon::parse($this->updated_at)->format('d-m-Y H:i:s A'),
+                        'numeroMesa' => $this->order->table->tablenum ?? null,  // Obtiene el numeroMesa de la relación con Order
+
         ];
     }
 }
