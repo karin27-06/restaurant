@@ -8,15 +8,19 @@
 
             <template v-else>
                 <div class="card">
-                    <div class="flex justify-between items-center mb-4">
                         <AddCajas @caja-agregada="refrescarListado"/>
-                        <Button 
+                        <!--<Button 
                             label="Ir a ventas" 
                             icon="pi pi-lock-open" 
                             severity="success"
                             @click="goToApertura"
                         />
-                    </div>
+                        <Button 
+                            label="Cerrar Caja" 
+                            icon="pi pi-lock" 
+                            severity="danger" 
+                            @click="goToCerrarCaja" 
+                        />-->
                     <ListCajas :refresh="refreshKey"/>
                 </div>
             </template>
@@ -41,7 +45,7 @@ const refreshKey = ref(0);
 function refrescarListado() {
     refreshKey.value++;
 }
-const goToApertura = async () => {
+/*const goToApertura = async () => {
   try {
     // Verificar si el usuario ya tiene una caja ocupada
     const response = await axios.get('/caja/mi-caja-activa');
@@ -57,7 +61,13 @@ const goToApertura = async () => {
     console.error('Error verificando caja:', error);
     window.location.href = '/caja/aperturar'; // Fallback por si hay error
   }
-};
+};*/
+
+// Redirigir a la vista de Cerrar Caja
+/*const goToCerrarCaja = () => {
+  window.location.href = '/caja/cerrar';
+};*/
+
 onMounted(() => {
     setTimeout(() => {
         isLoading.value = false;

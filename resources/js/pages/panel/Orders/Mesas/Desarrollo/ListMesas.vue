@@ -101,6 +101,11 @@ const selectCliente = (cliente) => {
 };
 const selectedPlato = ref(null); // Para almacenar el plato seleccionado
 
+const goToCerrarCaja = () => {
+    const url = '/caja/cerrar'
+    router.visit(url);
+};
+
 const showReciboToolbar = ref(false);
 // Variables de estado para la paginación
 const currentPage = ref(1); // Página actual
@@ -797,6 +802,12 @@ const finalizarMesa = async () => {
         <Toolbar v-if="!showReciboToolbar" class="mb-4">
             <template #start>
                 <Button label="Volver" icon="pi pi-chevron-left" severity="secondary" class="mr-2" @click="goBack" />
+                <Button 
+                    label="Cerrar Caja" 
+                    icon="pi pi-lock" 
+                    severity="danger" 
+                    @click="goToCerrarCaja" 
+                />
             </template>
 
             <template #end>

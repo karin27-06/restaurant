@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderDishController;
 use App\Http\Controllers\Api\CajaController;
+use App\Http\Controllers\Api\ReporteCajaController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PresentationController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Api\MovementInputDetailController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\AreasWebController;
 use App\Http\Controllers\Web\CajaWebController;
+use App\Http\Controllers\Web\ReporteCajaWebController;
 use App\Http\Controllers\Web\CategoryWebController;
 use App\Http\Controllers\Web\SupplierWebController;
 use App\Http\Controllers\Web\PresentationWebController;
@@ -93,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/productos', [ProductWebController::class, 'index'])->name('index.view');
     Route::get('/ventas', [SalesWebController::class, 'index'])->name('index.view');
     Route::get('/cajas', [CajaWebController::class, 'index'])->name('index.view');
+    Route::get('/reporte-cajas', [ReporteCajaWebController::class, 'index'])->name('index.view');
     Route::get('/usuario', [UsuarioWebController::class, 'index'])->name('index.view');
     Route::get('/areas', [AreasWebController::class, 'index'])->name('index.view');
     Route::get('/platos', [DishesWebController::class, 'index'])->name('index.view');
@@ -105,6 +108,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/ordenes', [OrdersWebController::class, 'index'])->name('index.view');
     Route::get('/ordenes/mesas', [OrdersTablesWebController::class, 'index'])->name('index.view');
     Route::get('/caja/aperturar', [CajaWebController::class, 'aperturar'])->name('caja.aperturar');
+    Route::get('/caja/cerrar', [CajaWebController::class, 'cerrar'])->name('caja.cerrar');
+    Route::put('/caja/cerrar/{id}', [CajaController::class, 'cerrarCaja'])->name('caja.cerrar');
     Route::get('/caja/disponibles', [CajaController::class, 'disponibles']);
     Route::get('/caja/mi-caja-activa', [CajaController::class, 'miCajaActiva']);
     Route::post('/caja/aperturar-caja', [CajaController::class, 'aperturar']);
@@ -113,8 +118,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
     Route::get('/user-id', [ConsultasId::class, 'getUserId'])->middleware('auth:api');
 
-
+    Route::prefix('reporte_caja')->group(function () {
+        Route::get('/', [ReporteCajaController::class, 'index'])->name('reporte_caja.index');
+        Route::get('/{reporteCaja}', [ReporteCajaController::class, 'show'])->name('reporte_caja.store');
+        Route::put('/{reporteCaja}', [ReporteCajaController::class, 'update'])->name('reporte_caja.update');
+    });
+    Route::post('/reporte_caja', [ReporteCajaController::class, 'store'])->name('reporteCaja.store');
      #ORDER => BACKEND
+
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('orders.index');
         Route::post('/', [OrderController::class, 'store'])->name('orders.store');

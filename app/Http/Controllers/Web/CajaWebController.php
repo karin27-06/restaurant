@@ -19,5 +19,10 @@ class CajaWebController extends Controller
     {
         return Inertia::render('panel/Caja/AperturarCaja');
     }
+    public function cerrar(): Response
+    {
+        return Inertia::render('panel/Caja/CerrarCaja');
+    }
+
 
 }

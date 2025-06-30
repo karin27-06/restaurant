@@ -6,12 +6,12 @@
             </Button>
         </a>
 
-        <!-- Importar Excel -->
+        <!-- Importar Excel 
         <div>
             <input type="file" ref="fileRef" accept=".xlsx" class="hidden" @change="handleFileChange"/>
             <Button @click="handleImportClick" variant="outlined" size="small" class="bg-blue-600 hover:bg-blue-700 text-white" icon="pi pi-upload" label="Importar Excel" title="Importar Excel">
-            </Button>
-        </div>
+            </Button> 
+        </div> -->
 
         <!-- Exportar PDF -->
         <a href="/panel/reports/export-pdf-presentations" download>

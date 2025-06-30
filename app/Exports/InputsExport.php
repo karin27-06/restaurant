@@ -23,9 +23,9 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $input->id,
             $input->name,
             $input->description,
-            $input->unitMeasure,
-            $input->priceBuy,
             $input->priceSale,
+            $input->quantityUnitMeasure,
+            $input->unitMeasure,
             $input->almacen->name,
             $input->state == 1 ? 'Activo' : 'Inactivo',
             $input->created_at->format('d-m-Y H:i:s'), // Fecha de creación formateada
@@ -38,7 +38,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     return [
         ['LISTA DE INSUMOS', '', '', '', '', '', '', '', '', ''],  // Fila 1 con el título
         [],  // Fila 2 en blanco (espaciado entre el título y los encabezados)
-        ['ID', 'Nombre', 'Descripcion', 'Unidad de Mdidad','Precio de Compra', 'Precio de Venta', 'Almacen', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
+        ['ID', 'Nombre', 'Descripcion', 'Precio de Venta', 'Cantidad por medida', 'Unidad de Medida', 'Almacen', 'Estado', 'Creación', 'Actualización']  // Fila 3 con los encabezados
     ];
 
     }
@@ -50,8 +50,8 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
     public function styles(Worksheet $sheet)
     {
         // Estilos para las celdas
-        $sheet->mergeCells('A1:J');
-        $sheet->getStyle('A1:J')->applyFromArray([
+        $sheet->mergeCells('A1:J1');
+        $sheet->getStyle('A1:J1')->applyFromArray([
             'font' => ['bold' => true,'size' => 14],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],
             'fill' => [
@@ -61,7 +61,7 @@ class InputsExport implements FromCollection, WithHeadings, WithMapping, WithSty
         ]);
 
         // Estilo para los encabezados de la tabla
-        $sheet->getStyle('A3:I3')->applyFromArray([
+        $sheet->getStyle('A3:J3')->applyFromArray([
         'font' => [
             'bold' => true,
         ],
