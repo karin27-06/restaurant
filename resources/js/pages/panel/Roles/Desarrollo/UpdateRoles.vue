@@ -1,6 +1,6 @@
 <template>
     <Dialog :visible="visible" @update:visible="emit('update:visible', $event)" :style="{ width: '1000px' }"
-        header="Actualizar Roles y Permisos" modal>
+        header="Editar Roles y Permisos" modal>
         <div class="flex flex-col gap-6">
             <div>
                 <label for="name" class="block font-bold mb-3">Nombre <span class="text-red-500">*</span></label>
