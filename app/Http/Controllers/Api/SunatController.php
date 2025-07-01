@@ -167,7 +167,7 @@ class SunatController extends Controller
 
         // Guardar XML firmado digitalmente en la carpeta 'app/comprobantes'
         file_put_contents(
-            storage_path('app/comprobantes/' . $invoice->getName() . '.xml'),
+            base_path('sunat/comprobantes/' . $invoice->getName() . '.xml'),
             $see->getFactory()->getLastXml()
         );
 
@@ -182,7 +182,7 @@ class SunatController extends Controller
 
 
         // Guardamos el CDR
-        file_put_contents(storage_path('app/comprobantes/R-' . $invoice->getName() . '.zip'), $result->getCdrZip());
+        file_put_contents(base_path('sunat/comprobantes/R-' . $invoice->getName() . '.zip'), $result->getCdrZip());
 
 
         $cdr = $result->getCdrResponse();
