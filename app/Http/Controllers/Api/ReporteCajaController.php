@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ReporteCaja\StoreReporteCajaRequest;
 use App\Http\Requests\ReporteCaja\UpdateReporteCajaRequest;
 use App\Http\Resources\ReporteCajaResource;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReporteCajaExport;
 use App\Models\ReporteCaja;
 use App\Models\Caja;
 use Illuminate\Support\Facades\Auth;
@@ -104,5 +106,10 @@ class ReporteCajaController extends Controller
             'message' => 'Reporte actualizado correctamente.',
             'reporteCaja' => new ReporteCajaResource($reporteCaja),
         ]);
+    }
+    #EXPORTACION
+    public function exportExcel()
+    {
+        return Excel::download(new ReporteCajaExport, 'reporteCajas.xlsx');
     }
 }

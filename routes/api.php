@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\AreasController;
 use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\InputController;
+use App\Http\Controllers\Api\ReporteCajaController;
 use App\Http\Controllers\Api\TablesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategoryController;
@@ -30,9 +31,11 @@ use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\PresentationController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Reportes\ReporteCajaPDFController;
 use App\Models\ClientType;
 use App\Models\EmployeeType;
 use App\Models\Presentation;
+use App\Models\ReporteCaja;
 
 Route::middleware('auth')->group(function () {
     Route::apiResource('Almacen', AlmacenController::class);
@@ -56,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/areas/export-excel', [AreasController::class, 'exportExcel']);
     Route::get('/productos/export-excel', [ProductController::class, 'exportExcel']);
     Route::get('/insumos/export-excel', [InputController::class, 'exportExcel']);
+    Route::get('/reporteCajas/export-excel', [ReporteCajaController::class, 'exportExcel']);
     Route::get('/platos/export-excel', [DishesController::class, 'exportExcel']);
     Route::get('/mesas/export-excel', [TablesController::class, 'exportExcel']);
     Route::get('/presentaciones/export-excel', [PresentationController::class, 'exportExcel']);
@@ -72,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/areas/export-pdf', [AreaPDFController::class, 'exportPDF']);
     Route::get('/productos/export-pdf', [ProductPDFController::class, 'exportPDF']);
     Route::get('/insumos/export-pdf', [InputPDFController::class, 'exportPDF']);
+    Route::get('/reporteCajas/export-pdf', [ReporteCajaPDFController::class, 'exportPDF']);
     Route::get('/platos/export-pdf', [DishPDFController::class, 'exportPDF']);
     Route::get('/mesas/export-pdf', [TablePDFController::class, 'exportPDF']);
     Route::get('/presentaciones/export-pdf', [PresentationPDFController::class, 'exportPDF']);
