@@ -197,13 +197,13 @@ onMounted(loadInputs);
 
                 <Column selectionMode="multiple" style="width: 1rem" :exportable="false"></Column>
 
-        <Column field="idSale" header="Nº" sortable style="min-width: 5rem" />
+        <Column field="salesInvoice.serie" header="Nº" sortable style="min-width: 7rem" />
         <Column field="sale.customer.name" header="Cliente" sortable style="min-width: 10rem" />
         <Column field="order.numeroMesa" header="Nº Mesa" sortable style="min-width: 10rem" />
         <Column field="sale.documentType" header="Tipo" sortable style="min-width: 7rem" />
         <Column field="sale.paymentType" header="Metodo" sortable style="min-width: 7rem" />
        <Column field="subtotal" header="Total" sortable style="min-width: 10rem" />
-
+       <Column field="sale.stateSunat" header="Sunat" sortable style="min-width: 10rem" />
         <Column field="sale.created_at" header="Creación" sortable style="min-width: 13rem" />
         <Column field="sale.updated_at" header="Actualización" sortable style="min-width: 13rem"/>
         <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
@@ -218,7 +218,8 @@ onMounted(loadInputs);
         <!-- Contenedor para los datos del cliente en fila horizontal -->
         <div class="flex flex-wrap gap-4">
             <p><strong>Cliente:</strong> {{ selectedSale.sale.customer.name }}</p>
-            <p><strong>Código Cliente:</strong> {{ selectedSale.sale.customer.codigo }}</p>
+            <p><strong>Código:</strong> {{ selectedSale.sale.customer.codigo }}</p>
+            <p><strong>Comprobante:</strong> {{ selectedSale.salesInvoice.serie }}</p>
             <p><strong>Documento:</strong> {{ selectedSale.sale.documentType }}</p>
             <p><strong>Nº Order:</strong> {{ selectedSale.order.id }}</p>
             <p><strong>Mesa:</strong> {{ selectedSale.order.numeroMesa }}</p>

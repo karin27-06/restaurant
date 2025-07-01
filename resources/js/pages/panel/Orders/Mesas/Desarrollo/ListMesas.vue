@@ -683,6 +683,13 @@ const generarRecibo = async () => {
 
     console.log('Total del historial de la orden: S/', totalHistorial); // Imprimir total del historial
 
+
+  // Guardar el documentType y idSale en una variable general
+    let generalData = {
+        documentType: recibo.value.tipoRecibo,
+        idSale: null
+    };
+
     // Preparar los datos a enviar
     const data = {
         idCustomer: selectedCliente.value.id, // ID del cliente
@@ -690,8 +697,9 @@ const generarRecibo = async () => {
         paymentType: recibo.value.tipoPago, // Tipo de pago (Tarjeta, Transferencia, etc.)
         operationCode: recibo.value.tipoPago !== 'Efectivo' ? recibo.value.operationCode : null, // Código de operación (si no es Efectivo)
         idOrder: order.value.idOrder,
+        stateSunat: 'No Enviado',
     };
-
+  documentType: recibo.value.tipoRecibo;
     console.log('Datos a enviar:', data);
     console.log('ID del pedido:', order.value.idOrder); // Imprimir el idOrder
 
@@ -704,6 +712,7 @@ const generarRecibo = async () => {
             toast.add({ severity: 'success', summary: 'Recibo generado', detail: 'El recibo ha sido generado correctamente.', life: 3000 });
             console.log('ID de la venta registrada:', response.data.sale.id); // Imprimir ID de la venta generada
             console.log('Monto total del recibo: S/', totalHistorial); // Imprimir el total del recibo
+            generalData.idSale = response.data.sale.id;
 
             // Después de obtener el ID de la venta, guardar en la tabla sales_orders
             const saleOrderData = {
@@ -711,7 +720,8 @@ const generarRecibo = async () => {
                 idOrder: order.value.idOrder, // ID del pedido
                 subtotal: totalHistorial, // Subtotal calculado
             };
-
+            
+            idSale: response.data.sale.id;
             // Enviar la solicitud POST a la API para registrar la relación entre sale y order
             const saleOrderResponse = await axios.post('/venta', saleOrderData);
 
@@ -719,10 +729,10 @@ const generarRecibo = async () => {
             if (saleOrderResponse.data.state) {
                 console.log('Pedido de venta registrado correctamente');
                                 showReciboForm.value = false;
+                              crearComprobante(generalData.idSale,generalData.documentType)
                                 
-                                actualizarestadomesa();
+                             
                                  goBackOrder();
-
             } else {
                 console.error('Error al registrar el pedido de venta');
             }
@@ -743,6 +753,67 @@ const generarRecibo = async () => {
         }
     }
 };
+
+
+
+const crearComprobante = async (idSale, prefix) => {
+    // Validar que el prefijo sea uno de los valores permitidos (boleta o factura)
+    if (prefix !== 'Boleta' && prefix !== 'Factura') {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El tipo de comprobante debe ser "Boleta" o "Factura".',
+            life: 3000
+        });
+        return;
+    }
+
+    try {
+        // Datos a enviar
+        const data = {
+            prefix: prefix,  // El tipo de comprobante (Boleta o Factura)
+        };
+
+        // Enviar la solicitud POST a la API de Laravel para generar el comprobante
+        const response = await axios.post(`/generate-invoice/${idSale}`, data);
+
+        // Verificar si la respuesta es exitosa
+        if (response.data.invoice) {
+
+
+            console.log('Comprobante generado:', response.data.invoice);
+ // Ahora enviar el idSale a la API /envio-sunat
+            await axios.get(`/envio-sunat?idSale=${idSale}`)
+                .then(() => {
+                    console.log('idSale enviado a la API de SUNAT');
+                       actualizarestadomesa();
+                })
+                .catch(error => {
+                    console.error('Error al enviar idSale a SUNAT:', error);
+              
+                });
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Hubo un problema al generar el comprobante.',
+                life: 3000
+            });
+        }
+    } catch (error) {
+        console.error('Error al crear el comprobante:', error);
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Hubo un error al procesar la solicitud.',
+            life: 3000
+        });
+    }
+};
+
+
+
+
 // Estado para controlar la visibilidad del dialogo
 const finalizarMesaDialog = ref(false);
 // Función para abrir el dialogo de confirmar cierre de mesa

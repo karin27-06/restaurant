@@ -26,4 +26,9 @@ class SalesOrder extends Model
     {
         return $this->belongsTo(Orders::class, 'idOrder');
     }
+
+     public function salesInvoice()
+    {
+        return $this->hasOne(SalesInvoice::class, 'idSale', 'idSale'); // Asegúrate de que el idSale sea el campo que conecta ambas tablas
+    }
 }

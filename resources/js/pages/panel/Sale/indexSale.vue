@@ -1,5 +1,5 @@
 <template>
-    <Head title="Insumos" />
+    <Head title="Ventas" />
     <AppLayout>
         <div>
             <template v-if="isLoading">

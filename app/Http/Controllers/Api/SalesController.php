@@ -113,4 +113,6 @@ class SalesController extends Controller
             'message' => 'Venta eliminada correctamente',
         ]);
     }
+
+    
 }
