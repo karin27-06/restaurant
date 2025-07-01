@@ -85,9 +85,9 @@ onMounted(loadReportes);
     >
         <template #header>
             <div class="flex flex-wrap gap-2 items-center justify-between">
-                <h4 class="m-0">REPORTE DE CAJAS</h4>
+                <h2 class="m-0">REPORTE DE CAJAS</h2>
                 <div class="flex flex-wrap gap-2">
-                    <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar por vendedor o N° de caja..." />
+                    <InputText v-model="globalFilterValue" @input="onGlobalSearch" placeholder="Buscar por vendedor o N° de caja..." class="w-96"/>
                     <Button icon="pi pi-refresh" outlined rounded aria-label="Refresh" @click="loadReportes" />
                 </div>
             </div>
