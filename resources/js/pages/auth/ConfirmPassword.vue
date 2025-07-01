@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 
@@ -21,33 +16,44 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthLayout title="Confirm your password" description="This is a secure area of the application. Please confirm your password before continuing.">
+    <!-- Contenedor sin AuthLayout -->
+    <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
         <Head title="Confirm password" />
+
+        <h1 class="text-2xl font-bold text-center">Confirm your password</h1>
+        <p class="text-center text-sm text-gray-600 mb-6">This is a secure area of the application. Please confirm your password before continuing.</p>
 
         <form @submit.prevent="submit">
             <div class="space-y-6">
                 <div class="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
+                    <!-- Reemplazo de Label e Input con HTML estándar -->
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input
                         id="password"
                         type="password"
-                        class="mt-1 block w-full"
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                         v-model="form.password"
                         required
                         autocomplete="current-password"
                         autofocus
                     />
-
-                    <InputError :message="form.errors.password" />
+                    <!-- Manejo de errores sin InputError -->
+                    <div v-if="form.errors.password" class="text-sm text-red-600">
+                        {{ form.errors.password }}
+                    </div>
                 </div>
 
                 <div class="flex items-center">
-                    <Button class="w-full" :disabled="form.processing">
+                    <!-- Reemplazo de Button con un botón HTML estándar -->
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-500 text-white py-2 px-4 rounded" 
+                        :disabled="form.processing">
                         <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                         Confirm Password
-                    </Button>
+                    </button>
                 </div>
             </div>
         </form>
-    </AuthLayout>
+    </div>
 </template>
