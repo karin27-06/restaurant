@@ -9,6 +9,7 @@ use App\Http\Controllers\Reportes\ProductPDFController;
 use App\Http\Controllers\Reportes\ClientTypePDFController;
 use App\Http\Controllers\Reportes\DishPDFController;
 use App\Http\Controllers\Reportes\InputPDFController;
+use App\Http\Controllers\Reportes\ReporteCajaPDFController;
 use App\Http\Controllers\Reportes\TablePDFController;
 use App\Http\Controllers\Reportes\PresentationPDFController;
 use App\Http\Controllers\Reportes\CustomerPDFController;
@@ -432,6 +433,11 @@ Route::prefix('insumos')->group(function () {
         Route::get('/export-pdf-employees', [EmployeePDFController::class, 'exportPDF'])->name('export-pdf-employees');
         // Ruta para importar desde Excel
         Route::post('/import-excel-employees', [EmployeeController::class, 'importExcel'])->name('import-excel-employees');
+        
+        #EXPORTACION DE REPORTE DE CAJAS
+        Route::get('/export-excel-reporteCajas', [ReporteCajaController::class, 'exportExcel'])->name('export-excel-reporteCajas');
+        Route::get('/export-pdf-reporteCajas', [ReporteCajaPDFController::class, 'exportPDF'])->name('export-pdf-reporteCajas');
+    
     });
 });
 

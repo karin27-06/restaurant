@@ -130,7 +130,7 @@ class CajaController extends Controller
 }
     public function disponibles()
     {
-        Gate::authorize('viewAny', Caja::class);
+        //Gate::authorize('viewAny', Caja::class);
 
         return Caja::where('state', true)
             ->select('id', 'numero_cajas', 'state')
@@ -143,7 +143,7 @@ class CajaController extends Controller
     $caja = Caja::find($request->caja_id);
     $usuario = Auth::user();
 
-    Gate::authorize('update', [$usuario, $caja]);
+    //Gate::authorize('update', [$usuario, $caja]);
     if (!$caja->state) {
         return response()->json([
             'success' => false,
@@ -180,7 +180,7 @@ class CajaController extends Controller
         'vendedorNombre' => $usuario->name . ' ' . $usuario->apellidos,
     ]);
 }
-// En CajaController.php
+// Método para obtener la caja activa
 public function miCajaActiva()
 {
     $user = Auth::user();
