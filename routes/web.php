@@ -33,10 +33,12 @@ use App\Http\Controllers\Api\ConsultasId;
 use App\Http\Controllers\Api\DishesController;
 use App\Http\Controllers\Api\SalesController;
 use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\Api\SalesInvoiceController;
 use App\Http\Controllers\Api\UsuariosController;
 use App\Http\Controllers\Api\ClientTypeController;
 use App\Http\Controllers\Api\InputStockController;
 use App\Http\Controllers\Api\EmployeeTypeController;
+use App\Http\Controllers\Api\SunatController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\FloorController;
@@ -114,6 +116,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/caja/disponibles', [CajaController::class, 'disponibles']);
     Route::get('/caja/mi-caja-activa', [CajaController::class, 'miCajaActiva']);
     Route::post('/caja/aperturar-caja', [CajaController::class, 'aperturar']);
+    Route::get('/envio-sunat', [SunatController::class, 'enviarFactura'])->name('envio-sunat');
+    Route::post('/generate-invoice/{idSale}', [SalesInvoiceController::class, 'generateInvoice']);
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
@@ -155,6 +159,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', action: [SalesOrderController::class, 'index'])->name('saleorder.index');
         Route::post('/', action: [SalesOrderController::class, 'store'])->name('saleorder.store');
         Route::get('/pdf/{idOrder}', [SalePDFController::class, 'exportPDF'])->name('venta.pdf');
+        Route::put('{venta}', [SalesOrderController::class, 'update'])->name('saleorder.update');
 
     });
 

@@ -14,6 +14,7 @@ class SaleResource extends JsonResource
             'documentType' => $this->documentType,
             'paymentType' => $this->paymentType,
             'operationCode' => $this->operationCode,
+            'stateSunat' => $this->stateSunat,
             'created_at' => $this->created_at->format('d-m-Y H:i:s'),
             'updated_at' => $this->updated_at->format('d-m-Y H:i:s'),
         ];

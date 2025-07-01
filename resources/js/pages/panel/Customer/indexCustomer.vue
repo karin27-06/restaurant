@@ -21,7 +21,7 @@ import { ref, onMounted } from 'vue';
 import AppLayout from '@/layout/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Espera from '@/components/Espera.vue';
-import AddCliente from './AddCliente.vue';
+import AddCliente from './Desarrollo/AddCliente.vue';
 import ListCliente from './Desarrollo/ListCliente.vue';
 
 const isLoading = ref(true);

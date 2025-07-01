@@ -15,6 +15,7 @@ class Sale extends Model
         'documentType',
         'paymentType',
         'operationCode',
+        'stateSunat',
         'idOrder',
     ];
 
@@ -29,4 +30,6 @@ class Sale extends Model
     {
         return $this->hasMany(SalesOrder::class, 'idSale');
     }
+
+
 }

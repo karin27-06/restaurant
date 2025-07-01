@@ -82,7 +82,7 @@ class SalePDFController extends Controller
 
         // Título del documento según tipo de documento
         $documentTitle = $saleData['documentType'] === 'Boleta' ? 'BOLETA DE VENTA ELECTRÓNICA' : 'FACTURA DE VENTA ELECTRÓNICA';
-        $numRecibo = $saleData['documentType'] === 'Boleta' ? 'B01-101' : 'F01-101';
+$numRecibo = $saleOrder->salesInvoice ? $saleOrder->salesInvoice->serie : ($saleData['documentType'] === 'Boleta' ? 'B01-101' : 'F01-101');
         $pdf->SetFont('helvetica', 'B', 8);
         $pdf->Cell(0, 4, $documentTitle, 0, 1, 'C');
         $pdf->Cell(0, 4, $numRecibo, 0, 1, 'C');

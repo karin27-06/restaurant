@@ -13,12 +13,13 @@ return new class extends Migration
 {
     Schema::create('sales', function (Blueprint $table) {
         $table->id();  // ID de la venta
-        $table->foreignId('idCustomer')->constrained('customers');  // Relación con la tabla customers
-        $table->foreignId('idOrder')->constrained('orders');  // Relación con la tabla orders
-        $table->string('documentType');  // Tipo de pago
-        $table->string('paymentType');  // Tipo de pago
-        $table->string('operationCode')->nullable();  // Operation code for certain payment methods
-        $table->timestamps();  // Fecha de creación y actualización
+        $table->foreignId('idCustomer')->constrained('customers');
+        $table->foreignId('idOrder')->constrained('orders'); 
+        $table->string('documentType'); 
+        $table->string('paymentType');
+        $table->string('operationCode')->nullable();
+        $table->string('stateSunat')->nullable();  
+        $table->timestamps(); 
     });
 }
 
