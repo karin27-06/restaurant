@@ -78,7 +78,13 @@ const submit = () => {
                                     <label for="remember" class="text-surface-600 dark:text-surface-300">Recordarme</label>
                                 </div>
                             </div>
-                            
+                            <!--<a 
+                                v-if="canResetPassword" 
+                                href="#" 
+                                class="font-medium no-underline ml-2 text-right cursor-pointer text-primary"
+                            >
+                                ¿Olvidó su contraseña?
+                            </a>-->
                             <Button 
                                 type="submit" 
                                 label="Iniciar sesión" 

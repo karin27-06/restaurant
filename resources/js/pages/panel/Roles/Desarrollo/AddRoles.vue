@@ -8,7 +8,7 @@
         </template>
     </Toolbar>
 
-    <Dialog v-model:visible="rolDialog" :style="{ width: '1000px' }" header="Roles y Permisos" :modal="true">
+    <Dialog v-model:visible="rolDialog" :style="{ width: '1000px' }" header="Registro de Roles y Permisos" :modal="true">
         <div class="flex flex-col gap-6">
             <div>
                 <label for="name" class="block font-bold mb-3">Nombre <span class="text-red-500">*</span></label>
