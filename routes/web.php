@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\OrderDishController;
 use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\ReporteCajaController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PresentationController;
 use App\Http\Controllers\Api\ConsultasDni;
@@ -69,6 +70,7 @@ use App\Http\Controllers\Web\UsuarioWebController;
 use App\Http\Controllers\Web\OrdersTablesWebController;
 use App\Http\Controllers\Web\MovementInputKardexWebController;
 use App\Http\Controllers\Web\MovementInputDetailWebController;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -118,6 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/caja/aperturar-caja', [CajaController::class, 'aperturar']);
     Route::get('/envio-sunat', [SunatController::class, 'enviarFactura'])->name('envio-sunat');
     Route::post('/generate-invoice/{idSale}', [SalesInvoiceController::class, 'generateInvoice']);
+    Route::get('/datos/dashboard', [DashboardController::class, 'getdatos']);
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');
