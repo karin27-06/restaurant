@@ -27,5 +27,6 @@ class CategorySeeder extends Seeder{
             'name' => 'Especialidades',
             'state' => true,
         ]);
+        //Category::factory(500)->create();
     }
 }

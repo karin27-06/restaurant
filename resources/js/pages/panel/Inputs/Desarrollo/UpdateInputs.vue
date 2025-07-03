@@ -9,6 +9,7 @@ import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { ref, watch } from 'vue';
 import InputNumber from 'primevue/inputnumber';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const props = defineProps({
     visible: Boolean,
@@ -217,16 +218,20 @@ console.log('Datos a enviar:', {
                 </div>
              
 
-                <!-- Almacen -->
+                <!-- Almacen (Dropdown con búsqueda) -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Almacen <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="input.idAlmacen"
                         fluid
                         :options="almacens"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Seleccione Almacen"
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar almacen..."  
+                        style="width: 325px;"
                     />
                     <small v-if="submitted && !input.idAlmacen" class="text-red-500">El Almacen es obligatorio.</small>
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>

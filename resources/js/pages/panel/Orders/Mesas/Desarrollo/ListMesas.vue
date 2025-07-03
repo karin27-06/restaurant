@@ -890,6 +890,8 @@ const finalizarMesa = async () => {
                         option-label="label"
                         option-value="value"
                         placeholder="Selecciona un Piso"
+                        filter
+                        filterBy="label"
                         class="w-1/1"
                     />
 
@@ -900,6 +902,8 @@ const finalizarMesa = async () => {
                         option-label="label"
                         option-value="value"
                         placeholder="Selecciona una Area"
+                        filter
+                        filterBy="label"
                         class="w-1/1"
                     />
 

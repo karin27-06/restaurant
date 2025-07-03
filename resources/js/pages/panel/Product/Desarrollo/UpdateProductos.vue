@@ -4,7 +4,7 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
@@ -162,20 +162,41 @@ const updateProducto = async () => {
                     <small v-if="serverErrors.details" class="p-error">{{ serverErrors.details[0] }}</small>
                 </div>
 
-                <!-- Categoría -->
+                <!-- Categoría (Dropdown con búsqueda) -->
                 <div class="col-span-6">
                     <label class="block font-bold mb-2">Categoría <span class="text-red-500">*</span></label>
-                    <Select v-model="producto.idCategory" :options="categorias" optionLabel="label"
-                        optionValue="value" placeholder="Seleccione categoría" fluid
-                        :class="{ 'p-invalid': serverErrors.idCategory }" />
+                    <Dropdown
+                        v-model="producto.idCategory"
+                        :options="categorias"
+                        optionLabel="label"
+                        optionValue="value"
+                        fluid
+                        placeholder="Seleccione categoría"
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar categoria..."
+                        style="width: 325px;"
+                        :class="{ 'p-invalid': serverErrors.idCategory }"
+                    />
                     <small v-if="serverErrors.idCategory" class="p-error">{{ serverErrors.idCategory[0] }}</small>
                 </div>
 
-                <!-- Almacén -->
+                <!-- Almacén (Dropdown con búsqueda) -->
                 <div class="col-span-6">
                     <label class="block font-bold mb-2">Almacén <span class="text-red-500">*</span></label>
-                    <Select v-model="producto.idAlmacen" :options="almacenes" optionLabel="label" fluid optionValue="value"
-                        placeholder="Seleccione almacén" :class="{ 'p-invalid': serverErrors.idAlmacen }" />
+                    <Dropdown
+                        v-model="producto.idAlmacen"
+                        :options="almacenes"
+                        optionLabel="label"
+                        optionValue="value"
+                        fluid
+                        placeholder="Seleccione almacén"
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar almacen..."
+                        style="width: 325px;"
+                        :class="{ 'p-invalid': serverErrors.idAlmacen }"
+                    />
                     <small v-if="serverErrors.idAlmacen" class="p-error">{{ serverErrors.idAlmacen[0] }}</small>
                 </div>
             </div>

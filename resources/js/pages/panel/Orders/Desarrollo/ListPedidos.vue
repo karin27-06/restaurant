@@ -354,9 +354,9 @@ onMounted(() => {
       <!-- Menú de acciones -->
     <Dialog v-model:visible="showActionsDialog" header="Acciones" :style="{ width: '300px' }">
         <div>
-            <Button label="Preparar Pedido" v-if="selectedOrder.state === 'pendiente'" @click="updateOrderState('en preparación')" />
+            <Button label="Preparar Pedido" v-if="selectedOrder.state === 'pendiente'" @click="updateOrderState('en preparación')" style="margin-right: 10px;" />
             <Button label="Cancelar Pedido" v-if="selectedOrder.state === 'pendiente'" @click="updateOrderState('cancelado')" />
-            <Button label="Marcar como En Entrega" v-if="selectedOrder.state === 'en preparación'" @click="updateOrderState('en entrega')" />
+            <Button label="Marcar como En Entrega" v-if="selectedOrder.state === 'en preparación'" @click="updateOrderState('en entrega')" style="margin-right: 10px;" />
             <Button label="Marcar como Completado" v-if="selectedOrder.state === 'en entrega'" @click="updateOrderState('completado')" />
         </div>
     </Dialog>

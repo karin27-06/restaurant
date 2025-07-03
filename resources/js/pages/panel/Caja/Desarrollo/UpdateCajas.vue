@@ -4,10 +4,10 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
-import Select from 'primevue/select';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const props = defineProps({
     visible: Boolean,
@@ -134,15 +134,22 @@ const updateCaja = async () => {
                 </div>
             </div>
 
-            <!-- Vendedor-->
-            <div class="col-span-12">
-                <label class="block font-bold mb-2">Vendedor <span class="text-red-500">*</span></label>
-                <Select v-model="caja.idVendedor" :options="vendedores" optionLabel="label"
-                    optionValue="value" placeholder="Seleccione vendedor" fluid
-                    :class="{ 'p-invalid': serverErrors.idVendedor }" @change="onVendedorSelect" />
-                <small v-if="serverErrors.idVendedor" class="p-error">{{ serverErrors.idVendedor[0] }}</small>
-            </div>
-
+            <!-- Vendedor (Dropdown con búsqueda) -->
+                <div class="col-span-12">
+                    <label class="block font-bold mb-2">Vendedor <span class="text-red-500">*</span></label>
+                    <Dropdown 
+                        v-model="caja.idVendedor"
+                        :options="vendedores"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccione vendedor"
+                        filter
+                        filterBy="label"
+                        fluid
+                        :class="{ 'p-invalid': serverErrors.idVendedor }" 
+                    />
+                    <small v-if="serverErrors.idVendedor" class="p-error">{{ serverErrors.idVendedor[0] }}</small>
+                </div>
         </div>
     </div>
 

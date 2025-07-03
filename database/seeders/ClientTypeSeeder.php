@@ -15,5 +15,6 @@ class ClientTypeSeeder extends Seeder{
             'name' => 'Empresa',
             'state' => true,
         ]);
+        //ClientType::factory(600)->create();
     }
 }

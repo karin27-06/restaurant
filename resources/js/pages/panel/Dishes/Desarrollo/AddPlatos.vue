@@ -42,12 +42,26 @@
                     <small v-else-if="serverErrors.quantity" class="text-red-500">{{ serverErrors.quantity[0] }}</small>
                 </div>
 
-                <div class="col-span-12">
-                    <label for="category" class="block font-bold mb-3">Categoría <span class="text-red-500">*</span></label>
-                    <Select id="category" v-model="plato.idCategory" :options="categories" optionLabel="label" optionValue="value" placeholder="Seleccionar categoría" class="w-full" :loading="loadingCategories" />
-                    <small v-if="submitted && !plato.idCategory" class="text-red-500">La categoría es obligatoria.</small>
-                    <small v-else-if="serverErrors.idCategory" class="text-red-500">{{ serverErrors.idCategory[0] }}</small>
-                </div>
+                <!-- Categoría (Dropdown con búsqueda) -->
+                    <div class="col-span-12">
+                        <label for="category" class="block font-bold mb-3">Categoría <span class="text-red-500">*</span></label>
+                        <Dropdown
+                            id="category"
+                            v-model="plato.idCategory"
+                            :options="categories"
+                            optionLabel="label"
+                            optionValue="value"
+                            fluid
+                            placeholder="Seleccionar categoría"
+                            filter
+                            filterBy="label"
+                            filterPlaceholder="Buscar categoria..."
+                            class="w-full"
+                            :loading="loadingCategories"
+                        />
+                        <small v-if="submitted && !plato.idCategory" class="text-red-500">La categoría es obligatoria.</small>
+                        <small v-else-if="serverErrors.idCategory" class="text-red-500">{{ serverErrors.idCategory[0] }}</small>
+                    </div>
 
                 <!-- Campo para seleccionar insumos -->
                 <div class="col-span-12">
@@ -78,9 +92,9 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
-import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect'; // Importar MultiSelect de PrimeVue
 import ToolsDish from './toolsDish.vue';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const toast = useToast();
 const emit = defineEmits(['plato-agregado']);
