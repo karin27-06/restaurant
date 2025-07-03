@@ -27,5 +27,6 @@ class PresentationSeeder extends Seeder{
             'description' => 'Presentación en sacos resistentes para productos a granel o pesados.',
             'state' => true,
         ]);
+        //Presentation::factory(10000)->create();
     }
 }

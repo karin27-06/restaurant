@@ -96,12 +96,21 @@
                         Contraseña debe tener al menos 8 caracteres.</small>
                     <small v-else-if="serverErrors.password" class="text-red-500">{{ serverErrors.password[0] }}</small>
                 </div>
+                <!-- ROLES -->
                 <div class="col-span-6">
                     <label for="role" class="block font-bold mb-3">Rol <span class="text-red-500">*</span></label>
-                    <Select v-model="usuario.role_id" :options="roles" optionLabel="name" optionValue="id"
-                        placeholder="Seleccione un rol" fluid />
-                    <small v-if="submitted && !usuario.role" class="text-red-500">El rol es obligatorio.</small>
-                    <small v-else-if="serverErrors.role" class="text-red-500">{{ serverErrors.role[0] }}</small>
+                    <Dropdown 
+                        v-model="usuario.role_id" 
+                        :options="roles" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        placeholder="Seleccione un rol" 
+                        fluid 
+                        filter
+                        filterPlaceholder="Buscar rol"
+                    />
+                    <small v-if="submitted && !usuario.role_id" class="text-red-500">El rol es obligatorio.</small>
+                    <small v-else-if="serverErrors.role_id" class="text-red-500">{{ serverErrors.role_id[0] }}</small>
                 </div>
             </div>
         </div>
@@ -126,6 +135,7 @@ import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { defineEmits } from 'vue';
 import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const toast = useToast();
 const roles = ref([]);

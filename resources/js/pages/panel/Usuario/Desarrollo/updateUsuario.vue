@@ -9,6 +9,7 @@ import Tag from 'primevue/tag';
 import Checkbox from 'primevue/checkbox';
 import Password from 'primevue/password';
 import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const props = defineProps({
     visible: Boolean,
@@ -250,10 +251,19 @@ onMounted(() => {
                     <Password v-model="password" toggleMask placeholder="Nueva contraseña" :feedback="false"
                         inputId="password" fluid />
                 </div>
+                <!-- ROLES -->
                 <div class="col-span-6">
                     <label for="role" class="block font-bold mb-3">Rol <span class="text-red-500">*</span></label>
-                    <Select v-model="user.role_id" :options="roles" optionLabel="name" optionValue="id"
-                        placeholder="Seleccione un rol" class="w-full" />
+                    <Dropdown 
+                        v-model="user.role_id" 
+                        :options="roles" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        placeholder="Seleccione un rol" 
+                        class="w-full" 
+                        filter 
+                        filterPlaceholder="Buscar rol"
+                    />
                     <small v-if="submitted && !user.role_id" class="text-red-500">El rol es obligatorio.</small>
                     <small v-else-if="serverErrors.role_id" class="text-red-500">{{ serverErrors.role_id[0] }}</small>
                 </div>

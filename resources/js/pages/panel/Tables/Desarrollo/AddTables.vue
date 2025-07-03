@@ -50,24 +50,35 @@
 
                 <!-- Area -->
                 <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Area <span class="text-red-500">*</span></label>
-                    <Select
+                    <label class="mb-2 block font-bold">Área <span class="text-red-500">*</span></label>
+                    <Dropdown
                         v-model="table.idArea"
                         fluid
                         :options="areas"
                         optionLabel="label"
                         optionValue="value"
-                        placeholder="Seleccione la area"
+                        placeholder="Seleccione el área"
+                        filter
+                        filterPlaceholder="Buscar área"
                     />
-                    <small v-if="submitted && !table.idArea" class="text-red-500">La Area es obligatoria.</small>
+                    <small v-if="submitted && !table.idArea" class="text-red-500">El área es obligatoria.</small>
                     <small v-else-if="serverErrors.idArea" class="text-red-500">{{ serverErrors.idArea[0] }}</small>
                 </div>
 
                 <!-- Piso -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Piso <span class="text-red-500">*</span></label>
-                    <Select v-model="table.idFloor" :options="pisos" fluid optionLabel="label" optionValue="value" placeholder="Seleccione el piso" />
-                    <small v-if="submitted && !table.idFloor" class="text-red-500">El Piso es obligatorio.</small>
+                    <Dropdown
+                        v-model="table.idFloor"
+                        :options="pisos"
+                        fluid
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccione el piso"
+                        filter
+                        filterPlaceholder="Buscar piso"
+                    />
+                    <small v-if="submitted && !table.idFloor" class="text-red-500">El piso es obligatorio.</small>
                     <small v-else-if="serverErrors.idFloor" class="text-red-500">{{ serverErrors.idFloor[0] }}</small>
                 </div>
             </div>
@@ -86,12 +97,13 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+//import Select from 'primevue/select';
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import ToolsTable from './toolsTable.vue';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const toast = useToast();
 const submitted = ref(false);

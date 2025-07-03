@@ -7,7 +7,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import axios from 'axios';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const props = defineProps({
     visible: Boolean,
@@ -146,16 +146,19 @@ const updateEmpleado = async () => {
                     />
                     <small v-if="serverErrors.name" class="p-error">{{ serverErrors.name[0] }}</small>
                 </div>
+                <!--TIPO DE EMPLEADO-->
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Empleado <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="empleado.employee_type_id"
                         :options="tiposEmpleado"
                         optionLabel="name"
                         optionValue="id"
+                        fluid
                         placeholder="Seleccione"
                         class="w-full"
-                        fluid
+                        filter
+                        filterPlaceholder="Buscar tipo de empleado"
                         :class="{ 'p-invalid': serverErrors.employee_type_id }"
                     />
                     <small v-if="serverErrors.employee_type_id" class="p-error">{{ serverErrors.employee_type_id[0] }}</small>

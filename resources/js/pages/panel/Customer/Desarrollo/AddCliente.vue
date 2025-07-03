@@ -47,13 +47,16 @@
 
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Cliente <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="cliente.client_type_id"
                         :options="tiposCliente"
                         optionLabel="name"
                         optionValue="id"
                         fluid
-                        placeholder="Seleccione"
+                        placeholder="Seleccione tipo de cliente"
+                        filter
+                        filterBy="name"
+                        filterPlaceholder="Buscar tipo de cliente..."
                         class="w-full"
                     />
                     <small v-if="submitted && !cliente.client_type_id" class="text-red-500">Debe seleccionar un tipo.</small>
@@ -79,7 +82,7 @@ import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';
 import ToolsCustomer from './toolsCustomer.vue';
 
 const toast = useToast();

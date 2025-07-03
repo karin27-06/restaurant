@@ -44,16 +44,21 @@
                     />
                     <small v-if="serverErrors.priceSale" class="p-error">{{ serverErrors.priceSale[0] }}</small>
                 </div>
-   <!-- Almacen -->
+
+                <!-- Almacén (Dropdown con búsqueda) -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Almacen <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="input.idAlmacen"
                         fluid
                         :options="almacens"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Seleccione Almacen"
+                        filter
+                        filterBy="label" 
+                        filterPlaceholder="Buscar almacen..." 
+                        style="width: 325px;" 
                     />
                     <small v-if="submitted && !input.idAlmacen" class="text-red-500">El Almacen es obligatorio.</small>
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>
@@ -119,6 +124,7 @@ import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import ToolsInput from './toolsInput.vue';
+import Dropdown from 'primevue/dropdown';
 
 const toast = useToast();
 const submitted = ref(false);

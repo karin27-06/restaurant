@@ -23,5 +23,6 @@ class EmployeeTypeSeeder extends Seeder{
             'name' => 'Repartidor delivery',
             'state' => true,
         ]);
+        //EmployeeType::factory(600)->create();
     }
 }
