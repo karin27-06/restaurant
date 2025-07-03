@@ -7,9 +7,8 @@
             </template>
 
             <template v-else>
-                <div class="card">
-                    <ListSales :refresh="refreshKey"/>
-                </div>
+ <ListSales :refresh="refreshKey"/>
+
             </template>
         </div>
     </AppLayout>
@@ -21,7 +20,6 @@ import AppLayout from '@/layout/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import Espera from '@/components/Espera.vue';
 import ListSales from './Desarrollo/ListSales.vue';
-import AddInputs from './Desarrollo/AddInputs.vue';
 
 const isLoading = ref(true);
 const refreshKey = ref(0);
@@ -32,6 +30,6 @@ function refrescarListado() {
 onMounted(() => {
     setTimeout(() => {
         isLoading.value = false;
-    }, 1000);
+    }, 1500);
 });
 </script>
