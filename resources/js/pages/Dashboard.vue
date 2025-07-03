@@ -6,6 +6,7 @@ import Calendar from 'primevue/calendar';
 import Chart from 'primevue/chart';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
+import Message from 'primevue/message';
 import DataTable from 'primevue/datatable';
 import { onMounted, ref, watch } from 'vue';
 import Password from './settings/Password.vue';
@@ -13,8 +14,34 @@ const page = usePage();
 const mustReset = page.props.mustReset;
 // Obtener el usuario autenticado
 const user = page.props.auth.user;
+//DEJA AHI EL MENSAJE DE SALUDO :)
+// Función para determinar el saludo
+const getGreeting = () => {
+  const hours = new Date().getHours();
+  if (hours < 12) {
+    return 'Buenos días';
+  } else if (hours < 18) {
+    return 'Buenas tardes';
+  } else {
+    return 'Buenas noches';
+  }
+};
+// Mensajes motivacionales
+const motivationalMessages = [
+  "¡Estás haciendo un gran trabajo, sigue así!",
+  "¡Hoy es un buen día para alcanzar tus metas!",
+  "¡La perseverancia te lleva lejos, nunca pares!",
+  "¡Cada paso te acerca más a tu éxito!"
+];
 
+// Escoger un mensaje aleatorio y almacenarlo en una variable reactiva
+const motivationalMessage = getMotivationalMessage();
 
+// Función para obtener un mensaje aleatorio
+function getMotivationalMessage() {
+  const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
+  return motivationalMessages[randomIndex];
+}
 const dashboardData = ref({
     totales: {
         total_customers: 0,
@@ -126,6 +153,13 @@ onMounted(() => {
         </div>
     </div>
     <AppLayout v-else>
+        <div class="card">
+      <!-- Saludo y nombre completo del usuario -->
+      <h2>{{ getGreeting() }}, {{ user.name }}!</h2>
+      <br>
+      <!-- Mensaje motivacional -->
+      <Message severity="info">{{ motivationalMessage }}</Message>
+    </div>
          <div class="grid grid-cols-4 gap-8">
       <!-- Calendar component -->
       <Calendar
