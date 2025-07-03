@@ -202,9 +202,9 @@ watch(dateRange, () => {
           <Column field="code" header="Código" sortable style="min-width: 7rem" />
             <Column field="totalPrice" header="Precio Total" sortable style="min-width: 9rem" />
                <Column field="created_at" header="Fecha" sortable style="min-width: 13rem" />
-        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
+        <!--<Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
             <template #body="{ data }"> <Button icon="pi pi-file-pdf" outlined rounded class="mr-2" @click="generatePDF(data)" /> </template>
-        </Column>
+        </Column>      DESBLOQUEARLO PARA TRABAJAR AQUI-->
     </DataTable>
 
 
