@@ -29,6 +29,9 @@ const cliente = ref({
 });
 
 const tiposCliente = ref([]);
+const codigoMaxLength = ref(8); // 8 dígitos por defecto para persona natural (DNI)
+const codigoPattern = ref(""); // Expresión regular para el código
+const codigoPlaceholder = ref("Ingrese su codigo"); 
 
 watch(() => props.visible, (val) => {
     dialogVisible.value = val;
@@ -37,6 +40,7 @@ watch(() => props.visible, (val) => {
         fetchTiposCliente();
     }
 });
+
 watch(dialogVisible, (val) => emit('update:visible', val));
 
 const fetchCliente = async () => {
@@ -50,6 +54,8 @@ const fetchCliente = async () => {
             client_type_id: data.client_type_id,
             state: data.state
         };
+        // Actualizar la longitud y el patrón del código al cargar el cliente
+        onTipoClienteChange(); 
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el cliente', life: 3000 });
         console.error(error);
@@ -71,6 +77,21 @@ const fetchTiposCliente = async () => {
 const updateCliente = async () => {
     submitted.value = true;
     serverErrors.value = {};
+
+    // Validación de longitud de código dependiendo del tipo de cliente
+    if (cliente.value.client_type_id === 1 && cliente.value.codigo.length !== 8) { // Persona natural (DNI)
+        serverErrors.value.codigo = ['El código debe tener 8 dígitos para persona natural.'];
+        codigoPlaceholder.value.codigo = "Ingrese su número de DNI"; 
+        toast.add({ severity: 'error', summary: 'Error', detail: 'El código debe tener 8 dígitos para persona natural.', life: 3000 });
+        return;
+    }
+
+    if (cliente.value.client_type_id === 2 && cliente.value.codigo.length !== 11) { // Persona jurídica (RUC)
+        serverErrors.value.codigo = ['El código debe tener 11 dígitos para persona jurídica.'];
+        codigoPlaceholder.value.codigo = "Ingrese su número de RUC (10 o 20 dígitos)";
+        toast.add({ severity: 'error', summary: 'Error', detail: 'El código debe tener 11 dígitos para persona jurídica.', life: 3000 });
+        return;
+    }
 
     try {
         const clienteData = {
@@ -111,6 +132,25 @@ const updateCliente = async () => {
         console.error(error);
     }
 };
+
+const onTipoClienteChange = () => {
+    const tipoCliente = tiposCliente.value.find(t => t.id === cliente.value.client_type_id);
+    if (tipoCliente) {
+        // Ajustar el patrón y longitud de código dependiendo del tipo de cliente
+        if (tipoCliente.codigo_pattern) {
+            codigoPattern.value = tipoCliente.codigo_pattern;
+        }
+
+        if (cliente.value.client_type_id === 1) {
+            codigoMaxLength.value = 8; // Persona natural (DNI)
+        } else if (cliente.value.client_type_id === 2) {
+            codigoMaxLength.value = 11; // Persona jurídica (RUC)
+        } else {
+            // Para otros tipos de clientes, puedes ajustar la longitud y el patrón
+            codigoMaxLength.value = 10;
+        }
+    }
+};
 </script>
 
 <template>
@@ -123,7 +163,9 @@ const updateCliente = async () => {
                         v-model="cliente.codigo"
                         required
                         fluid
-                        maxlength="11"
+                        :placeholder="codigoPlaceholder"
+                        :maxlength="codigoMaxLength"
+                        :pattern="codigoPattern"
                         :class="{ 'p-invalid': serverErrors.codigo }"
                     />
                     <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
@@ -140,6 +182,7 @@ const updateCliente = async () => {
                     <InputText
                         v-model="cliente.name"
                         required
+                        placeholder="Ingrese el nombre correspondiente"
                         maxlength="150"
                         fluid
                         :class="{ 'p-invalid': serverErrors.name }"
@@ -154,12 +197,13 @@ const updateCliente = async () => {
                         optionLabel="name"
                         optionValue="id"
                         placeholder="Seleccione tipo de cliente"
-                        filter 
+                        filter
                         filterBy="name"
                         filterPlaceholder="Buscar tipo de cliente..." 
                         class="w-full"
                         fluid
                         :class="{ 'p-invalid': serverErrors.client_type_id }"
+                        @change="onTipoClienteChange"
                     />
                     <small v-if="serverErrors.client_type_id" class="text-red-500">{{ serverErrors.client_type_id[0] }}</small>
                 </div>

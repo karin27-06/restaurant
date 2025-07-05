@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Pipelines\FilterByState;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\DB;
 class ClientTypeController extends Controller{
     public function index(Request $request){
         Gate::authorize('viewAny', ClientType::class);
@@ -71,23 +72,25 @@ class ClientTypeController extends Controller{
             'clientType' => new ClientTypeResource($clientType->refresh()),
         ]);
     }
-    public function destroy(ClientType $clientType){
-        Gate::authorize('delete', $clientType);
-        if(
-            $clientType->tieneRelaciones()
-        ) {
-            return response()->json([
-                'state' => false,
-                'message' => 'No se puede eliminar este tipo de cliente porque está relacionado con otros registros.'
-            ],400);
-        }
-        $clientType->delete();
-        
+public function destroy(ClientType $clientType)
+{
+    // Restablecer el contador del ID después de la eliminación en PostgreSQL
+    DB::statement('ALTER SEQUENCE client_types_id_seq RESTART WITH 1');
+    
+    Gate::authorize('delete', $clientType);
+    if ($clientType->tieneRelaciones()) {
         return response()->json([
-            'state' => true,
-            'message' => 'Tipo de cliente eliminado de manera correcta',
-        ]);
+            'state' => false,
+            'message' => 'No se puede eliminar este tipo de cliente porque está relacionado con otros registros.'
+        ], 400);
     }
+    $clientType->delete();
+
+    return response()->json([
+        'state' => true,
+        'message' => 'Tipo de cliente eliminado de manera correcta',
+    ]);
+}
     #EXPORTACION
     public function exportExcel()
     {

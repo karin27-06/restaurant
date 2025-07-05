@@ -17,6 +17,7 @@
                     <InputText
                         v-model.trim="empleado.name"
                         required
+                        placeholder="Ingrese su nombre"
                         maxlength="100"
                         fluid
                     />
@@ -38,6 +39,7 @@
                     <InputText
                         v-model.trim="empleado.codigo"
                         required
+                        placeholder="Ingrese su DNI"
                         fluid
                         maxlength="8"
                     />
