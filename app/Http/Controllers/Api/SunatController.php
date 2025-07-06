@@ -165,11 +165,19 @@ class SunatController extends Controller
 
         $result = $see->send($invoice);
 
-        // Guardar XML firmado digitalmente en la carpeta 'app/comprobantes'
-        file_put_contents(
-            base_path('sunat/comprobantes/' . $invoice->getName() . '.xml'),
-            $see->getFactory()->getLastXml()
-        );
+$folderPath = base_path('sunat/comprobantes');
+
+// Si no existe la carpeta, créala
+if (!file_exists($folderPath)) {
+    mkdir($folderPath, 0777, true); // 0777 da permisos completos, true crea carpetas anidadas
+}
+
+// Luego guarda el archivo
+file_put_contents(
+    $folderPath . '/' . $invoice->getName() . '.xml',
+    $see->getFactory()->getLastXml()
+);
+
 
 
         // Verificamos que la conexión con SUNAT fue exitosa.
