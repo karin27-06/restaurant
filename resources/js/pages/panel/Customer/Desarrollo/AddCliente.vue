@@ -17,6 +17,7 @@
                     <InputText
                         v-model.trim="cliente.name"
                         required
+                        placeholder="Ingrese el nombre correspondiente"
                         maxlength="150"
                         fluid
                     />
@@ -34,18 +35,6 @@
                 </div>
 
                 <div class="col-span-12">
-                    <label class="block font-bold mb-2">Código <span class="text-red-500">*</span></label>
-                    <InputText
-                        v-model.trim="cliente.codigo"
-                        required
-                        fluid
-                        maxlength="11"
-                    />
-                    <small v-if="submitted && !cliente.codigo" class="text-red-500">El código es obligatorio.</small>
-                    <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
-                </div>
-
-                <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Cliente <span class="text-red-500">*</span></label>
                     <Dropdown
                         v-model="cliente.client_type_id"
@@ -58,9 +47,24 @@
                         filterBy="name"
                         filterPlaceholder="Buscar tipo de cliente..."
                         class="w-full"
+                        @change="onTipoClienteChange"
                     />
                     <small v-if="submitted && !cliente.client_type_id" class="text-red-500">Debe seleccionar un tipo.</small>
                     <small v-if="serverErrors.client_type_id" class="text-red-500">{{ serverErrors.client_type_id[0] }}</small>
+                </div>
+
+                <!-- Campo de código (DNI o RUC) que solo aparece después de seleccionar el tipo de cliente -->
+                <div v-if="cliente.client_type_id" class="col-span-12">
+                    <label class="block font-bold mb-2">Código <span class="text-red-500">*</span></label>
+                    <InputText
+                        v-model.trim="cliente.codigo"
+                        required
+                        fluid
+                        :maxlength="codigoMaxLength" 
+                        :placeholder="codigoPlaceholder"
+                    />
+                    <small v-if="submitted && !cliente.codigo" class="text-red-500">El código es obligatorio.</small>
+                    <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
                 </div>
             </div>
         </div>
@@ -73,7 +77,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 import Dialog from 'primevue/dialog';
 import Toolbar from 'primevue/toolbar';
@@ -89,7 +93,6 @@ const toast = useToast();
 const submitted = ref(false);
 const clienteDialog = ref(false);
 const serverErrors = ref({});
-const tiposCliente = ref([]);
 const emit = defineEmits(['cliente-agregado']);
 
 const cliente = ref({
@@ -98,7 +101,13 @@ const cliente = ref({
     client_type_id: null,
     state: true
 });
-// Método para recargar la lista de clientes
+
+// Variable para controlar la longitud máxima del código
+const codigoMaxLength = ref(8);  // Valor inicial para persona natural (8 dígitos para DNI)
+const codigoPlaceholder = ref("Ingrese su número de DNI");  // Placeholder inicial para persona natural
+
+// Cargar tipos de cliente
+const tiposCliente = ref([]);
 const loadCliente = async () => {
     try {
         const response = await axios.get('/cliente');  // Aquí haces una solicitud GET para obtener los clientes
@@ -109,7 +118,19 @@ const loadCliente = async () => {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar los clientes', life: 3000 });
         console.error(error);
     }
+};
+
+function onTipoClienteChange() {
+    // Cambiar la longitud del código y el placeholder dependiendo del tipo de cliente seleccionado
+    if (cliente.value.client_type_id === 1) { // Persona natural
+        codigoMaxLength.value = 8;  // 8 dígitos (DNI)
+        codigoPlaceholder.value = "Ingrese su número de DNI"; // Placeholder para Persona natural
+    } else if (cliente.value.client_type_id === 2) { // Persona jurídica
+        codigoMaxLength.value = 11; // 11 dígitos (RUC)
+        codigoPlaceholder.value = "Ingrese su número de RUC (10 o 20)"; // Placeholder para Persona jurídica
+    }
 }
+
 function resetCliente() {
     cliente.value = {
         name: '',

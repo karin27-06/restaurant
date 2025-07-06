@@ -1,5 +1,5 @@
 <template>
-             <Button label="Registrar cliente" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
+    <Button label="Registrar cliente" icon="pi pi-plus" severity="secondary" class="mr-2" @click="openNew" />
 
     <Dialog v-model:visible="clienteDialog" :style="{ width: '600px' }" header="Registro de cliente" :modal="true">
         <div class="flex flex-col gap-6">
@@ -9,6 +9,7 @@
                     <InputText
                         v-model.trim="cliente.name"
                         required
+                        placeholder="Ingrese el nombre correspondiente"
                         maxlength="150"
                         fluid
                     />
@@ -25,18 +26,7 @@
                     <small v-if="serverErrors.state" class="text-red-500">{{ serverErrors.state[0] }}</small>
                 </div>
 
-                <div class="col-span-12">
-                    <label class="block font-bold mb-2">Código <span class="text-red-500">*</span></label>
-                    <InputText
-                        v-model.trim="cliente.codigo"
-                        required
-                        fluid
-                        maxlength="11"
-                    />
-                    <small v-if="submitted && !cliente.codigo" class="text-red-500">El código es obligatorio.</small>
-                    <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
-                </div>
-
+                <!-- Campo de Tipo de Cliente -->
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Cliente <span class="text-red-500">*</span></label>
                     <Select
@@ -45,11 +35,26 @@
                         optionLabel="name"
                         optionValue="id"
                         fluid
-                        placeholder="Seleccione"
+                        placeholder="Seleccione tipo de cliente"
                         class="w-full"
+                        @change="onTipoClienteChange"
                     />
                     <small v-if="submitted && !cliente.client_type_id" class="text-red-500">Debe seleccionar un tipo.</small>
                     <small v-if="serverErrors.client_type_id" class="text-red-500">{{ serverErrors.client_type_id[0] }}</small>
+                </div>
+
+                                <!-- Campo de Código solo se muestra después de seleccionar el tipo de cliente -->
+                <div class="col-span-12" v-if="cliente.client_type_id">
+                    <label class="block font-bold mb-2">Código <span class="text-red-500">*</span></label>
+                    <InputText
+                        v-model.trim="cliente.codigo"
+                        required
+                        fluid
+                        :maxlength="codigoMaxLength"
+                        :placeholder="codigoPlaceholder"
+                    />
+                    <small v-if="submitted && !cliente.codigo" class="text-red-500">El código es obligatorio.</small>
+                    <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
                 </div>
             </div>
         </div>
@@ -62,16 +67,15 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 import Dialog from 'primevue/dialog';
-import Toolbar from 'primevue/toolbar';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
-import { useToast } from 'primevue/usetoast';
 import Select from 'primevue/select';
+import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 const submitted = ref(false);
@@ -86,7 +90,12 @@ const cliente = ref({
     client_type_id: null,
     state: true
 });
-// Método para recargar la lista de clientes
+
+// Variable para controlar la longitud máxima del código y el placeholder dinámico
+const codigoMaxLength = ref(8);  // Valor inicial para persona natural (8 dígitos para DNI)
+const codigoPlaceholder = ref("Ingrese su número de DNI");  // Placeholder inicial para persona natural
+
+// Cargar tipos de cliente
 const loadCliente = async () => {
     try {
         const response = await axios.get('/cliente');  // Aquí haces una solicitud GET para obtener los clientes
@@ -98,6 +107,19 @@ const loadCliente = async () => {
         console.error(error);
     }
 }
+
+// Cambiar los valores de maxLength y placeholder según el tipo de cliente seleccionado
+function onTipoClienteChange() {
+    if (cliente.value.client_type_id === 1) { // Persona natural
+        codigoMaxLength.value = 8;  // 8 dígitos (DNI)
+        codigoPlaceholder.value = "Ingrese su número de DNI";  // Placeholder para Persona natural
+    } else if (cliente.value.client_type_id === 2) { // Persona jurídica
+        codigoMaxLength.value = 11; // 11 dígitos (RUC)
+        codigoPlaceholder.value = "Ingrese su número de RUC (10 o 20)"; // Placeholder para Persona jurídica
+    }
+}
+
+// Resetear los valores del cliente
 function resetCliente() {
     cliente.value = {
         name: '',
@@ -109,17 +131,20 @@ function resetCliente() {
     submitted.value = false;
 }
 
+// Abrir el formulario de registro de cliente
 function openNew() {
     resetCliente();
     clienteDialog.value = true;
     fetchTiposCliente();
 }
 
+// Cerrar el formulario de registro de cliente
 function hideDialog() {
     clienteDialog.value = false;
     resetCliente();
 }
 
+// Obtener los tipos de cliente
 function fetchTiposCliente() {
     axios.get('/tipo_cliente', { params: { state: 1 } })
         .then(res => {
@@ -130,6 +155,7 @@ function fetchTiposCliente() {
         });
 }
 
+// Guardar el cliente
 function guardarCliente() {
     submitted.value = true;
     serverErrors.value = {};
