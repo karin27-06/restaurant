@@ -44,17 +44,19 @@
                     <small v-if="submitted && !empleado.codigo" class="text-red-500">El código es obligatorio.</small>
                     <small v-if="serverErrors.codigo" class="text-red-500">{{ serverErrors.codigo[0] }}</small>
                 </div>
-
+                <!-- Tipo de Empleado -->
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Empleado <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="empleado.employee_type_id"
                         :options="tiposEmpleado"
                         optionLabel="name"
                         optionValue="id"
                         fluid
-                        placeholder="Seleccione"
+                        placeholder="Seleccione empleado"
                         class="w-full"
+                        filter
+                        filterPlaceholder="Buscar tipo de empleado"
                     />
                     <small v-if="submitted && !empleado.employee_type_id" class="text-red-500">Debe seleccionar un tipo.</small>
                     <small v-if="serverErrors.employee_type_id" class="text-red-500">{{ serverErrors.employee_type_id[0] }}</small>
@@ -79,7 +81,7 @@ import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 import ToolsEmployee from './toolsEmployee.vue';
 
 const toast = useToast();

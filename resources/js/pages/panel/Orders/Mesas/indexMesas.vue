@@ -28,8 +28,9 @@
             <div>
               <h2 class="text-lg font-semibold mb-4">Caja</h2>
               <div class="mb-4">
-                <label class="block font-medium mb-2">Seleccionar caja:</label>
-                <Select 
+              <label class="block font-medium mb-2">Seleccionar caja:</label>
+              <!-- Selecciona la caja con filtro habilitado -->
+              <Dropdown 
                   v-model="cajaSeleccionada"
                   :options="cajasDisponibles"
                   optionLabel="numero_cajas"
@@ -37,11 +38,13 @@
                   placeholder="Seleccione una caja"
                   class="w-full"
                   :disabled="cajasDisponibles.length === 0"
-                />
-                <small v-if="cajasDisponibles.length === 0" class="text-red-500">
+                  filter
+                  filterPlaceholder="Buscar caja..."
+              />
+              <small v-if="cajasDisponibles.length === 0" class="text-red-500">
                   No hay cajas disponibles para aperturar
-                </small>
-              </div>
+              </small>
+          </div>
 
               <Button 
                 label="Aperturar Caja" 
@@ -71,7 +74,7 @@ import Espera from '@/components/Espera.vue';
 import ListMesas from './Desarrollo/ListMesas.vue';
 import axios from 'axios'; // Asegúrate de importar axios si no lo has hecho aún
 import InputText from 'primevue/inputtext';
-import Select from 'primevue/dropdown';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 import Button from 'primevue/button';
 const toast = useToast();
 

@@ -43,18 +43,41 @@
                 <!-- Categoría -->
                 <div class="col-span-6">
                     <label class="block font-bold mb-2">Categoría <span class="text-red-500">*</span></label>
-                    <Select v-model="producto.idCategory" fluid :options="categorias" optionLabel="label" optionValue="value" placeholder="Seleccione categoría" />
+                    <Dropdown
+                        v-model="producto.idCategory" 
+                        :options="categorias" 
+                        optionLabel="label" 
+                        optionValue="value" 
+                        fluid
+                        placeholder="Seleccione categoría" 
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar categoria..."  
+                        style="width: 325px;"
+                    />
                     <small v-if="submitted && !producto.idCategory" class="text-red-500">La categoría es obligatoria.</small>
                     <small v-else-if="serverErrors.idCategory" class="text-red-500">{{ serverErrors.idCategory[0] }}</small>
                 </div>
 
-                <!-- Almacén -->
+                <!-- Almacén con Dropdown con búsqueda -->
                 <div class="col-span-6">
                     <label class="block font-bold mb-2">Almacén <span class="text-red-500">*</span></label>
-                    <Select v-model="producto.idAlmacen" :options="almacenes" fluid optionLabel="label" optionValue="value" placeholder="Seleccione almacén" />
+                    <Dropdown 
+                        v-model="producto.idAlmacen" 
+                        :options="almacenes" 
+                        optionLabel="label" 
+                        optionValue="value" 
+                        fluid
+                        placeholder="Seleccione almacén" 
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar almacen..." 
+                        style="width: 325px;"
+                    />
                     <small v-if="submitted && !producto.idAlmacen" class="text-red-500">El almacén es obligatorio.</small>
                     <small v-else-if="serverErrors.idAlmacen" class="text-red-500">{{ serverErrors.idAlmacen[0] }}</small>
                 </div>
+
             </div>
         </div>
 
@@ -76,7 +99,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import Textarea from 'primevue/textarea';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';
 import ToolsProduct from './toolsProduct.vue';
 
 const toast = useToast();

@@ -6,6 +6,7 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select';
 //import Textarea from 'primevue/textarea';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
@@ -177,24 +178,35 @@ const updateTable = async () => {
 
                 <!-- Area -->
                 <div class="col-span-6">
-                    <label class="mb-2 block font-bold">Area <span class="text-red-500">*</span></label>
-                    <Select
+                    <label class="mb-2 block font-bold">Área <span class="text-red-500">*</span></label>
+                    <Dropdown
                         v-model="table.idArea"
                         fluid
                         :options="areas"
                         optionLabel="label"
                         optionValue="value"
-                        placeholder="Seleccione Area"
+                        placeholder="Seleccione un área"
+                        filter
+                        filterPlaceholder="Buscar área"
                     />
-                    <small v-if="submitted && !table.idArea" class="text-red-500">La Area es obligatoria.</small>
+                    <small v-if="submitted && !table.idArea" class="text-red-500">El área es obligatoria.</small>
                     <small v-else-if="serverErrors.idArea" class="text-red-500">{{ serverErrors.idArea[0] }}</small>
                 </div>
 
                 <!-- Piso -->
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Piso <span class="text-red-500">*</span></label>
-                    <Select v-model="table.idFloor" :options="pisos" fluid optionLabel="label" optionValue="value" placeholder="Seleccione Piso" />
-                    <small v-if="submitted && !table.idFloor" class="text-red-500">El Piso es obligatorio.</small>
+                    <Dropdown
+                        v-model="table.idFloor"
+                        :options="pisos"
+                        fluid
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccione un piso"
+                        filter
+                        filterPlaceholder="Buscar piso"
+                    />
+                    <small v-if="submitted && !table.idFloor" class="text-red-500">El piso es obligatorio.</small>
                     <small v-else-if="serverErrors.idFloor" class="text-red-500">{{ serverErrors.idFloor[0] }}</small>
                 </div>
              

@@ -10,6 +10,7 @@ import Tag from 'primevue/tag';
 import Checkbox from 'primevue/checkbox';
 import Select from 'primevue/select';
 import MultiSelect from 'primevue/multiselect'; // Importar MultiSelect de PrimeVue
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 
 const props = defineProps({
     visible: Boolean,
@@ -258,15 +259,20 @@ onMounted(() => {
                     <small v-if="serverErrors.quantity" class="p-error">{{ serverErrors.quantity[0] }}</small>
                 </div>
 
+                <!-- Categoría (Dropdown con búsqueda) -->
                 <div class="col-span-10">
                     <label for="category" class="block font-bold mb-2">Categoría <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         id="category"
                         v-model="plato.idCategory"
                         :options="categories"
                         optionLabel="label"
                         optionValue="value"
+                        fluid
                         placeholder="Seleccionar categoría"
+                        filter
+                        filterBy="label"
+                        filterPlaceholder="Buscar categoria..." 
                         class="w-full"
                         :class="{ 'p-invalid': serverErrors.idCategory }"
                         :loading="loadingCategories"

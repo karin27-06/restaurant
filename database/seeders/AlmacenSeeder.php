@@ -15,5 +15,7 @@ class AlmacenSeeder extends Seeder{
             'name' => 'Almacen Secundario',
             'state' => true,
         ]);
+        // Crear almacenes aleatorios usando la factory con nombres únicos (por ejemplo, 500 registros)
+        //Almacen::factory(500)->create(); // Genera 500 almacenes con nombres únicos
     }
 }

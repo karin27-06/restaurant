@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('client_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 40)->unique();
+            $table->string('name')->unique();
             $table->boolean('state')->default(true)->comment('true: activo, false: inactivo');
             $table->timestamps();
         });

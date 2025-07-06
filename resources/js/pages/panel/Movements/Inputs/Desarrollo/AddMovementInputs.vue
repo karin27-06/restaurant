@@ -47,15 +47,17 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-12">
                     <label class="mb-2 block font-bold">Proveedor <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="movementInput.supplierId"
                         fluid
                         :options="customers"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Seleccione un Proveedor"
+                        filter
+                        filterPlaceholder="Buscar proveedor"
                     />
-           <small v-if="serverErrors.supplier_id" class="text-red-500">{{ serverErrors.supplier_id[0] }}</small>
+                    <small v-if="serverErrors.supplier_id" class="text-red-500">{{ serverErrors.supplier_id[0] }}</small>
                 </div>
             </div>
 
@@ -100,6 +102,7 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import RadioButton from 'primevue/radiobutton';
 import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';  // Importamos Dropdown
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
 import { useToast } from 'primevue/usetoast';

@@ -42,5 +42,7 @@ class SupplierSeeder extends Seeder{
             'phone' => '073778899',
             'state' => true,
         ]);
+        // Crear Proveedores aleatorios usando la factory con nombres únicos (por ejemplo, 500 registros)
+        //Supplier::factory(10000)->create(); // Genera 500 proveedores con nombres únicos
     }
 }

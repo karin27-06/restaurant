@@ -7,7 +7,7 @@ import Checkbox from 'primevue/checkbox';
 import Tag from 'primevue/tag';
 import axios from 'axios';
 import { useToast } from 'primevue/usetoast';
-import Select from 'primevue/select';
+import Dropdown from 'primevue/dropdown';
 
 const props = defineProps({
     visible: Boolean,
@@ -148,12 +148,15 @@ const updateCliente = async () => {
                 </div>
                 <div class="col-span-12">
                     <label class="block font-bold mb-2">Tipo de Cliente <span class="text-red-500">*</span></label>
-                    <Select
+                    <Dropdown
                         v-model="cliente.client_type_id"
                         :options="tiposCliente"
                         optionLabel="name"
                         optionValue="id"
-                        placeholder="Seleccione"
+                        placeholder="Seleccione tipo de cliente"
+                        filter 
+                        filterBy="name"
+                        filterPlaceholder="Buscar tipo de cliente..." 
                         class="w-full"
                         fluid
                         :class="{ 'p-invalid': serverErrors.client_type_id }"
