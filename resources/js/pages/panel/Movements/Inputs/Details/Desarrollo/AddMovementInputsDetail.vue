@@ -156,6 +156,7 @@ const handleSearch = async () => {
                 const response = await axios.get('/insumo', {
                     params: {
                         search: searchTerm.value, // Se pasa el término de búsqueda
+                        state: 1
                     },
                 });
 

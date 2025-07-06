@@ -70,6 +70,7 @@ const handleSearch = async () => {
             const response = await axios.get('/cliente', {
                 params: {
                     codigo: searchTerm.value, // Se pasa el término de búsqueda
+                    state: 1
                 },
             });
 
@@ -80,6 +81,8 @@ const handleSearch = async () => {
             console.error('Error en la búsqueda:', error);
         }
     } else {
+        // Si no hay texto en el campo de búsqueda, reiniciamos el tipo de recibo
+        recibo.value.tipoRecibo = '';  // Reiniciar el tipo de recibo
         clientesOptions.value = []; // Limpiamos los resultados si no hay texto
         showResults.value = false; // Ocultamos los resultados
     }
@@ -139,7 +142,7 @@ const loadHistorialPlatos = async () => {
 const loadPlatos = async (search = '') => {
     try {
         // Construir la URL con el parámetro de búsqueda y paginación
-        const response = await axios.get(`/plato?search=${search}&page=${currentPage.value}&per_page=${perPage.value}`);
+        const response = await axios.get(`/plato?search=${search}&page=${currentPage.value}&per_page=${perPage.value}`, {params:{state:1}});
 
         // Filtrar los platos para que solo se muestren aquellos con quantity > 0
         const platosDisponibles = response.data.data.filter((plato) => plato.quantity > 0);
@@ -254,7 +257,9 @@ const loadMesas = async () => {
 
         // Realizar la solicitud GET con los parámetros adecuados
         const response = await axios.get(url);
-        mesas.value = response.data.data;
+
+        // Filtrar mesas para que solo se muestren las mesas con state: true
+        mesas.value = response.data.data.filter(mesa => mesa.state);
 
         // Filtrar áreas según el piso seleccionado
         updateAreas();
@@ -296,7 +301,8 @@ const updateAreas = () => {
 onMounted(async () => {
     try {
         const response = await axios.get('/mesa');
-        mesas.value = response.data.data;
+        // Filtrar las mesas con state: true
+        mesas.value = response.data.data.filter(mesa => mesa.state);
 
         // Obtener los pisos únicos basados en idFloor y ordenar de menor a mayor
         floors.value = [
@@ -581,6 +587,16 @@ const actualizarestadomesa = async ()=>{
 
 }
 const showFormularioRecibo = async () => { // Marca la función como async
+    // Reiniciar los valores del formulario antes de mostrarlo
+    recibo.value = {
+        codigoCliente: '',
+        tipoRecibo: '', // 'Factura' o 'Boleta'
+        tipoPago: '', // 'Tarjeta', 'Transferencia', 'Efectivo', 'Yape', 'Plin'
+        operationCode: '',
+    };
+    searchTerm.value = ''; // Limpiar el término de búsqueda
+    selectedCliente.value = null; // Limpiar el cliente seleccionado
+    showResults.value = false; // Ocultar los resultados de la búsqueda
     try {
         // Verificar si el idOrder es nulo
         if (!order.value.idOrder) {
