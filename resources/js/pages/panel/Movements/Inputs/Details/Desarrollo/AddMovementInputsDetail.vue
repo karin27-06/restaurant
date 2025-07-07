@@ -60,7 +60,7 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Fecha de Vencimiento <span class="text-red-500">*</span></label>
-                    <InputDate v-model="movementInput.expirationDate" required class="w-full" dateFormat="dd/mm/yy" />
+                    <InputDate v-model="movementInput.expirationDate" required class="w-full" dateFormat="dd/mm/yy" showIcon/>
                     <small v-if="serverErrors.expirationDate" class="text-red-500">{{ serverErrors.expirationDate[0] }}</small>
                 </div>
             </div>
