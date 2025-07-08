@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\OrderDishController;
 use App\Http\Controllers\Api\CajaController;
 use App\Http\Controllers\Api\ReporteCajaController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CrearPemController;
+
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PresentationController;
@@ -46,6 +48,8 @@ use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\SalesOrderController;
 use App\Http\Controllers\Api\MovementInputKardexController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Web\CertificadoWebController;
+use App\Http\Controllers\Api\CertificadoController;
 use App\Http\Controllers\Api\MovementInputDetailController;
 use App\Http\Controllers\Web\AlmacenWebController;
 use App\Http\Controllers\Web\AreasWebController;
@@ -121,6 +125,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/envio-sunat', [SunatController::class, 'enviarFactura'])->name('envio-sunat');
     Route::post('/generate-invoice/{idSale}', [SalesInvoiceController::class, 'generateInvoice']);
     Route::get('/datos/dashboard', [DashboardController::class, 'getdatos']);
+Route::get('/certificado', [CertificadoWebController::class, 'index'])->name('index.view');
+Route::post('/enviar-certificado', [CertificadoController::class, 'subircertificado'])->name('subir.certificado');
+Route::get('/crear-certificado', [CrearPemController::class, 'crear']);
 
     #CONSULTA  => BACKEND
     Route::get('/consulta/{dni}', [ConsultasDni::class, 'consultar'])->name('consultar.dni');

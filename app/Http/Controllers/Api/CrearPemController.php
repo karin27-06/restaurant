@@ -1,4 +1,16 @@
------BEGIN RSA PRIVATE KEY-----
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+
+class CrearPemController extends Controller
+{
+    public function crear()
+    {
+        // 🔒 Contenido del archivo .pem — puedes modificarlo dinámicamente
+        $contenido = "-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEA7bXTMjOSElQ9VM/gRwD68VSejdXmaJ34NwzL2VU9GcuuPqnF
 4/M7hwupaJQ7Hxpw/C1Lba2kO6gi/mxyqbPoYwIQkXceVnJ+Ig65RacRS+yDZ6+r
 3pM7AkOOQT1K75LBfRSmu8l+IkgwbrZj36E9eID5yLknvGOVHhnui5OrBdFoB8i/
@@ -50,4 +62,31 @@ c2Gu7xLgHAFZVRjQ5hhKT0Nj3vhnt0k8LcognNl1wKuWda7VL4tODp/2IOXr5o5v
 /OL3UesGfeWfvr8LVmMc5f7/vLAu1+2Yk+/C9/EZyf3BDZQ4z8ae/iwqprCTUIEj
 hUDcq4+0YN2EIw6suGE2FtWlsIywNErmoOhdrmntU61n3nFCQBi7QDUnZrAFrl4/
 bmk3eRJ00nE=
------END CERTIFICATE-----
+-----END CERTIFICATE-----"; // ← Aquí puedes colocar el contenido que desees
+
+        // 📁 Ruta dentro de storage/app/
+        $carpeta = 'sunat/certificados';
+        $archivo = 'certificate.pem';
+        $path = $carpeta . '/' . $archivo;
+
+        // 🛠 Asegurar que el directorio exista
+        if (!Storage::exists($carpeta)) {
+            Storage::makeDirectory($carpeta, 0775, true); // true = recursivo
+        }
+
+        // 📝 Guardar el archivo
+        Storage::put($path, $contenido);
+
+        // ✅ Confirmar que se guardó correctamente
+        if (Storage::exists($path)) {
+            return response()->json([
+                'message' => '✅ Archivo .pem creado correctamente.',
+                'path' => storage_path('app/' . $path),
+            ]);
+        } else {
+            return response()->json([
+                'message' => '❌ No se pudo crear el archivo .pem.',
+            ], 500);
+        }
+    }
+}
