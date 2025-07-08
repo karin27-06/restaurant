@@ -165,15 +165,18 @@ class SunatController extends Controller
 
         $result = $see->send($invoice);
 
-$folderPath = base_path('Sunat/comprobantes');
+$folderPath = storage_path('app/sunat/comprobantes');
 
+// Crear carpeta si no existe
+if (!file_exists($folderPath)) {
+    mkdir($folderPath, 0777, true);
+}
 
-// Luego guarda el archivo
+// Guardar XML
 file_put_contents(
     $folderPath . '/' . $invoice->getName() . '.xml',
     $see->getFactory()->getLastXml()
 );
-
 
 
         // Verificamos que la conexión con SUNAT fue exitosa.
@@ -185,9 +188,11 @@ file_put_contents(
         }
 
 
-        // Guardamos el CDR
-        file_put_contents(base_path('Sunat/comprobantes/R-' . $invoice->getName() . '.zip'), $result->getCdrZip());
-
+  // Guardar ZIP del CDR
+file_put_contents(
+    $folderPath . '/R-' . $invoice->getName() . '.zip',
+    $result->getCdrZip()
+);
 
         $cdr = $result->getCdrResponse();
 
