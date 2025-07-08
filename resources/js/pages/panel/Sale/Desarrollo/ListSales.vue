@@ -163,6 +163,62 @@ function handleInputDeleted() {
 }
 
 onMounted(loadInputs);
+
+const enviarASunat = async (idSale, prefix) => {
+    // Validar que el prefijo sea uno de los valores permitidos (boleta o factura)
+    if (prefix !== 'Boleta' && prefix !== 'Factura') {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El tipo de comprobante debe ser "Boleta" o "Factura".',
+            life: 3000
+        });
+        return;
+    }
+
+    try {
+        // Datos a enviar
+        const data = {
+            prefix: prefix,  // El tipo de comprobante (Boleta o Factura)
+        };
+
+        // Enviar la solicitud POST a la API de Laravel para generar el comprobante
+        const response = await axios.post(`/generate-invoice/${idSale}`, data);
+
+        // Verificar si la respuesta es exitosa
+        if (response.data.invoice) {
+
+
+            console.log('Comprobante generado:', response.data.invoice);
+ // Ahora enviar el idSale a la API /envio-sunat
+            await axios.get(`/envio-sunat?idSale=${idSale}`)
+                .then(() => {
+                    console.log('idSale enviado a la API de SUNAT');
+                       loadInputs();
+                })
+                .catch(error => {
+                    console.error('Error al enviar idSale a SUNAT:', error);
+              
+                });
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Hubo un problema al generar el comprobante.',
+                life: 3000
+            });
+        }
+    } catch (error) {
+        console.error('Error al crear el comprobante:', error);
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Hubo un error al procesar la solicitud.',
+            life: 3000
+        });
+    }
+};
+
 </script>
 
 <template>
@@ -295,8 +351,23 @@ onMounted(loadInputs);
             <Column field="sale.documentType" header="Tipo" sortable style="min-width: 7rem" />
             <Column field="sale.paymentType" header="Metodo" sortable style="min-width: 7rem" />
             <Column field="subtotal" header="Total" sortable style="min-width: 7rem" />
-            <Column field="sale.stateSunat" header="Sunat" sortable style="min-width: 7rem" />
-            <Column field="sale.created_at" header="Creación" sortable style="min-width: 13rem" />
+<Column field="sale.stateSunat" header="Sunat" sortable style="min-width: 7rem">
+    <template #body="{ data }">
+        <!-- Mostrar el texto solo cuando el estado no esté vacío, nulo o 'no enviado' -->
+        <span v-if="data.sale.stateSunat && data.sale.stateSunat !== 'no enviado'">{{ data.sale.stateSunat }}</span>
+        <!-- Solo mostrar el botón si está vacío, nulo o 'no enviado' -->
+        <Button
+            v-if="!data.sale.stateSunat || data.sale.stateSunat === 'no enviado'"
+            label="Enviar"
+            icon="pi pi-send"
+            @click="enviarASunat(data.sale.id,data.sale.documentType)"
+            class="p-button-text p-button-sm"
+        />
+    </template>
+</Column>
+
+
+           <Column field="sale.created_at" header="Creación" sortable style="min-width: 13rem" />
             <Column field="sale.updated_at" header="Actualización" sortable style="min-width: 13rem" />
             <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
                 <template #body="{ data }">
