@@ -59,6 +59,7 @@ const optionalColumns = ref([
 
 const dateRange = ref(null); // Variable para almacenar el rango de fechas
 // Variables para almacenar los montos
+const tarjetaMonto = ref(0);
 const transferenciaMonto = ref(0);
 const efectivoMonto = ref(0);
 const yapeMonto = ref(0);
@@ -79,10 +80,11 @@ const loadInputs = async () => {
         pagination.value.currentPage = response.data.meta.current_page;
         pagination.value.total = response.data.meta.total;
         // Asignar los montos con 2 decimales
+        tarjetaMonto.value = parseFloat(response.data.ingresos_por_pago.Tarjeta || 0.0).toFixed(2);
         transferenciaMonto.value = parseFloat(response.data.ingresos_por_pago.Transferencia || 0.0).toFixed(2);
         efectivoMonto.value = parseFloat(response.data.ingresos_por_pago.Efectivo || 0.0).toFixed(2);
         yapeMonto.value = parseFloat(response.data.ingresos_por_pago.Yape || 0.0).toFixed(2);
-        plinMonto.value = parseFloat(response.data.ingresos_por_pago.Plins || 0.0).toFixed(2);
+        plinMonto.value = parseFloat(response.data.ingresos_por_pago.Plin || 0.0).toFixed(2);
         MontoTotal.value = parseFloat(response.data.total_ingresos || 0.0).toFixed(2);
     } catch (error) {
         console.error('Error al cargar insumos:', error);
@@ -235,7 +237,24 @@ const enviarASunat = async (idSale, prefix) => {
                         class="flex items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
                         style="width: 2.5rem; height: 2.5rem"
                     >
-                        <i class="pi pi-money-bill !text-xl text-blue-500"></i>
+                        <i class="pi pi-send !text-xl text-blue-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+            <div class="card mb-0">
+                <div class="mb-4 flex justify-between">
+                    <div>
+                        <span class="mb-4 block font-medium text-muted-color">Tarjeta</span>
+                        <div class="text-xl font-medium text-surface-900 dark:text-surface-0">S/ {{ tarjetaMonto }}</div>
+                    </div>
+                    <div
+                        class="flex items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
+                        style="width: 2.5rem; height: 2.5rem"
+                    >
+                        <i class="pi pi-credit-card !text-xl text-blue-500"></i>
                     </div>
                 </div>
             </div>
@@ -269,9 +288,11 @@ const enviarASunat = async (idSale, prefix) => {
                     </div>
                     <div
                         class="flex items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
-                        style="width: 2.5rem; height: 2.5rem"
+                        style="width: 3rem; height: 2.5rem"
                     >
-                        <i class="pi pi-money-bill !text-xl text-blue-500"></i>
+                        <!-- Ícono de billetera digital y la letra 'Y' al lado -->
+                        <i class="pi pi-wallet !text-xl text-blue-500"></i>
+                        <span class="text-xl font-medium text-blue-500 ml-1">Y</span>
                     </div>
                 </div>
             </div>
@@ -287,9 +308,11 @@ const enviarASunat = async (idSale, prefix) => {
                     </div>
                     <div
                         class="flex items-center justify-center bg-blue-100 rounded-border dark:bg-blue-400/10"
-                        style="width: 2.5rem; height: 2.5rem"
+                        style="width: 3rem; height: 2.5rem"
                     >
-                        <i class="pi pi-money-bill !text-xl text-blue-500"></i>
+                        <!-- Ícono de billetera digital y la letra 'Y' al lado -->
+                        <i class="pi pi-wallet !text-xl text-blue-500"></i>
+                        <span class="text-xl font-medium text-blue-500 ml-1">P</span>
                     </div>
                 </div>
             </div>
@@ -353,8 +376,19 @@ const enviarASunat = async (idSale, prefix) => {
             <Column field="subtotal" header="Total" sortable style="min-width: 7rem" />
 <Column field="sale.stateSunat" header="Sunat" sortable style="min-width: 7rem">
     <template #body="{ data }">
-        <!-- Mostrar el texto solo cuando el estado no esté vacío, nulo o 'no enviado' -->
-        <span v-if="data.sale.stateSunat && data.sale.stateSunat !== 'no enviado'">{{ data.sale.stateSunat }}</span>
+        <!-- Si está aprobado, muestra en badge verde -->
+        <span
+            v-if="data.sale.stateSunat === 'aprobado'"
+            class="sunat-badge"
+        >
+            {{ data.sale.stateSunat }}
+        </span>
+        <!-- Si tiene otro texto distinto a 'no enviado', muéstralo normal -->
+        <span
+            v-else-if="data.sale.stateSunat && data.sale.stateSunat !== 'no enviado'"
+        >
+            {{ data.sale.stateSunat }}
+        </span>
         <!-- Solo mostrar el botón si está vacío, nulo o 'no enviado' -->
         <Button
             v-if="!data.sale.stateSunat || data.sale.stateSunat === 'no enviado'"
@@ -411,3 +445,18 @@ const enviarASunat = async (idSale, prefix) => {
         </div>
     </Dialog>
 </template>
+<style scoped>
+.sunat-badge {
+    display: inline-block;
+    background: #eaffea;
+    color: #138a27;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 0.2em 0.5em;
+    font-size: 0.8em;
+    border: 1.5px solid #b7f5c0;
+    font-family: inherit;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+</style>

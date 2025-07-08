@@ -237,12 +237,12 @@ function getIgvStateValueNum(igvState) {
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Fecha de Emisión <span class="text-red-500">*</span></label>
-                    <InputDate v-model="movementInput.issueDate" required class="w-full" />
+                    <InputDate v-model="movementInput.issueDate" required class="w-full" showIcon/>
                     <small v-if="serverErrors.issue_date" class="text-red-500">{{ serverErrors.issue_date[0] }}</small>
                 </div>
                 <div class="col-span-6">
                     <label class="mb-2 block font-bold">Fecha de Ejecución <span class="text-red-500">*</span></label>
-                    <InputDate v-model="movementInput.executionDate" required class="w-full" />
+                    <InputDate v-model="movementInput.executionDate" required class="w-full" showIcon/>
                     <small v-if="serverErrors.execution_date" class="text-red-500">{{ serverErrors.execution_date[0] }}</small>
                 </div>
             </div>

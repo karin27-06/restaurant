@@ -1,5 +1,5 @@
 <template>
-  <Head title="Lista de Mesas" />
+  <Head title="Aperturar caja" />
   <AppLayout>
     <div>
       <template v-if="isLoading">

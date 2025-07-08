@@ -1,5 +1,5 @@
 <template>
-    <Head title="Plato" />
+    <Head title="Lista de pedidos" />
     <AppLayout>
         <div>
             <template v-if="isLoading">
