@@ -7,9 +7,15 @@ import DataTable from 'primevue/datatable';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
-import Select from 'primevue/select';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import Dialog from 'primevue/dialog';
 import { onMounted, ref, watch } from 'vue';
 
+const SYSTEM_URL = "https://restauranttj-main-rwzwgj.laravel.cloud/";
+// Variables para la vista previa
+const showPdfDialog = ref(false);
+const pdfUrl = ref(null);
 const inputs = ref([]);
 const loading = ref(false);
 const globalFilterValue = ref('');
@@ -31,6 +37,7 @@ const pagination = ref({
 const refreshCount = ref(0); // Variable que se incrementa cuando se agrega un insumo
 // Rango de fechas
 const dateRange = ref(null); // Variable para el rango de fechas seleccionado
+const today = ref(new Date()); // Fecha máxima permitida
 
 const estadoInputOptions = ref([
     { name: 'TODOS', value: '' },
@@ -140,7 +147,131 @@ watch(dateRange, () => {
         loadKardexInputs();  // Realizar la búsqueda automáticamente cuando ambos valores estén seleccionados
     }
 });
+let lastDoc = null; // Variable global
 
+const generatePDF = (row) => {
+    const doc = new jsPDF();
+
+    // Hora y fecha actual
+    const now = new Date();
+    const formatTime = (date) => date.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const formatDate = (date) => date.toLocaleDateString('es-PE');
+    const currentDate = formatDate(now);
+    const currentTime = formatTime(now);
+
+    // Verificar si hay código y precio total
+    const hasCode = row.code !== undefined && row.code !== null && row.code !== '';
+    const hasTotalPrice = row.totalPrice !== undefined && row.totalPrice !== null && row.totalPrice !== '';
+
+    // Nombre empresa centrado
+    doc.setFontSize(15);
+    doc.text('RESTAURANTE E.I.R.L', 105, 15, { align: 'center' });
+
+    // Fecha y hora actual
+    doc.setFontSize(9);
+    doc.text(`Fecha: ${currentDate}    Hora: ${currentTime}`, 105, 21, { align: 'center' });
+
+    // Línea separadora
+    doc.setLineWidth(0.5);
+    doc.line(10, 24, 200, 24);
+
+    // Título
+    doc.setFontSize(13);
+    doc.text('COMPROBANTE DE KARDEX', 105, 33, { align: 'center' });
+
+    // Datos a la izquierda
+    doc.setFontSize(10);
+    let yStart = 42;
+    if (hasCode) {
+        doc.text(`Código: ${row.code}`, 13, yStart);
+        yStart += 6;
+    }
+    doc.text(`Usuario: ${row.username || ''}`, 13, yStart);
+    yStart += 6;
+    doc.text(`Tipo de movimiento: ${row.movement_type || ''}`, 13, yStart);
+    yStart += 6;
+    doc.text(`Insumo: ${row.nameInput || ''}`, 13, yStart);
+
+    // Fecha (de la fila) a la derecha
+    doc.text(`Fecha: ${row.created_at || ''}`, 150, 42);
+
+    // Línea horizontal antes de la tabla
+    doc.line(10, yStart + 5, 200, yStart + 5);
+
+    // Construir columnas y valores de la tabla
+    let tableHead = [['Cantidad', 'Unidad']];
+    let tableBody = [[
+        row.quantity !== undefined && row.quantity !== null && row.quantity !== '' ? row.quantity : '0.00',
+        `${row.quantityUnitMeasure ?? ''} ${row.unitMeasure ?? ''}`,
+    ]];
+
+    if (hasTotalPrice) {
+        tableHead[0].push('Precio Total');
+        tableBody[0].push(row.totalPrice);
+    }
+
+    // Tabla
+    autoTable(doc, {
+        startY: yStart + 10,
+        head: tableHead,
+        body: tableBody,
+        theme: 'plain',
+        headStyles: {
+            fontStyle: 'bold',
+            halign: 'center',
+            fillColor: [255,255,255],
+            textColor: [0,0,0],
+        },
+        bodyStyles: { halign: 'center' },
+        tableLineColor: [0,0,0],
+        tableLineWidth: 0.5,
+    });
+
+    // Línea horizontal después de la tabla
+    const tableEndY = doc.lastAutoTable.finalY + 5;
+    doc.line(10, tableEndY, 200, tableEndY);
+
+    // Mostrar Total Movimiento solo si hay precio total
+    if (hasTotalPrice) {
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text(
+            `Total Movimiento: S/. ${row.totalPrice}`,
+            200,
+            tableEndY + 10,
+            { align: 'right' }
+        );
+        doc.setFont(undefined, 'normal');
+    }
+
+    // Pie de página
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(9);
+        doc.text(`Página ${i} de ${pageCount}`, 10, 290, { align: 'left' });
+        doc.text(SYSTEM_URL, 200, 290, { align: 'right' });
+    }
+
+    lastDoc = doc;
+    const pdfBlob = doc.output('blob');
+    pdfUrl.value = URL.createObjectURL(pdfBlob);
+    showPdfDialog.value = true;
+};
+
+const closePdfDialog = () => {
+    showPdfDialog.value = false;
+    if (pdfUrl.value) {
+        URL.revokeObjectURL(pdfUrl.value);
+        pdfUrl.value = null;
+    }
+};
+const downloadPDF = () => {
+    if (lastDoc) {
+        // Usa lo que quieras como nombre dinámico:
+        lastDoc.save('comprobante-kardex.pdf');
+    }
+};
 </script>
 
 <template>
@@ -172,7 +303,9 @@ watch(dateRange, () => {
                             placeholder="Rango de fechas" 
                             class="w-full"
                             dateFormat="yy-mm-dd"
-                            @change="onDateRangeChange"  />
+                            :maxDate="today"
+                            showIcon
+                        />
                     </div>
                     <IconField>
                         <InputIcon>
@@ -202,10 +335,24 @@ watch(dateRange, () => {
           <Column field="code" header="Código" sortable style="min-width: 7rem" />
             <Column field="totalPrice" header="Precio Total" sortable style="min-width: 9rem" />
                <Column field="created_at" header="Fecha" sortable style="min-width: 13rem" />
-        <!--<Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
-            <template #body="{ data }"> <Button icon="pi pi-file-pdf" outlined rounded class="mr-2" @click="generatePDF(data)" /> </template>
-        </Column>      DESBLOQUEARLO PARA TRABAJAR AQUI-->
+        <Column field="accions" header="Acciones" :exportable="false" style="min-width: 8rem">
+            <template #body="{ data }">
+                <Button icon="pi pi-file-pdf" outlined rounded class="mr-2" @click="generatePDF(data)" />
+            </template>
+        </Column>
     </DataTable>
-
-
+<Dialog v-model:visible="showPdfDialog" header="Vista previa del comprobante" :style="{ width: '800px' }" modal :closable="true" @hide="closePdfDialog">
+    <template #default>
+        <iframe
+            v-if="pdfUrl"
+            :src="pdfUrl"
+            width="100%"
+            height="700px"
+            style="border: none;"
+        ></iframe>
+        <div class="flex justify-end mt-2">
+            <Button label="Descargar PDF" icon="pi pi-download" @click="downloadPDF" />
+        </div>
+    </template>
+</Dialog>
 </template>

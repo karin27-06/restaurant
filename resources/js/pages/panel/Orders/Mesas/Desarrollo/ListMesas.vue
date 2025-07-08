@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import Dialog from 'primevue/dialog';
+import { Head } from '@inertiajs/vue3';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Tag from 'primevue/tag';
@@ -876,6 +877,7 @@ const finalizarMesa = async () => {
 </script>
 
 <template>
+    <Head title="Lista de mesas" />
     <div>
         <Toolbar v-if="showReciboToolbar" class="mb-4">
             <template #start>
@@ -983,7 +985,7 @@ const finalizarMesa = async () => {
                                 >
                                     <div class="flex flex-col">
                                         <span class="font-semibold text-gray-800">{{ cliente.codigo }} - {{ cliente.name }}</span>
-                                        <span class="text-sm text-gray-600">{{ cliente.client_type_id === 1 ? 'Persona' : 'Empresa' }}</span>
+                                        <span class="text-sm text-gray-600">{{ cliente.client_type_id === 1 ? 'Persona natural' : 'Persona juridica' }}</span>
                                     </div>
                                 </div>
                             </div>

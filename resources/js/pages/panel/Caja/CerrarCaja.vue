@@ -1,5 +1,6 @@
 <template>
   <AppLayout>
+    <Head title="Cierre de caja" />
     <div class="card">
       <h1 class="text-2xl font-bold mb-6">Cerrar Caja</h1>
 
@@ -110,6 +111,7 @@ import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import AppLayout from '@/layout/AppLayout.vue';
+import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import Espera from '@/components/Espera.vue';
 import InputNumber from 'primevue/inputnumber';

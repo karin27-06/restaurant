@@ -17,6 +17,7 @@ class MovementInputKardexResource extends JsonResource
             'idUser' => $this->idUser,  // ID del usuario
             'username' => $this->user ? strtoupper($this->user->username) : null,  // Nombre de usuario en mayúsculas
             'idInput' => $this->idInput,  // ID del insumo
+            'nameInput'=>$this->input->name,
             'quantityUnitMeasure' => $this->input->quantityUnitMeasure,
             'unitMeasure' => $this->input->unitMeasure,
             'code' => $this->movementInput->code?? null,
